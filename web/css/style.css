@@ -3423,3 +3423,34 @@ input[type="range"] {
   box-shadow: none;
   background: rgba(74, 158, 255, 0.12);
 }
+
+/* Cuon trong cho danh sach file va ban ghi gan day */
+#dzFilledList {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(74, 158, 255, 0.35) transparent;
+}
+
+.vn-recent-list {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(74, 158, 255, 0.35) transparent;
+}
+
+#dzFilledList::-webkit-scrollbar,
+.vn-recent-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#dzFilledList::-webkit-scrollbar-thumb,
+.vn-recent-list::-webkit-scrollbar-thumb {
+  background: rgba(74, 158, 255, 0.35);
+  border-radius: 3px;
+}
+
+#dzFilledList::-webkit-scrollbar-track,
+.vn-recent-list::-webkit-scrollbar-track {
+  background: transparent;
+}
