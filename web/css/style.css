@@ -2696,3 +2696,8 @@ input[type="range"] {
 .vn-advanced .instruct-select-grid {
   grid-template-columns: repeat(3, 1fr);
 }
+
+/* Sidebar: bỏ nhãn trùng với tiêu đề mục, chỉ giữ số giá trị bên phải */
+.vn-sidebar .field-top {
+  justify-content: flex-end;
+}
