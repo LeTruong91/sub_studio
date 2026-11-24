@@ -2701,3 +2701,55 @@ input[type="range"] {
 .vn-sidebar .field-top {
   justify-content: flex-end;
 }
+
+/* Nút chọn giọng ở sidebar: không tràn, tên + tag xếp 2 dòng */
+#voiceDropdown .voice-select-btn {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  gap: 8px;
+}
+
+#voiceDropdown .voice-select-current {
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+#voiceDropdown .voice-select-name {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#voiceDropdown .voice-select-tag {
+  flex: none;
+  max-width: 100%;
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#voiceDropdown .voice-select-chevron {
+  flex-shrink: 0;
+}
+
+/* Ô văn bản: ghi chú không bị chèn, tăng khoảng cách với hàng Lưu */
+.vn-text-card .content-editor {
+  min-height: auto;
+}
+
+.vn-text-card .content-editor-note {
+  margin-top: 10px;
+}
+
+.vn-save-row {
+  margin-top: 20px;
+}
