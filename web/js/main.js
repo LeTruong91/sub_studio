@@ -21,7 +21,16 @@ async function pickFileSub(){
   console.log("Picked file info:", info);
   if(!info || info.length === 0) return;
 
-  selectedFiles = info; // mảng [{path, name, size_kb}, ...]
+  const seenPaths = new Set(selectedFiles.map(f => f.path.toLowerCase()));
+  let addedCount = 0;
+  info.forEach(f => {
+    if (!seenPaths.has(f.path.toLowerCase())) {
+      seenPaths.add(f.path.toLowerCase());
+      selectedFiles.push(f);
+      addedCount++;
+    }
+  });
+  if (addedCount === 0) return;
 
   document.getElementById('dropzone').classList.add('has-file');
   document.getElementById('dzEmpty').style.display = 'none';
@@ -57,6 +66,9 @@ function renderFileList(){
 function clearOneFile(event, index){
   event.stopPropagation();
   selectedFiles.splice(index, 1);
+  if (index < _activeFileIndex) _activeFileIndex--;
+  else if (index === _activeFileIndex) _activeFileIndex = Math.min(_activeFileIndex, selectedFiles.length - 1);
+  if (_activeFileIndex < 0) _activeFileIndex = 0;
   renderFileList();
   loadContentEditor();
 
@@ -74,6 +86,7 @@ function clearFile(event){
    showConfirm("Bạn có chắc muốn xóa tất cả file sub?", () => {
 
       selectedFiles = [];
+      _activeFileIndex = 0;
       renderFileList();
       loadContentEditor();
       document.getElementById('sumFile').textContent = 'Chưa chọn file';
@@ -83,7 +96,7 @@ function clearFile(event){
 }
 function renderFileRow(file, index){
   return `
-    <div class="dz-file-row" style="display:flex;align-items:center;width:100%;gap:12px;" data-index="${index}">
+    <div class="dz-file-row${index === _activeFileIndex ? ' active' : ''}" style="display:flex;align-items:center;width:100%;gap:12px;" data-index="${index}" onclick="selectEditorFile(event, ${index})">
       <div class="dz-icon">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5z" stroke="currentColor" stroke-width="1.5" />
@@ -100,6 +113,7 @@ function renderFileRow(file, index){
 }
 /* ===== Ô nội dung + chip cảm xúc (kiểu VieNeu) ===== */
 let _contentEditorFile = null;
+let _activeFileIndex = 0;
 let _contentSaveTimer = null;
 let _contentEditorBound = false;
 
@@ -129,7 +143,8 @@ async function loadContentEditor(){
     updateCharCount();
     return;
   }
-  const file = selectedFiles[0];
+  if (_activeFileIndex >= selectedFiles.length) _activeFileIndex = Math.max(0, selectedFiles.length - 1);
+  const file = selectedFiles[_activeFileIndex];
   _contentEditorFile = file;
   chips.forEach(c => c.disabled = false);
   document.getElementById('contentEditorFile').textContent = file.name;
@@ -153,6 +168,19 @@ async function loadContentEditor(){
     if(saved) saved.textContent = 'Không đọc được file.';
   }
   updateCharCount();
+}
+
+function selectEditorFile(event, index){
+  if (event) event.stopPropagation();
+  if (index === _activeFileIndex) return;
+  if (_contentSaveTimer) {
+    clearTimeout(_contentSaveTimer);
+    _contentSaveTimer = null;
+    saveContentEditor();
+  }
+  _activeFileIndex = index;
+  renderFileList();
+  loadContentEditor();
 }
 
 function insertEmotionTag(tag){
