@@ -494,6 +494,20 @@ function toggleSaveClone(){
   }
 
   
+// Ghep mo ta giong de luu: gioi tinh lam tien to (kieu preset "Nam - Bac - ...").
+// Server chi chap nhan chu cai/so/khoang trang/./-/_ nen dau "·" phai doi thanh "-".
+function composeCloneDescription(){
+  const descEl = document.getElementById('descSaveClone');
+  const genEl = document.getElementById('genderSaveClone');
+  let out = descEl ? (descEl.value || '').trim().replace(/\u00b7/g, '-') : '';
+  const gender = genEl ? (genEl.value || '') : '';
+  const first = (out.split(/[\s-]+/)[0] || '').toLowerCase();
+  if (gender && first !== 'nam' && first !== 'nữ') {
+    out = out ? gender + ' - ' + out : gender;
+  }
+  return out.slice(0, 64);
+}
+
 async function runGenerate(){
   const btn = document.getElementById('genBtn');
   if (btn.classList.contains('gen-running')) {
@@ -556,7 +570,8 @@ async function runGenerate(){
     instruct: getVoiceInstruct(),
     enable_clone_save:isSaveClone.checked,
     nameCloneSave:nameCloneSave.value,
-    desCLoneSave:"",
+    desCLoneSave: composeCloneDescription(),
+    genderCloneSave: (document.getElementById("genderSaveClone").value || ""),
     speed: parseFloat(document.getElementById('speedSlider').value),
     pitch: 0,
     count: 1,

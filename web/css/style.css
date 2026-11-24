@@ -3565,3 +3565,15 @@ input[type="range"] {
   border-color: rgba(74, 158, 255, 0.5);
   box-shadow: none;
 }
+
+/* O mo ta + gioi tinh ben canh o ten giong (luu mau clone) */
+.vn-clone-full .clone-name-wrap { gap: 10px; }
+.vn-clone-full .clone-name-wrap #nameSaveClone { flex: 1 1 0; min-width: 0; }
+.vn-clone-full .clone-name-wrap #descSaveClone { flex: 2 1 0; min-width: 0; }
+.vn-clone-full .clone-name-wrap #genderSaveClone {
+  flex: 0 0 118px; min-width: 0; box-sizing: border-box;
+  background: #1a1a24; border: 1px solid #26262f; color: #e8eaef;
+  border-radius: 8px; padding: 9px 12px; font-size: 12.5px; outline: none;
+  color-scheme: dark; cursor: pointer;
+}
+.vn-clone-full .clone-name-wrap #genderSaveClone:focus { border-color: #4a9eff; }

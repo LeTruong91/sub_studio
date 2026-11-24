@@ -16,6 +16,7 @@ Các tham số cũ ref_text / language / num_step / instruct: model v3 Turbo
 không dùng nữa nên chỉ nhận vào cho tương thích, không gửi lên server.
 Tốc độ / cao độ vẫn do app chỉnh sau khi có file wav (audio_utils.render_audio).
 """
+import json
 import os
 import re
 import shutil
@@ -149,6 +150,33 @@ def _save_clip_locally(voices_dir, name, ref_audio_path):
     return str(dest)
 
 
+def _save_voice_meta(voices_dir, name, description, gender):
+    """Giu lai mo ta + gioi tinh cua giong da luu (file .json canh file mau),
+    de dang ky lai dung mo ta khi server khoi dong lai lam mat giong."""
+    if not voices_dir:
+        return None
+    folder = Path(voices_dir)
+    folder.mkdir(parents=True, exist_ok=True)
+    meta_path = folder / (_safe_voice_filename(name) + ".json")
+    meta_path.write_text(
+        json.dumps({"description": description or "", "gender": gender or ""},
+                   ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return str(meta_path)
+
+
+def _load_voice_meta(voices_dir, name):
+    if not voices_dir:
+        return None
+    meta_path = Path(voices_dir) / (_safe_voice_filename(name) + ".json")
+    try:
+        data = json.loads(meta_path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
+
+
 def _resolve_voice(
     voice,
     ref_audio=None,
@@ -156,6 +184,7 @@ def _resolve_voice(
     nameCloneSave=None,
     desCLoneSave=None,
     voices_dir=None,
+    genderCloneSave=None,
 ):
     """Trả về tên giọng sẽ dùng cho các câu (đã đăng ký xong trên server)."""
     if ref_audio:
@@ -164,6 +193,8 @@ def _resolve_voice(
         _enroll_voice(name, ref_audio, desCLoneSave or "")
         if enable_clone_save:
             _save_clip_locally(voices_dir, name, ref_audio)
+            _save_voice_meta(voices_dir, name, desCLoneSave or "",
+                             genderCloneSave or "")
         return name
 
     name = (voice or "Minh Đức").strip()
@@ -173,7 +204,9 @@ def _resolve_voice(
     # file mẫu đã giữ trên máy.
     clip = _find_saved_clip(voices_dir, name)
     if clip:
-        _enroll_voice(name, clip, "")
+        meta = _load_voice_meta(voices_dir, name)
+        _enroll_voice(name, clip,
+                      (meta or {}).get("description", "") or "")
         return name
     raise RuntimeError(
         f"Giọng '{name}' chưa có trên Server Voice. "
@@ -289,6 +322,7 @@ def synthesize_srt(
     gap_padding_s: float = 0.05,
     instruct: str = None,
     voices_dir: str = None,
+    genderCloneSave: str = None,
 ):
     """Tạo giọng cho cả file .srt/.vtt/.txt, ghi 1 file wav 24kHz.
 
@@ -307,6 +341,7 @@ def synthesize_srt(
         nameCloneSave=nameCloneSave,
         desCLoneSave=desCLoneSave,
         voices_dir=voices_dir,
+        genderCloneSave=genderCloneSave,
     )
     timed = all("start" in c and "end" in c for c in cues)
     out = bytearray()

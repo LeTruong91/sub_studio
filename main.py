@@ -595,6 +595,7 @@ class Api:
         enable_clone_save = bool(config.get("enable_clone_save",False))
         nameCloneSave = config.get("nameCloneSave","NameVoice")
         desCLoneSave = config.get("desCLoneSave","Mô Tả Voice")
+        genderCloneSave = str(config.get("genderCloneSave") or "").strip()
         language = config.get("language","vi")
         instruct = str(config.get("instruct") or "").strip()
         # ====== SỐ LUỒNG CHO FILE (không còn dùng cho count nữa) ======
@@ -695,6 +696,7 @@ class Api:
                         enable_clone_save=enable_clone_save,
                         nameCloneSave=nameCloneSave if enable_clone_save else None,
                         desCLoneSave=desCLoneSave if enable_clone_save else None, 
+                        genderCloneSave=genderCloneSave if enable_clone_save else None,
                         out_wav_path=str(version_base_wav),
                         ref_audio=clone_audio if enable_clone else None,
                         ref_text=ref_text if enable_clone else None,
