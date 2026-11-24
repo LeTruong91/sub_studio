@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\main.py", line 13, in <module>
+    from agent.db.schema import init_db, close_db
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\db\__init__.py", line 1, in <module>
+    from agent.db.schema import init_db, get_db
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\db\schema.py", line 3, in <module>
+    import aiosqlite
+ModuleNotFoundError: No module named 'aiosqlite'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\main.py", line 13, in <module>
+    from agent.db.schema import init_db, close_db
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\db\__init__.py", line 1, in <module>
+    from agent.db.schema import init_db, get_db
+  File "D:\Downloads\flowkit-main\flowkit-main\agent\db\schema.py", line 3, in <module>
+    import aiosqlite
+ModuleNotFoundError: No module named 'aiosqlite'

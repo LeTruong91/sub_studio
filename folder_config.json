@@ -1,0 +1,13 @@
+{
+    "render_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "trim_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "crop_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "audio": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "subtitle": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "frame_image": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "image_from_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "video_from_image": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "merge_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "voice_subtitle": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "auto_sub_folder": true
+}

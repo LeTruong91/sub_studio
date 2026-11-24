@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/render_style.css" />
+  <link rel="stylesheet" href="css/dialog.css" />
+  <link rel="stylesheet" href="css/download.css" />
+  <link rel="stylesheet" href="css/scene.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    body {
+      opacity: 0;
+      transition: opacity 0.4s ease-in;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app rs-scope">
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M8 6v12M4 9v6M12 3v18M16 7v10M20 10v4" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="title">Video Studio</div>
+          <div class="sub">Công cụ tạo giọng nói & chỉnh sử video · CIT</div>
+
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="batch" onclick="showTab('batch')">Sub Generator Studio</button>
+          <button class="tab-btn" data-tab="render" onclick="showTab('render')">Render Studio</button>
+          <button class="tab-btn" data-tab="download" onclick="showTab('download')">Download Studio</button>
+          <button class="tab-btn" data-tab="scene" onclick="showTab('scene')">Xưởng cảnh</button>
+        </div>
+      </div>
+
+      <div class="rs-appbar-right">
+        <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Sẵn sàng</span>
+        </div>
+          <!-- <button class="rs-btn rs-btn-ghost" onclick="showNote()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+            <path d="M9 9h6v6H9z"></path>
+          </svg>
+            Tạo dự án mới</button> -->
+        <!-- <div class="rs-gpu-pill" id="rs-gpu-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+            <path d="M9 9h6v6H9z"></path>
+          </svg>
+          GPU · Balanced
+        </div> -->
+        <button class="rs-btn rs-btn-ghost" onclick="showFolderDialog()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 21h16"></path>
+          </svg>
+          Cấu hình thư mục
+        </button>
+      </div>
+    </div>
+
+
+
+    <div class="tab-panel active" id="tab_batch">
+      <div class="grid"  style="height: -webkit-fill-available">
+        <div class="stack">
+
+          <!-- Step 1: Text file -->
+          <div class="card">
+            <div class="card-head">
+              <div class="step-num">1</div>
+              <div class="card-head-text">
+                <div class="card-title">Chọn Nội Dung</div>
+                <div class="card-desc">Chọn file gốc để tạo giọng nói & phụ đề</div>
+              </div>
+            </div>
+            <div class="dropzone" id="dropzone" onclick="pickFileSub()">
+              <div id="dzEmpty" style="display:flex;align-items:center;gap:12px;width:100%;">
+                <div class="dz-icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5z" stroke="currentColor"
+                      stroke-width="1.5" />
+                    <path d="M13 3v5h5" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="dz-text-main"><b>Chọn file</b> hoặc duyệt</div>
+                  <div class="dz-hint">Hỗ trợ .txt · .srt · .vtt</div>
+                </div>
+              </div>
+              <div id="btn_delete_files_sub_tab" style="display: none;">
+                <button class="btn_rs_delete rs-tooltip" data-tooltip="Xóa danh sách" onmouseenter="this.style.transform='translateY(-1px) scale(1.06)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';" onmouseleave="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)';" onmousedown="this.style.transform='scale(0.92)';" onmouseup="this.style.transform='translateY(-1px) scale(1.06)';" onclick="clearFile(event)" style="transform: translateY(0px) scale(1); position: absolute; top: -12px; right: 28px; width: 22px; height: 22px; border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 5px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset; background: linear-gradient(145deg, rgb(119, 0, 30), rgb(119, 0, 30));">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                      </svg>
+                </button>
+              </div>
+              <div id="dzFilledList" style="display:none; flex-direction:column; width:100%; gap:8px;"></div>
+            </div>
+
+            <label class="clone-toggle" style="margin-top:16px; margin-bottom:0;">
+              <input type="checkbox" id="enableAiRewrite" />
+              <span>Tùy chọn AI Viết (viết lại nội dung bằng AI trước khi tạo giọng)</span>
+            </label>
+          </div>
+
+          <div class="dual-col-row">
+            <!-- Step 2: Voice -->
+            <div class="card" style="height: 200px;">
+              <div class="card-head">
+                <div class="step-num">2</div>
+                <div class="card-head-text">
+                  <div class="card-title">Chọn Giọng Đọc</div>
+                  <div class="card-desc">Chọn giọng cho âm thanh đầu ra</div>
+                </div>
+              </div>
+              <div class="voice-dropdown" id="voiceDropdown" style="display: flex; justify-content: center; align-items: center;">
+                <button type="button" class="voice-select-btn" id="voiceSelectBtn" onclick="toggleVoiceDropdown()">
+                  <span class="voice-select-current">
+                    <span class="voice-select-name" id="voiceSelectName">Vui lòng chọn giọng đọc</span>
+                    <span class="voice-select-tag" id="voiceSelectTag">Chưa chọn giọng</span>
+                  </span>
+                  <svg class="voice-select-chevron" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <div class="voice-select-panel" id="voiceCloneSelectPanel">
+                </div>
+                <div style="margin-left: 20px;cursor: pointer;" onclick="ReloadCloneVoice()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 11a8 8 0 1 0 1 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    <path d="M20 5v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Quality + language -->
+            <div class="card">
+              <div class="card-head">
+                <div class="step-num">3</div>
+                <div class="card-head-text">
+                  <div class="card-title">Chất lượng &amp; ngôn ngữ</div>
+                  
+                </div>
+              </div>
+              <div class="slider-row" id="sliderRow">
+                <div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Chất lượng âm thanh</label>
+                    <span class="slider-value" id="numStepVal">+8 NT</span>
+                  </div>
+                  <input type="range" id="NumStepSlider" min="4" max="64" step="1" value="8"
+                    oninput="updateNumStep(this.value)">
+                  <div class="slider-scale"><span>4 NT</span><span>32 NT</span><span>64 NT</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setNumStep(6)">Thấp hơn</button>
+                    <button class="preset-btn" onclick="setNumStep(32)">Bình thường</button>
+                    <button class="preset-btn" onclick="setNumStep(40)">Cao hơn</button>
+                  </div>
+                </div>
+                <div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
+                  <div class="field-top" style="margin-bottom: 22px;">
+                    <label class="field-label" style="margin-bottom:0;">Ngôn ngữ Voice</label>
+                  </div>
+                    <div class="voice-dropdown" id="voiceLagDropdown">
+                <button type="button" class="voice-select-btn" id="lagSelectBtn" onclick="toggleLagDropdown()">
+                  <span class="voice-select-current">
+                    <span class="voice-select-lag" id="lagSelectName">vi</span>
+                    <span class="voice-select-tag" id="lagSelectTag">Tiếng Việt</span>
+                  </span>
+                  <svg class="voice-select-chevron" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <div class="voice-select-panel" id="voiceSelectPanel">
+                  <div class="lag-option selected" data-lag="vi" data-tag="Tiếng Việt"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Việt</span></div>
+                  <div class="lag-option" data-lag="en" data-tag="Tiếng Anh"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Anh</span></div>
+                  <div class="lag-option" data-lag="ja" data-tag="Tiếng Nhật"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Nhật</span></div>
+                  <div class="lag-option" data-lag="ko" data-tag="Tiếng Hàn"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Hàn</span></div>
+                  <div class="lag-option" data-lag="id" data-tag="Tiếng Indonesia"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Indonesia</span></div>
+                  <div class="lag-option" data-lag="zh" data-tag="Tiếng Trung"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Trung</span></div>
+                  <div class="lag-option" data-lag="th" data-tag="Tiếng Thái"
+                    onclick="pickLag(this)"><span class="voice-name">Tiếng Thái</span></div>
+                
+
+                </div>
+              </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="step-num">4</div>
+              <div class="card-head-text">
+                <div class="card-title">Voice Design</div>
+                <div class="card-desc">Chọn thuộc tính giọng OmniVoice (instruct). Bỏ trống nếu chỉ dùng giọng clone.</div>
+              </div>
+            </div>
+              <div class="instruct-select-grid">
+                <label class="instruct-select">
+                  <span>Giới tính</span>
+                  <select id="instructGender" class="rs-select-field">
+                    <option value="">Không chọn</option>
+                    <option value="female">Nữ (female)</option>
+                    <option value="male">Nam (male)</option>
+                  </select>
+                </label>
+                <label class="instruct-select">
+                  <span>Tuổi</span>
+                  <select id="instructAge" class="rs-select-field">
+                    <option value="">Không chọn</option>
+                    <option value="child">Trẻ em</option>
+                    <option value="teenager">Thiếu niên</option>
+                    <option value="young adult">Thanh niên</option>
+                    <option value="middle-aged">Trung niên</option>
+                    <option value="elderly">Người già</option>
+                  </select>
+                </label>
+                <label class="instruct-select">
+                  <span>Cao độ</span>
+                  <select id="instructPitch" class="rs-select-field">
+                    <option value="">Không chọn</option>
+                    <option value="very low pitch">Rất thấp</option>
+                    <option value="low pitch">Thấp</option>
+                    <option value="moderate pitch">Vừa</option>
+                    <option value="high pitch">Cao</option>
+                    <option value="very high pitch">Rất cao</option>
+                  </select>
+                </label>
+                <label class="instruct-select">
+                  <span>Kiểu</span>
+                  <select id="instructStyle" class="rs-select-field">
+                    <option value="">Không chọn</option>
+                    <option value="whisper">Thì thầm (whisper)</option>
+                  </select>
+                </label>
+                <label class="instruct-select instruct-select-wide">
+                  <span>Accent (chỉ hiệu quả với tiếng Anh)</span>
+                  <select id="instructAccent" class="rs-select-field">
+                    <option value="">Không chọn</option>
+                    <option value="american accent">American</option>
+                    <option value="british accent">British</option>
+                    <option value="australian accent">Australian</option>
+                    <option value="canadian accent">Canadian</option>
+                    <option value="indian accent">Indian</option>
+                    <option value="chinese accent">Chinese</option>
+                    <option value="korean accent">Korean</option>
+                    <option value="japanese accent">Japanese</option>
+                  </select>
+                </label>
+              </div>
+          </div>
+          <div class="card">
+             <div class="card-head">
+              <div class="step-num">5</div>
+              <div class="card-head-text">
+                <div class="card-title">Nhân Bản Giọng Nói (Tùy chọn)</div>
+                <div class="card-desc">Dùng mẫu âm thanh để nhân bản đặc điểm giọng nói</div>
+              </div>
+            </div>
+            <label class="clone-toggle">
+              <input type="checkbox" id="enableClone" onchange="toggleClone()" />
+              <span>Bật Nhân Bản Giọng Nói</span>
+            </label>
+            <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; align-items: start;">
+
+            <div class="clone-box">
+              <label class="field-label">Mẫu Âm Thanh Tham Chiếu</label>
+              <div class="clone-dropzone" onclick="pickCloneAudio()">
+                <div id="cloneEmpty">
+                  <div class="clone-file">
+                    <div class="clone-icon">
+                      <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                        <path d="M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <path d="M8 7h8" stroke="currentColor" stroke-width="2" />
+                        <path d="M5 19h14" stroke="currentColor" stroke-width="2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="clone-name">Chọn Mẫu Âm Thanh</div>
+                      <div class="clone-meta">.wav · .mp3 · .m4a</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="cloneFilled" style="display:none">
+                  <div class="clone-file">
+                    <div class="clone-icon">
+                      <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="2" />
+                        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="clone-name" id="cloneFileName">-</div>
+                      <div class="clone-meta" id="cloneFileMeta">-</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clone-ref">
+                <label class="field-label">Văn Bản Tham Chiếu</label>
+                <textarea id="refText" class="name-pattern"
+                  placeholder="Nhập nội dung được đọc trong mẫu âm thanh..."></textarea>
+              </div>
+              
+            </div>
+              <div class="clone-box">
+             <label class="clone-toggle" style="margin-bottom: 10px;">
+              <input type="checkbox" id="enableSaveClone" />
+              <span>Lưu Mẫu clone giọng</span>
+            </label>
+              <div class="clone-dropzone">
+                <input type="text" class="rs-source-input" id="nameSaveClone"  placeholder="Nhập tên giọng nói"/>
+              </div>
+              <div class="clone-ref">
+                <label class="field-label">Mô tả giọng nói</label>
+                <textarea id="CloneSaveText" class="name-pattern"
+                  placeholder="Nhập mô ta cho mẫu âm thanh..."></textarea>
+              </div>
+              
+            </div>
+            </div>
+
+          </div>
+          <!-- <div class="dual-col-row"> -->
+          <!-- Step 4: Speed & Pitch -->
+
+
+          <!-- Step 5: Batch Count -->
+          <div class="tree-col-row">
+            <div class="card">
+              <div class="card-head">
+                <div class="step-num">6</div>
+                <div class="card-head-text">
+                  <div class="card-title">Tốc Độ & Cao Độ</div>
+                  <div class="card-desc">Tinh chỉnh tốc độ phát và cao độ giọng nói</div>
+                </div>
+              </div>
+              <div class="slider-row" id="sliderRow">
+                <div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Âm lượng (Volume)</label>
+                    <span class="slider-value" id="volumeVal">+0 dB</span>
+                  </div>
+                  <input type="range" id="volumeSlider" min="0.0" max="2" step="0.05" value="1"
+                    oninput="updateVolume(this.value)">
+                  <div class="slider-scale"><span>0.0×</span><span>1×</span><span>2×</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setVolume(0.7)">Ít hơn</button>
+                    <button class="preset-btn" onclick="setVolume(1.0)">Bình thường</button>
+                    <button class="preset-btn" onclick="setVolume(1.5)">Nhiều hơn</button>
+                  </div>
+                </div>
+                <div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Tốc Độ Phát</label>
+                    <span class="slider-value" id="speedVal">1.00×</span>
+                  </div>
+                  <input type="range" id="speedSlider" min="0.0" max="2" step="0.05" value="1"
+                    oninput="updateSpeed(this.value)">
+                  <div class="slider-scale"><span>0.50</span><span>1×</span><span>2×</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setSpeed(0.85)">Chậm</button>
+                    <button class="preset-btn" onclick="setSpeed(1)">Bình thường</button>
+                    <button class="preset-btn" onclick="setSpeed(1.25)">Nhanh</button>
+                  </div>
+                </div>
+                <div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Cao Độ (Semitone)</label>
+                    <span class="slider-value" id="pitchVal">+0 st</span>
+                  </div>
+                  <input type="range" id="pitchSlider" min="-12" max="12" step="0.1" value="0"
+                    oninput="updatePitch(this.value)">
+                  <div class="slider-scale"><span>-12</span><span>0</span><span>+12</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setPitch(-4)">Thấp hơn</button>
+                    <button class="preset-btn" onclick="setPitch(0)">Tự nhiên</button>
+                    <button class="preset-btn" onclick="setPitch(4)">Cao hơn</button>
+                  </div>
+                </div>
+
+
+              </div>
+              <!-- Emotion / Style -->
+              <!-- <div class="emotion-block">
+
+          
+
+        </div> -->
+              <div class="duration-calc">
+                <div class="duration-calc-toggle open" id="durationToggle" onclick="toggleDurationCalc()">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <span>Đặt thời lượng mong muốn (tự động tính tốc độ)</span>
+                </div>
+                <div class="duration-calc-body open" id="durationBody">
+                  <div class="duration-field" style="position:relative;">
+                    <input type="text" id="durationInput" placeholder="vd: 1:30 hoặc 90 (giây)"
+                      oninput="updateDurationTarget(this.value)">
+                  </div>
+                  <div class="duration-result" id="durationResult">Chưa đặt thời lượng — sẽ dùng tốc độ ở trên</div>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="height: -webkit-fill-available;">
+              <div class="card-head">
+                <div class="step-num">7</div>
+                <div class="card-head-text">
+                  <div class="card-title">Xuất Hàng Loạt</div>
+                  <div class="card-desc">Tạo nhiều phiên bản với các thiết lập khác nhau</div>
+                </div>
+              </div>
+              <div class="count-thread-row">
+                <div class="count-thread-col">
+                  <label class="field-label">Số Lượng Phiên Bản</label>
+                  <div class="stepper">
+                    <button onclick="stepCount(0)">−</button>
+                    <input type="text" id="countInput" value="1" oninput="sanitizeCount(this)">
+                    <button onclick="stepCount(0)">+</button>
+                  </div>
+                </div>
+                <div class="count-thread-col">
+                  <label class="field-label">Luồng Song Song</label>
+                  <div class="stepper">
+                    <button onclick="stepThreads(0)">−</button>
+                    <input type="text" id="threadInput" value="1" oninput="sanitizeThreads(this)">
+                    <button onclick="stepThreads(0)">+</button>
+                  </div>
+                </div>
+              </div>
+              <div class="stepper-note">Mỗi phiên bản được tạo bằng <b>1 lần gọi</b> TTS riêng biệt, sau đó xử lý tốc
+                độ/cao độ bằng ffmpeg.</div>
+              <div class="card-head" style="display: flow;">
+                <div class="card-head-text" style="margin-top: 5px;">
+                  <div class="card-desc">Dùng <b>{file}</b>, <b>{index}</b>, <b>{voice}</b> trong tên file để tự động
+                    thay thế.</div>
+                </div>
+                <div class="card-head-text" style="
+                  margin-top: 10px;"><label class="rs-switch"><input type="checkbox" id="NameTSSByContent"><span class="rs-switch-track"></span><span
+                      class="rs-label">Sử dụng tên từ danh sách nội dung</span></label></div>
+              </div>
+              <div style="margin-top:43px;">
+
+                <textarea class="name-pattern" rows="1" id="namePattern">{file}_{index}</textarea>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- </div> -->
+
+        </div>
+
+        <!-- Right: Summary Card -->
+        <div class="card summary-card">
+          <div class="wave idle" id="wave"></div>
+
+          <div class="summary-row">
+            <span class="summary-label">File</span>
+            <span class="summary-value muted" id="sumFile">Chưa chọn</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Giọng đọc</span>
+            <span class="summary-value" id="sumVoice">Minh Đức</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Nhân bản giọng</span>
+            <span class="summary-value muted" id="sumClone">Tắt</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Âm lượng</span>
+            <span class="summary-value" id="sumVolume">1.00x</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Tốc độ</span>
+            <span class="summary-value" id="sumSpeed">1.00×</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Cao độ</span>
+            <span class="summary-value" id="sumPitch">+0 st</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Số phiên bản</span>
+            <span class="summary-value" id="sumCount">1</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Luồng</span>
+            <span class="summary-value" id="sumThreads">2</span>
+          </div>
+
+          <button class="generate-btn" id="genBtn" onclick="runGenerate()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 3l14 9-14 9V3z" fill="currentColor" />
+            </svg>
+            <span id="genLabel">Tạo Ngay</span>
+          </button>
+
+          <!--
+        Đã gộp khối tiến trình (progress-wrap: thanh %, danh sách file + nút play)
+        vào NẰM BÊN TRONG khối "Nhật Ký Trạng Thái" thay vì 2 khối tách rời.
+      -->
+          <div class="status-log" id="statusLog">
+            <div class="status-log-header">📋 Nhật Ký Trạng Thái</div>
+
+            <div class="progress-wrap" id="progressWrap">
+              <div class="progress-label"><span id="progressText">Đang xử lý…</span><span id="progressPct">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+
+            <div class="status-log-content" id="statusLogContent"></div>
+            
+          <div class="error-banner" id="errorBanner"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab_render">
+      <div class="rs-scope">
+
+
+
+        <!-- ================= SOURCE BAR ================= -->
+        <div class="rs-source-bar">
+          <span class="rs-source-label">Nguồn media</span>
+          <div class="rs-source-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+            </svg>
+            <input class="rs-source-input" id="sourceMediaInput" name="source_media" placeholder="Đã chọn 0 videos"
+              value="">
+          </div>
+          <label class="rs-switch">
+            <input type="checkbox" id="folderToggle">
+            <span class="rs-switch-track"></span>
+            <span class="rs-label">Chế độ 16/9</span>
+          </label>
+          <button class="rs-btn rs-btn-primary" id="btnChoose" onclick="pickFileMedia()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14m-7-7h14" />
+            </svg>
+            <span id="btnChooseLabel">Chọn Media</span>
+          </button>
+          <button class="rs-btn rs-btn-danger" onclick="clearMediaList()">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            Xóa Meida
+          </button>
+        </div>
+
+        <!-- ================= WORKSPACE ================= -->
+        <div class="rs-workspace">
+
+          <!-- LEFT: Table -->
+
+            <div class="rs-panel rs-table-panel">
+              <div class="rs-panel-head">
+                <!-- <div class="rs-bulk-bar" id="rsBulkBar" style="display:none;"></div> -->
+                 <div style="display: flex;">
+                <h3>Danh sách Media</h3>
+                <span class="rs-count" id="mediaCount" style="margin-left: 14px;">0 tệp · 0 đã xử lý</span>
+                 </div>
+
+                <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between;">
+                <div class="rs-checkbox"> <input type="checkbox" class="rs-row-check" id="selectAllMedia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7"></path>
+                      </svg></div>
+                      <span class="rs-count" style="
+                        float: revert-layer;
+                        margin-left: -34px;
+                        font-size: 13px;
+                    ">Chọn danh sách Media</span> 
+                    <span class="rs-clear-media" id="deleteSpan" onclick="clearMediaList()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                  </svg> Delete</span>
+                </div>
+              </div>
+              <div class="rs-table-scroll">
+                <table class="rs-grid" id="videoTable">
+                  <thead>
+                    <tr>
+                      <th style="width:30px">
+                        
+                      </th>
+                      <th style="width: 30px;">STT</th>
+                      <th style="width: 50px;">Ảnh</th>
+                      <th>Tiêu đề</th>
+                      <th style="width: 300px;">File đính kèm</th>
+                      <th style="width: 120px;">Thời lượng</th>
+                      <th style="width: 250px;">Trạng thái</th>
+                      <th style="width: 120px;">Hành động</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mediaTableBody">
+                  </tbody>
+                  
+                </table>
+                  <div class="rs-table-loading" id="mediaTableLoading">
+                    <div class="rs-spinner-lg"></div>
+                    <span>Đang tải danh sách media…</span>
+                  </div>
+              </div>
+            </div>
+
+            <!-- ================= BOTTOM EDITOR ================= -->
+            <div class="rs-panel rs-editor-panel">
+              <div class="rs-editor-resize" id="editorPanelResize" title="Kéo lên/xuống để đổi chiều cao timeline"></div>
+              <div class="rs-tabs">
+                <div class="rs-tab rs-active" data-tab="timeline">Timeline · Blur / Hook / Sub / Trim / Image</div>
+                <div class="rs-tab" data-tab="overlay">Nội dung - Nhạc &amp; Hiệu ứng</div>
+                
+                <!-- <div class="rs-tab" data-tab="music">Nhạc &amp; Hiệu ứng</div> -->
+              </div>
+
+              <!-- TAB: Timeline -->
+              <div class="rs-tab-content rs-active" id="tab-timeline">
+
+                <div class="rs-timeline-wrap">
+
+                  <!-- FIXED -->
+                  <div class="rs-timeline-controls">
+
+                      <div class="rs-tl-time">
+                          <span class="rs-cur">0:00</span>
+                          <span class="rs-sep">/</span>
+                          <span class="rs-tot">1:00</span>
+                        <!-- BLUR — ô kính mờ + gợn sóng lượn thay vì chấm bi rời rạc, dễ đọc hơn ở size nhỏ -->
+                        <button class="rs-tl-btn rs-blur rs-tooltip" data-tooltip="Làm mờ (Blur)" style="margin-left: 16px;"
+                            onclick="addLayer('blur');">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3.5" y="3.5" width="17" height="17" rx="3.5" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M7 9c1 -1.3 2.2 -1.3 3.2 0c1 1.3 2.2 1.3 3.2 0c1 -1.3 2.2 -1.3 3.2 0"
+                                      stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                                <path d="M7 13.5c1 -1.3 2.2 -1.3 3.2 0c1 1.3 2.2 1.3 3.2 0c1 -1.3 2.2 -1.3 3.2 0"
+                                      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+                                <path d="M7 17.5c1 -1.1 2.2 -1.1 3.2 0c1 1.1 2.2 1.1 3.2 0c1 -1.1 2.2 -1.1 3.2 0"
+                                      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".3"/>
+                            </svg>
+                        </button>
+
+                        <button class="rs-tl-btn rs-hook rs-tooltip" data-tooltip="Thêm Hook / Sub" onclick="OpenChose()">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 6H19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                                <path d="M12 6V17" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                                <path d="M9 20H15" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                                <circle cx="12" cy="17" r="1" fill="currentColor" opacity="0"/>
+                            </svg>
+                        </button>
+
+                        <button class="rs-tl-btn rs-trim rs-tooltip" data-tooltip="Cắt đoạn (Trim)" onclick="addLayer('trim')">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                              <path d="M7 5H5C3.9 5 3 5.9 3 7V17C3 18.1 3.9 19 5 19H7"></path>
+                              <path d="M17 5H19C20.1 5 21 5.9 21 7V17C21 18.1 20.1 19 19 19H17"></path>
+                              <line x1="12" y1="3" x2="12" y2="21"></line>
+
+                          </svg>
+                        </button>
+
+                        <button class="rs-tl-btn rs-image rs-tooltip" data-tooltip="Chèn ảnh / video" onclick="addLayer('image')">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+                                <circle cx="8.5" cy="9.5" r="1.6" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M4.5 16.5L9 12L12.5 15.5L14.5 13.5L19.5 18"
+                                      stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+
+                        <div class="rs-ocr-wrap">
+                        <button class="rs-tl-btn rs-crop rs-tooltip" data-tooltip="Cắt khung hình (Crop)" onclick="openCropSegmentsDialog()">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2"></path>
+                          </svg>
+                        </button>
+                        <button class="rs-tl-btn rs-crop rs-tooltip" type="button" data-tooltip="Thêm Crop nhanh" onclick="addQuickCropLayer()" style="width:22px;height:22px;">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M12 5v14M5 12h14"></path>
+                          </svg>
+                        </button>
+                        </div>
+                        <div class="rs-ocr-wrap">
+                          <button class="rs-tl-btn rs-ocr rs-tooltip" type="button" data-tooltip="Thêm vùng OCR (dịch)" onclick="addLayer('ocr')">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+
+                                <!-- Khung nhận diện -->
+                                <path d="M4 8V5a1 1 0 0 1 1-1h3"/>
+                                <path d="M16 4h3a1 1 0 0 1 1 1v3"/>
+                                <path d="M20 16v3a1 1 0 0 1-1 1h-3"/>
+                                <path d="M8 20H5a1 1 0 0 1-1-1v-3"/>
+
+                                <!-- Chữ OCR -->
+                                <path d="M7.5 16L10.5 8L13.5 16"/>
+                                <path d="M8.5 13.5H12.5"/>
+
+                                <!-- Dòng chữ -->
+                                <path d="M15 10H17.5"/>
+                                <path d="M15 13H17.5"/>
+                                <path d="M15 16H17.5"/>
+
+                            </svg>
+                          </button>
+                          <button id="ocrRunBtn" class="rs-tl-btn rs-ocr rs-tooltip" type="button" data-tooltip="Chạy OCR" onclick="exportOcrSubtitle()" style="width:22px;height: 22px;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M8 5.5v13l11-6.5L8 5.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            </svg>
+                          </button>
+                          <button class="rs-tl-btn rs-ocr rs-tooltip" type="button" data-tooltip="Dịch file SRT (Gemini Web)" onclick="openTranslateSrtWebDialog()" style="width:22px;height: 22px;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M5 7h14M5 12h8M5 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                              <path d="M16 12h3l-4 7h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </button>
+                        </div>
+                        <button class="rs-tl-btn rs-subfile rs-tooltip" type="button" data-tooltip="Chọn file sub (SRT)" onclick="pickSubtitleToTextTrack()">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3.5" y="5" width="17" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M7 10h10M7 13.5h7M7 17h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                          </svg>
+                        </button>
+                        <button class="rs-tl-btn rs-srt-edit rs-tooltip" type="button" data-tooltip="Sửa SRT" onclick="openSrtEditor()">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0 0-3L16.5 4.5a2.1 2.1 0 0 0-3 0L4 16v4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                        <button class="rs-tl-btn rs-fastprev rs-tooltip" type="button" data-tooltip="Fast Preview 5 giây" onclick="runFastPreview()">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="currentColor"/>
+                          </svg>
+                        </button>
+                        <button class="rs-tl-btn rs-tpl-save rs-tooltip" data-tooltip="Lưu template" onclick="saveTimelineTemplate()">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 4.5h11.5L19.5 8v11.5H5V4.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <path d="M8 4.5V9h8V4.5" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 19.5v-5h8v5" stroke="currentColor" stroke-width="1.8"/>
+                          </svg>
+                        </button>
+                        <button class="rs-tl-btn rs-tpl-load rs-tooltip" data-tooltip="Tải template" onclick="openLoadTemplateDialog()">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                              <path d="M3 7H21V19.25C21 20.22 20.22 21 19.25 21H4.75C3.78 21 3 20.22 3 19.25V7Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              </path>
+
+                              <path d="M3 7L5.7 3.4C5.89 3.15 6.19 3 6.5 3H17.5C17.81 3 18.11 3.15 18.3 3.4L21 7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              </path>
+
+                              <path d="M9 11L12 13.5L15 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              </path>
+
+                              <path d="M12 13.5V8" stroke="white" stroke-width="1.8" stroke-linecap="round">
+                              </path>
+
+                          </svg>
+                        </button>
+                        <button id="trackDeleteBtn" class="rs-tl-btn rs-track-del rs-tooltip" type="button" hidden data-tooltip="Xóa track đã chọn" onclick="deleteCheckedTracks()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M3 6h18"></path>
+                              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                              <path d="M10 11v6"></path>
+                              <path d="M14 11v6"></path>
+                            </svg>
+                        </button>
+                        <div class="rs-tl-zoom-group" style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+                          <button class="rs-tl-btn rs-zoom rs-tooltip" data-tooltip="Thu nhỏ" onclick="zoomTimelineOut()" style="width:32px;">
+                              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+                                  <path d="M20 20L15.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                  <path d="M7.5 10.5H13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                              </svg>
+                          </button>
+                        <input type="range" id="zoomLevelLabel" min="10" step="5" max="800" value="100" oninput="setZoomFromInput(this.value)";>
+                         <!-- <input type="number" class="rs-tl-zoom-input" id="zoomLevelLabel"
+                          value="100" min="10" max="800" step="5"
+                          onchange="setZoomFromInput(this.value)"
+                          style="font-size:11px; color:var(--text-primary); font-family:'IBM Plex Mono'; width:44px; text-align:center; background:var(--bg-input); border:1px solid var(--border); border-radius:5px; padding:4px 2px; outline:none;"> -->
+
+                          <button class="rs-tl-btn rs-zoom rs-tooltip" data-tooltip="Phóng to" onclick="zoomTimelineIn()" style="width:32px;">
+                              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+                                  <path d="M20 20L15.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                  <path d="M10.5 7.5V13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                  <path d="M7.5 10.5H13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                              </svg>
+                          </button>
+                      </div>
+                      </div>
+
+                     
+
+                  </div>
+
+
+                  <div class="rs-timeline-body">
+                          <div class="rs-track-info">
+                            <div class="rs-track-info-spacer"></div>
+                            <div class="rs-track-info-scroll" id="trackInfoScroll">
+                            <div class="rs-track-info-row" id="infoImage" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="imageTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-image)"></span> Image
+                            </div>
+                             <div class="rs-track-info-row" id="infoHook" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="hookTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-hook)"></span> Text
+                            </div>
+                             <div class="rs-track-info-row" id="infoTrim" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="trimTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-trim)"></span> Trim
+                            </div>
+                             <div class="rs-track-info-row" id="infoCrop" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="cropTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-crop)"></span> Crop
+                            </div>
+                             
+                            <div class="rs-track-info-row " id="infoBlur" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="blurTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-blur)"></span> Blur
+                            </div>
+                            <div class="rs-track-info-row rs-track-sticky-bottom" id="infoOcr" hidden>
+                                <div class="rs-checkbox rs-track-check-box"><input type="checkbox" class="rs-track-check" data-track="ocrTrack" onchange="syncTrackDeleteBtn()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="rs-dot" style="background:var(--track-ocr)"></span> OCR
+                            </div>
+                            </div>
+                        </div>
+                        <div class="rs-timeline-main">
+                        <div class="rs-timeline-zoom-content"
+                            id="timelineZoomContent">
+
+                            <!-- FIXED -->
+                            <div class="rs-playhead"
+                                id="playhead">
+                            </div>
+
+                            <!-- FIXED -->
+                            <div class="rs-ruler"
+                                id="ruler">
+                            </div>
+
+
+                            <div class="rs-tracks-wrap">
+                            <div class="rs-tracks" id="tracksScroll">
+                                <div class="rs-track"
+                                    id="imageTrack" hidden>
+                                </div>
+                                
+                                <div class="rs-track"
+                                    id="hookTrack" hidden>
+                                </div>
+                                
+                                <div class="rs-track"
+                                    id="trimTrack" hidden>
+                                </div>
+                                <div class="rs-track"
+                                    id="cropTrack" hidden>
+                                </div>
+                                <div class="rs-track "
+                                    id="blurTrack" hidden>
+                                </div>
+                                <div class="rs-track rs-track-sticky-bottom"
+                                    id="ocrTrack" hidden>
+                                </div>
+                            </div>
+                            </div>
+
+                        </div>
+                      </div>
+
+                  </div>
+
+              </div>
+              </div>
+
+              <!-- TAB: Text Overlay -->
+              <div class="rs-tab-content" id="tab-overlay">
+                <div class="rs-grid-4-2">
+                  <div style="position: relative;">
+                    <div class="rs-section-label">Nội dung lớp phủ</div>
+                    <!-- <div class="clear" id="clear_content">Clear all</div> -->
+                    <textarea id="txtContent" class="rs-ta" rows="8"
+                      placeholder="Nhập nội dung, mỗi dòng một mục…"></textarea>
+                    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; align-items:center;">
+                      <button class="rs-btn rs-btn-ghost" style="flex:1; justify-content:center;"
+                        onclick="addContentToList()">+ Thêm vào danh sách</button>
+                      <!-- <select id="translateSrcLang" class="rs-select-field" style="width:110px; height:34px;" title="Ngôn ngữ nguồn">
+                        <option value="auto">Tự nhận</option>
+                        <option value="zh-CN">Trung</option>
+                        <option value="en">Anh</option>
+                        <option value="ja">Tiếng Nhật</option>
+                        <option value="ko">Tiếng Hàn</option>
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="th">Tiếng Thái</option>
+                        <option value="id">Tiếng Indonesia</option>
+                        <option value="fr">Pháp</option>
+                        <option value="de">Đức</option>
+                        <option value="es">Tây Ban Nha</option>
+                        <option value="ru">Nga</option>
+                      </select>
+                      <select id="translateTargetLang" class="rs-select-field" style="width:90px; height:34px;" title="Ngôn ngữ đích">
+                        <option value="vi" selected>Việt</option>
+                        <option value="en">Anh</option>
+                        <option value="zh-CN">Trung</option>
+                        <option value="ja">Tiếng Nhật</option>
+                        <option value="ko">Tiếng Hàn</option>
+                        <option value="th">Tiếng Thái</option>
+                        <option value="id">Tiếng Indonesia</option>
+                        <option value="fr">Pháp</option>
+                        <option value="de">Đức</option>
+                        <option value="es">Tây Ban Nha</option>
+                        <option value="ru">Nga</option>
+                      </select>
+                      <button class="rs-btn rs-btn-ghost" type="button" onclick="translateContentInput()">Dịch ô nhập</button> -->
+                    </div>
+
+                  </div>
+                  <div style="position: relative;">
+                    <div class="rs-section-label">Danh sách nội dung</div>
+                    <div class="clear" id="clear_content_items" onclick="clearContent()">Clear all</div>
+                    <div class="rs-content-list">
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:20px; flex-wrap:wrap;">
+                      <!-- <button class="rs-btn rs-btn-ghost" type="button" onclick="translateContentList()">Dịch danh sách</button> -->
+                      <label class="rs-switch"><input type="checkbox" id="reNameVideoByContent"><span class="rs-switch-track"></span><span class="rs-label">Đổi tên Video từ danh sách nội dung</span></label>
+                    </div>
+                  </div>
+                  <div class="rs-grid-3 rs-mix">
+                    <div>
+                    <div class="rs-section-label"><div class="rs-checkbox"><input type="checkbox" id="muteOriginalAudio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                          <path d="M5 13l4 4L19 7"></path>
+                        </svg></div><span class="rs-lbl">Tắt âm thanh gốc</span></div>
+                    <div class="rs-slider-field">
+                      <div class="rs-top"><span class="rs-name">Volume</span><span class="rs-val">1.0×</span></div>
+                      <input type="range" id="valVolum" min="0" max="20" value="10">
+                    </div>
+                    <div class="rs-slider-field">
+                      <div class="rs-top"><span class="rs-name">Pitch</span><span class="rs-val">1.0×</span></div><input
+                        type="range" min="0" id ="valPitch" max="20" value="10">
+                    </div>
+                    <div class="rs-slider-field">
+                      <div class="rs-top"><span class="rs-name">Tempo</span><span class="rs-val">1.0×</span></div><input
+                        type="range"  id ="valTempo"  min="0" max="20" value="10">
+                    </div>
+                    <!-- <div class="rs-opt-row">
+
+
+                    </div> -->
+                  </div>  
+                  <div>
+                    <div class="rs-section-label"><div class="rs-checkbox"><input type="checkbox" id="addAudioFile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                          <path d="M5 13l4 4L19 7"></path>
+                        </svg></div><span class="rs-lbl">Thêm Nhạc nền</span></div>
+                    <div class="rs-slider-field">
+                      <div class="rs-top"><span class="rs-name">Volume nền</span><span class="rs-val">1.0×</span></div>
+                      <input type="range"  id ="valVolumeBg" min="0" max="20" value="10">
+                    </div>
+                    <div class="rs-slider-field" style="margin-bottom: 22px;">
+                      <div class="rs-top"><span class="rs-name">Fade in (s)</span><span class="rs-val">0.0</span></div>
+                      <input type="range" id ="valFadeIn" min="0" max="100" value="0">
+                    </div>
+                    <div class="rs-slider-field" style="display: none;" >
+                      <div class="rs-top"><span class="rs-name">Fade out (s)</span><span class="rs-val">0.0</span></div>
+                      <input type="range" id ="valFadeOut" min="0" max="100" value="0">
+                    </div>
+                    <button class="rs-btn rs-btn-ghost rs-mix-pick" onclick="pickFileAudios()">
+                      <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                        <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="2"></path>
+                        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2"></circle>
+                      </svg>
+                      <span id="countListbgAuido">Chọn nhạc nền…</span>
+                      <span id="deleteAudioBG" onclick="event.stopPropagation(); deleteAudioBG();" style="display: none;">
+                          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#f1f1f1" stroke-width="2.4">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div>
+                    <div class="rs-section-label">Hiệu ứng hình ảnh</div>
+                    <div class="rs-slider-field" style="margin-top: 16px;">
+                      <div class="rs-top"><span class="rs-name">Brightness</span><span class="rs-val">1.00</span></div>
+                      <input type="range" min="-100" max="100" value="0">
+                    </div>
+                    <div class="rs-slider-field" style="margin-bottom: 25px;">
+                      <div class="rs-top"><span class="rs-name">Contrast</span><span class="rs-val">1.0</span></div>
+                      <input type="range" min="0" max="20" value="10">
+                    </div>
+                    <div class="rs-slider-field" style="display: none;">
+                      <div class="rs-top"><span class="rs-name">Saturation</span><span class="rs-val">1.0</span></div>
+                      <input type="range" min="0" max="30" value="10">
+                    </div>
+                    <div class="">
+                     <select class="rs-select-field" id="videoFilter">
+                      <option value="0">Thêm lớp phủ là video</option>
+                      <option value="two">Render 2 màn hình</option>
+                    </select>
+                    </div>
+                  </div>
+                  </div>
+                   
+                  </div>
+                </div>
+            </div>
+    
+
+          <!-- RIGHT: Preview + Options -->
+
+           <div class="rs-panel1" id="previewPanel" style="border: 1px solid var(--border-primary); background: black; height: calc(var(--preview-max-h) + 2px);">
+              <div class="rs-preview-frame" id="previewFrame" style="background: linear-gradient(135deg, var(--panel) 0%, var(--bg-tertiary) 100%);">
+                <div id="videoContainer">
+                  <!-- <svg class="rs-ph-icon" id="previewPlaceholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 5v14l11-7z"></path></svg> -->
+                  <video id="previewVideo" style="display:none;"></video>
+                  <div class="rs-crop-guide" id="cropGuide">
+                    <span class="crop-handle br"></span>
+                  </div>
+                  <div id="ocrQuickOverlay" class="rs-ocr-quick-overlay" hidden>
+                    <div class="rs-ocr-quick-toolbar" id="ocrQuickToolbar">
+                      <div id="ocrQuickHint" class="rs-ocr-quick-hint">Kéo chuột để khoanh vùng chữ, rồi bấm lại nút OCR để dịch</div>
+                      <div class="rs-ocr-lang-bar rs-ocr-frame-langs" id="ocrFrameLangBar">
+                        <label><input type="checkbox" id="ocrFrameTrCheck" class="rs-ocr-tr-check" checked> Dịch ngay</label>
+                        <select class="rs-translate-engine" title="Engine dịch">
+                          <option value="none">Không dịch</option>
+                          <option value="default">Default</option>
+                          <option value="gemini">Gemini API</option>
+                          <option value="gemini-web">Gemini Web (Pro)</option>
+                        </select>
+                        <select id="ocrFrameLangSrc"></select>
+                        <span>→</span>
+                        <select id="ocrFrameLangDst"></select>
+                      </div>
+                    </div>
+                    <div id="ocrQuickBox" class="rs-ocr-quick-box" hidden>
+                      <span class="crop-handle br"></span>
+                    </div>
+                  </div>
+                </div>
+                  <button class="rs-pip-btn rs-ocr-frame-btn" onclick="ocrCurrentFrameQuick()" title="OCR frame này (dịch nhanh)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                      <!-- Khung nhận diện -->
+                      <path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
+                      <path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
+                      <path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
+                      <path d="M8 20H5a1 1 0 0 1-1-1v-3"></path>
+
+                      <!-- Chữ OCR -->
+                      <path d="M7.5 16L10.5 8L13.5 16"></path>
+                      <path d="M8.5 13.5H12.5"></path>
+
+                      <!-- Dòng chữ -->
+                      <path d="M15 10H17.5"></path>
+                      <path d="M15 13H17.5"></path>
+                      <path d="M15 16H17.5"></path>
+
+                  </svg>
+                </button>
+                  <button class="rs-pip-btn" onclick="togglePiP()" title="Xem video">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <rect x="12" y="12" width="8" height="6" rx="1" fill="currentColor"/>
+                  </svg>
+                </button>
+                <div class="rs-ocr-frame-pop" id="ocrFramePop" hidden>
+                  <div class="rs-ocr-frame-pop-head">
+                    <span>OCR frame</span>
+                    <button type="button" class="rs-ocr-frame-x" onclick="closeOcrFramePop()">×</button>
+                  </div>
+                  <div class="rs-ocr-frame-label">Chữ gốc</div>
+                  <textarea id="ocrFrameSrc" rows="3" readonly></textarea>
+                  <div class="rs-ocr-frame-label">Bản dịch</div>
+                  <textarea id="ocrFrameDst" rows="3"></textarea>
+                  <div class="rs-ocr-frame-actions">
+                    <button type="button" class="rs-btn rs-btn-ghost" onclick="openGeminiWebFromOcr()">Mở Gemini Pro</button>
+                    <button type="button" class="rs-btn rs-btn-ghost" onclick="copyOcrFrame('src')">Copy gốc</button>
+                    <button type="button" class="rs-btn rs-btn-ghost" onclick="copyOcrFrame('dst')">Copy dịch</button>
+                    <button type="button" class="rs-btn rs-btn-ghost" onclick="copyOcrFrame('both')">Copy cả hai</button>
+                  </div>
+                </div>
+                <div class="rs-player-bar" id="previewPlayerBar">
+                  <button type="button" class="rs-player-play" id="previewPlayBtn" title="Phát / Tạm dừng">
+                    <svg class="rs-player-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="rs-player-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+                  </button>
+                  <div class="rs-player-time">
+                    <span class="rs-player-cur" id="previewPlayerCur">00:00:00:00</span>
+                    <span class="rs-player-sep">/</span>
+                    <span class="rs-player-tot" id="previewPlayerTot">00:00:00:00</span>
+                  </div>
+                  <div class="rs-player-seek" id="previewPlayerSeek" title="Tua video">
+                    <div class="rs-player-seek-track">
+                      <div class="rs-player-seek-fill" id="previewPlayerSeekFill"></div>
+                      <div class="rs-player-seek-thumb" id="previewPlayerSeekThumb"></div>
+                    </div>
+                  </div>
+                  <div class="rs-player-right">
+                    <button type="button" class="rs-player-fs" id="previewFsBtn" title="Phóng to">
+                      <svg class="rs-player-icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                        <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/>
+                      </svg>
+                      <svg class="rs-player-icon-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                        <path d="M3 8h5V3M21 8h-5V3M3 16h5v5M21 16h-5v5"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+
+              <div class="rs-panel rs-panel-settings"> 
+                <!--PHAN CANH-->
+                  <div class="rs-grid-2-phanhcanh rs-side-mode-props" id="previewPhanCanh">
+                    <div class="rs-side-tabs" id="sideInspectorTabs">
+                      <button type="button" class="rs-side-tab rs-on" data-side-tab="props">Thuộc tính</button>
+                      <button type="button" class="rs-side-tab" data-side-tab="scenes">Phân cảnh</button>
+                    </div>
+                    <div class="rs-side-pane rs-side-pane-props" id="sidePaneProps">
+                      <div id="layerPropsEmpty" class="rs-scene-empty">Chọn clip trên timeline để chỉnh sửa.</div>
+                      <div id="layerEditDialog" class="rs-layer-props-dock" hidden>
+                        <div id="layerEditBox">
+                          <div class="rs-layer-props-head">
+                            <h4 id="layerEditTitle"></h4>
+                            <div class="rs-dialog-actions rs-layer-props-actions">
+                              <button type="button" id="layerEditDeleteBtn" class="rs-props-icon-btn rs-props-icon-del rs-tooltip" data-tooltip="Xóa" title="Xóa">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M3 6h18"/>
+                                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                  <path d="M10 11v6"/>
+                                  <path d="M14 11v6"/>
+                                </svg>
+                              </button>
+                              <button type="button" id="layerEditSaveBtn" class="rs-props-icon-btn rs-props-icon-save rs-tooltip" data-tooltip="Lưu thuộc tính và gán track cho video đang chọn" title="Lưu">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="rs-dialog-body">
+                            <div id="layerExtra"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="rs-side-pane rs-side-pane-scenes" id="sidePaneScenes" hidden>
+                    <button class="btn_rs_delete rs-tooltip" data-tooltip="Xóa" onmouseenter="this.style.transform='translateY(-1px) scale(1.06)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';" onmouseleave="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)';" onmousedown="this.style.transform='scale(0.92)';" onmouseup="this.style.transform='translateY(-1px) scale(1.06)';" onclick="event.stopPropagation();removeAllScene()" style="transform: translateY(0px) scale(1); position: absolute; top: 6px; right: 13px; background: no-repeat; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 5px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset; width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgb(0, 182, 227);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                      </svg>
+                </button>
+                    <div class="rs-status-log-content">
+                       <div id="sceneListContainer">
+                      <div class="rs-scene-empty">Chưa có phân cảnh nào.</div>
+                      </div>
+                    </div>
+                    <div class="rs-status-log-content">
+                       <div id="mergePlanList">
+                      <div class="rs-scene-empty">Chưa có kế hoạch ghép nào.</div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+              <div class="rs-panel-head-thead">
+                <h3>Chế độ xử lý</h3>
+                <div class="rs-opt-row-thead">
+                  <span class="rs-lbl" style="padding-right: 11px; font-size: 12px; color: #878787;">Số luồng xử
+                    lý</span>
+                  <div class="rs-stepper"><button onclick="stepThread(-1)">–</button><input id="threadVal"
+                      value="10"><button onclick="stepThread(1)">+</button></div>
+                </div>
+              </div>
+              <div class="rs-panel-body rs-settings-modes">
+
+                <div class="rs-mode-grid">
+                  <div class="rs-mode-card rs-active" data-mode="render">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <div class="rs-t">Render</div>
+                  </div>
+                  <div class="rs-mode-card" data-mode="merge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 3l4 4-4 4M7 21l-4-4 4-4M3 7h6a4 4 0 014 4v0a4 4 0 004 4h4" />
+                    </svg>
+                    <div class="rs-t">Ghép Video</div>
+                  </div>
+                  <div class="rs-mode-card" data-mode="trim">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="6" cy="6" r="2" />
+                      <circle cx="6" cy="18" r="2" />
+                      <path d="M8 6h5a4 4 0 014 4v0M8 18h5a4 4 0 004-4v0" />
+                    </svg>
+                    <div class="rs-t">Trim Video</div>
+                  </div>
+                  <div class="rs-mode-card" data-mode="crop">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2" />
+                    </svg>
+                    <div class="rs-t">Crop Video</div>
+                  </div>
+                  <div class="rs-mode-card" data-mode="i2v">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                    <div class="rs-t">Ảnh → Video</div>
+                  </div>
+                </div>
+                
+              <div id="render_studio_config">
+                <div class="rs-ratio-row" id="crop_option" style="margin-bottom: 10px;">
+                  <div class="rs-ratio-pill " onclick="setCropRatio(this, 9, 16)">9:16</div>
+                  <div class="rs-ratio-pill" onclick="setCropRatio(this, 1, 1)">1:1</div>
+                  <div class="rs-ratio-pill" onclick="setCropRatio(this, 16, 9)">16:9</div>
+                  <div class="rs-ratio-pill" onclick="setCropRatio(this, 0, 0)">Tự do</div>
+                </div>
+
+                <div class="rs-ratio-row" id="render_option" style="display: flex;">
+                  <div class="rs-render-opt-row">
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox rs-on"><input type="checkbox" id="RenderOverlay"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Overlay</span>
+                  </div>
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox rs-on"><input type="checkbox" id="RenderAudio"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Âm thanh</span>
+                  </div>
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox"><input type="checkbox" id="RenderRenderAutoTrim"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Auto Trim</span>
+                  </div>
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox"><input type="checkbox" id="RenderFillter"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Hiệu ứng</span>
+                  </div>
+                  </div>
+                  <div class="rs-render-opt-row">
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox"><input type="checkbox" id="RenderToTikTok"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">TikTok</span>
+                  </div>
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox"><input type="checkbox" id="RenderToFacebook"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Facebook</span>
+                  </div>
+                  </div>
+                </div>
+                <div class="rs-ratio-row" id="merge_option" style="margin-bottom: 10px;">
+                  <div class="rs-ratio-mer " onclick="setMerRatio(this,'phancanh')">Phân cảnh</div>
+                  <div class="rs-ratio-mer" onclick="setMerRatio(this,'intro')">Add intro</div>
+                  <div class="rs-ratio-mer" onclick="setMerRatio(this,'nomall')">Nomall</div>
+                  <div class="rs-stepper"><button onclick="stepCountMerge(-1)">–</button><input id="countMerVal"
+                      value="10"><button onclick="stepCountMerge(1)">+</button></div>
+                </div>
+                <div class="rs-ratio-row" id="i2v_option"
+                  style="align-items: center;gap: 10px;justify-content: flex-end;">
+                  <div class="rs-opt-col">
+                    <div class="rs-checkbox rs-on"><input type="checkbox" id="penHand"><svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M5 13l4 4L19 7" />
+                      </svg></div>
+                    <span class="rs-lbl">Video vẽ tay</span>
+                  </div>
+                 
+                 <span class="rs-lbl" style="padding-top: 2px; font-size: 12px; color: #878787;">Hold</span>
+                  <div class="rs-stepper"><button onclick="stepHoldHand(-0.1)">–</button><input id="HoldI2V"
+                      value="1"><button onclick="stepHoldHand(0.1)">+</button></div>
+                  <span class="rs-lbl" style="padding-top: 2px; font-size: 12px; color: #878787;">Duration</span>
+                  <div class="rs-stepper"><button onclick="stepCountI2v(-1)">–</button><input id="countI2V"
+                      value="8"><button onclick="stepCountI2v(1)">+</button></div>
+                </div>
+              </div>
+                <div class="rs-grid-2">
+                  <div>
+                    <span class="rs-lbl"
+                      style="display:block; margin-bottom:6px; color:var(--text-tertiary); font-size:11px; text-transform:uppercase;">Kích
+                      thước</span>
+                    <select class="rs-select-field" id="videoResolution">
+                      <option value="src">Kích thước mặc định</option>
+                      <option value="0" selected>9:16 · Full HD 1080×1920</option>
+                      <option value="1">9:16 · HD 720×1280</option>
+                      <option value="2">16:9 · Full HD 1920×1080</option>
+                      <option value="3">16:9 · 4K 3840×2160</option>
+                      <option value="4">1:1 · HD 720x720</option>
+                      <option value="5">1:1 · Full HD 1080x1080</option>
+                      <option value="6">1:1 · 2K 1920×1920</option>
+                      <option value="7">4:3 · Full HD 1920×1440</option>
+                    </select>
+                  </div>
+                  <div>
+                    <span class="rs-lbl"
+                      style="display:block; margin-bottom:6px; color:var(--text-tertiary); font-size:11px; text-transform:uppercase;">Chất
+                      lượng</span>
+                    <select class="rs-select-field" id="renderMode" onchange="optionMode()">
+                      <option value="1">GPU · Balanced</option>
+                      <option value="0">GPU · Super Fast</option>
+                      <option value="2">GPU · High Quality</option>
+                      <option value="3">CPU · Fast</option>
+                      <option value="4">CPU · Master</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <button class="generate-btn" id="startBtn" onclick="toggleStart()"
+                  style="position: absolute; bottom: 0; left: 0;">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  <span id="startLabel">BẮT ĐẦU XỬ LÝ</span>
+                </button>
+              </div>
+            </div>
+          
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab_download">
+      <div class="card" style="height: -webkit-fill-available">
+        <div class="download-page">
+
+
+          <div class="download-toolbar">
+
+            <div class="download-toolbar-tools">
+              <div class="download-api-box">
+                <div class="dl-source-row">
+                  <div class="dl-source-col">
+                    <div id="downloadApiPanel">
+                      <label class="dl-kicker" for="downloadScanApi">API quét video</label>
+                      <textarea id="downloadScanApi" spellcheck="false" rows="4" placeholder="Mỗi dòng một API"></textarea>
+                    </div>
+                    <div class="download-panel dl-source-urls" id="downloadUrlPanel" hidden>
+                      <div class="download-panel-title">Danh sách URL</div>
+                      <textarea id="txtUrls" spellcheck="false" placeholder="Mỗi dòng một URL"></textarea>
+                    </div>
+                  </div>
+                  <div class="dl-source-col dl-source-proxy">
+                    <label class="dl-kicker" for="downloadProxyList">Proxy SOCKS5</label>
+                    <textarea id="downloadProxyList" spellcheck="false" rows="4" placeholder="Mỗi dòng một proxy. Ví dụ 1.2.3.4:1080:username:pass"></textarea>
+                  </div>
+                </div>
+                <div class="dl-control-row">
+                  <div class="dl-group" title="Lịch quét API">
+                    <label class="download-scan-auto" for="downloadScanAuto">
+                      <span class="rs-checkbox"><input id="downloadScanAuto" type="checkbox" onchange="onAutoScanChanged()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>
+                      Tự động quét
+                    </label>
+                    <div class="dl-interval">
+                      <span>mỗi</span>
+                      <input id="downloadScanMinutes" type="number" min="1" max="1440" value="5" onchange="onAutoScanChanged()">
+                      <span>phút</span>
+                    </div>
+                  </div>
+                  <div class="dl-group" title="Cách tải">
+                    <select id="downloadEncodeMode" class="download-encode-select" title="Khi video là HEVC, chuyển sang H.264 để xem được trong app">
+                      <option value="gpu" selected>GPU · NVENC</option>
+                      <option value="cpu">CPU · x264</option>
+                    </select>
+                    <label class="dl-interval" for="threadCountDownload">
+                      <span>Luồng</span>
+                      <input id="threadCountDownload" type="number" min="1" max="100" value="10" title="Số luồng">
+                    </label>
+                  </div>
+                  <label class="download-auto-toggle" for="downloadShowAutoPost" title="Tắt để nhập URL. Các tùy chọn render vẫn hiện.">
+                    <span class="rs-checkbox rs-on"><input id="downloadShowAutoPost" type="checkbox" checked onchange="toggleDownloadAutoView(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>
+                    Link từ API
+                  </label>
+                  <label class="download-auto-toggle" for="downloadUseProxy">
+                    <span class="rs-checkbox"><input id="downloadUseProxy" type="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>
+                    Sử dụng proxy
+                  </label>
+                  <label class="tt-opt tt-opt-wide"><span class="rs-checkbox"><input type="checkbox" id="dataqDownloadAutoRender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>Auto Render</label>
+                 <label class="tt-quota" for="renderPerChannelDay">
+                  <span>Video/kênh/ngày</span>
+                  <input id="renderPerChannelDay" type="number" min="1" max="100" value="5" onchange="saveDownloadScanSettings()">
+                </label>
+                </div>
+                <div class="download-action-row">
+                  <button type="button" id="downloadToggleBtn" class="download-btn-start" onclick="toggleDownload()">
+                    Download
+                  </button>
+                  <button type="button" id="renderProgressBtn" class="download-btn-status" aria-live="polite" onclick="askStopRender()">Tiến trình Render</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div id="downloadCookieHint" class="download-cookie-hint" hidden>
+            Douyin / Xiaohongshu cần cookie: mở Edge hoặc Chrome vào trang đó một lần, rồi tải lại. Hoặc xuất Netscape cookies vào <code>cookies/douyin.txt</code>.
+          </div>
+          <!--Download Process-->
+          <div class="download-progress">
+
+            <div class="download-progress-top">
+              <span id="downloadCount">0 / 0</span>
+              <span id="downloadPercent">0%</span>
+            </div>
+
+            <div class="download-progress-bar">
+              <div class="download-progress-fill" id="downloadProgressFill"></div>
+            </div>
+
+          </div>
+          <!--END-->
+          <div class="download-body">
+
+            <div class="download-slot">
+              <div class="tt-opts" id="downloadRenderOpts">
+                <div class="tt-opt-row">
+                  <!-- <label class="tt-opt tt-opt-wide"><input type="checkbox" id="dataqDownloadAutoRender">Auto Render</label>
+                  <label class="tt-opt tt-opt-wide"><input type="checkbox" id="dataqEnabled">Upload Drive</label> -->
+                </div>
+
+                <div class="tt-opt-split">
+                  <div class="tt-opt-split-main">
+                    <label class="tt-opt tt-opt-wide"><span class="rs-checkbox"><input type="checkbox" id="dataqRenderHighlight" onchange="onRenderHighlight()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Lấy đoạn hay cho video dài</label>
+                    <div class="tt-highlight-row is-locked">
+                      <label class="tt-opt tt-opt-sub" id="dataqRenderTwoScreenRow"><span class="rs-checkbox"><input type="checkbox" id="dataqRenderTwoScreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Render 2 màn hình</label>
+                      <label class="tt-opt tt-opt-sub" id="dataqHighlightVolumeRow"><span class="rs-checkbox"><input type="checkbox" id="dataqHighlightVolume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Thay đổi âm lượng</label>
+                      <label class="tt-quota" id="dataqHighlightScoreRow" for="dataqHighlightScore">
+                        <span>Số điểm :</span>
+                        <input id="dataqHighlightScore" type="number" min="0.1" max="1" step="0.1" value="0.5" onchange="saveHighlightScore()">
+                      </label>
+                      <label class="tt-quota" id="dataqHighlightSecondsRow" for="dataqHighlightSeconds">
+                        <span>Thời lượng :</span>
+                        <input id="dataqHighlightSeconds" type="number" min="1" max="600" value="60" onchange="saveHighlightSeconds()">
+                      </label>
+                    </div>
+                  </div>
+                  <div class="tt-opt-grid" id="dataqRenderEditGrid">
+                    <label class="tt-opt"><span class="rs-checkbox rs-on"><input type="checkbox" id="dataqRenderCrop" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Crop 9:16</label>
+                    <label class="tt-opt"><span class="rs-checkbox"><input type="checkbox" id="dataqRenderRandomCut"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Cắt đoạn ngẫu nhiên</label>
+                    <label class="tt-opt"><span class="rs-checkbox"><input type="checkbox" id="dataqRenderColor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Thay đổi màu sắc</label>
+                    <label class="tt-opt"><span class="rs-checkbox"><input type="checkbox" id="dataqRenderVolume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span> Thay đổi âm lượng</label>
+                  </div>
+                </div>
+              </div>
+
+              <div id="downloadTiktokPost" class="dl-queues">
+                <div class="dl-oauth">
+                  <div class="dl-oauth-top">
+                    <span class="dl-oauth-kicker">Google dùng chung</span>
+                    <span class="dl-oauth-note">Một file OAuth. Folder Drive và Sheet của Tiktok và Facebook lưu riêng.</span>
+                  </div>
+                  <div class="wf-row">
+                    <label>OAuth JSON</label>
+                    <div class="wf-path">
+                      <input id="dataqOauth" placeholder="client_secret....json" spellcheck="false">
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="pickDataOauth()">Chọn</button>
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="connectSharedOauth()">Kết nối</button>
+                    </div>
+                  </div>
+                  <div class="dl-oauth-msg"><span id="sharedOauthMsg" class="wf-msg"></span></div>
+                </div>
+                <div class="dl-queue-grid">
+                  <section class="dl-queue-card" data-kind="data">
+                    <div class="dl-queue-head">
+                      <span class="dl-queue-mark">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path fill="#FF004F" d="M22.459 6.846v3.659c-.197 0-.433.04-.669.04a7.295 7.295 0 01-4.682-1.732v7.79a6.987 6.987 0 01-1.416 4.25 7.02 7.02 0 01-5.626 2.832 6.993 6.993 0 01-5.941-3.305c1.259 1.18 2.95 1.928 4.8 1.928a6.893 6.893 0 005.586-2.833c.866-1.18 1.417-2.636 1.417-4.249v-7.83c1.259 1.102 2.872 1.732 4.682 1.732.236 0 .433 0 .669-.04v-2.36c.354.079.669.118 1.023.118h.157z"/>
+                          <path fill="#FF004F" d="M11.05 9.56v4.053a3.277 3.277 0 00-.866-.118c-1.732 0-3.148 1.456-3.148 3.226 0 .394.079.748.197 1.102-.787-.59-1.338-1.535-1.338-2.597 0-1.77 1.416-3.226 3.148-3.226.314 0 .59.04.865.118V9.521h.236c.315 0 .63 0 .905.04zM17.698 3.934c-.708-.63-1.22-1.495-1.495-2.4h.945v.551a6.25 6.25 0 00.55 1.85z"/>
+                          <path fill="#000" d="M21.318 6.767v2.36c-.197.04-.433.04-.669.04a7.295 7.295 0 01-4.682-1.73v7.79a6.987 6.987 0 01-1.416 4.248c-1.299 1.732-3.305 2.833-5.587 2.833-1.85 0-3.541-.747-4.8-1.928a7.136 7.136 0 01-1.062-3.737c0-3.817 3.03-6.925 6.806-7.043v2.597a3.277 3.277 0 00-.865-.118c-1.732 0-3.148 1.455-3.148 3.226 0 1.062.512 2.046 1.338 2.597.433 1.22 1.613 2.124 2.95 2.124 1.732 0 3.148-1.456 3.148-3.226V1.534h2.872c.276.945.787 1.77 1.495 2.4a5.397 5.397 0 003.62 2.833z"/>
+                          <g>
+                            <path fill="#00F7EF" d="M9.908 8.184V9.52c-3.777.118-6.806 3.226-6.806 7.043 0 1.377.393 2.636 1.062 3.738A7.122 7.122 0 012 15.148c0-3.896 3.148-7.043 7.003-7.043.315 0 .63.04.905.079z"/>
+                            <path fill="#00F7EF" d="M16.203 1.534h-2.872v15.187c0 1.77-1.416 3.227-3.147 3.227-1.377 0-2.518-.866-2.951-2.125.511.354 1.14.59 1.81.59 1.73 0 3.147-1.416 3.147-3.187V0h3.817v.079c0 .157 0 .314.039.472 0 .315.079.669.157.983zM21.318 5.311v1.417c-1.574-.315-2.911-1.377-3.659-2.794a5.11 5.11 0 003.659 1.377z"/>
+                          </g>
+                        </svg>
+                      </span>
+                      <div>
+                        <div class="dl-queue-title">Tiktok</div>
+                        <div class="dl-queue-desc">Upload Drive và ghi sheet dữ liệu sau khi render.</div>
+                      </div>
+                      <label class="dl-queue-switch" for="dataqEnabled">
+                        <span class="rs-checkbox"><input type="checkbox" id="dataqEnabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>
+                        <span>Upload Lên Drive</span>
+                      </label>
+                    </div>
+                    <div class="wf-row">
+                      <label>Folder Drive ID</label>
+                      <div class="wf-path">
+                        <input id="dataqFolder" placeholder="1AbCdeFgHiJk..." spellcheck="false">
+                      </div>
+                    </div>
+                    <div class="wf-row">
+                      <label>Sheet ID <a id="dataqSheetLink" class="wf-hint" href="#" target="_blank" rel="noopener">Mở Sheet</a></label>
+                      <div class="wf-path">
+                        <input id="dataqSheet" placeholder="để trống rồi bấm Khởi tạo Sheet" spellcheck="false">
+                      </div>
+                    </div>
+                    <div class="wf-stats-line">
+                      <span class="wf-stat is-pending">pending <b id="dataqPending">0</b></span>
+                      <span class="wf-stat is-claimed">claimed <b id="dataqClaimed">0</b></span>
+                      <span class="wf-stat is-posting">posting <b id="dataqPosting">0</b></span>
+                      <span class="wf-stat is-posted">posted <b id="dataqPosted">0</b></span>
+                      <span class="wf-stat is-failed">failed <b id="dataqFailed">0</b></span>
+                    </div>
+                    <div class="dl-queue-msg"><span id="dataqMsg" class="wf-msg"></span></div>
+                    <div class="wf-foot">
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="initDataSheet()">Khởi tạo Sheet</button>
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="refreshDataQueueStats()">Đếm job</button>
+                      <button type="button" class="rs-btn rs-btn-primary" onclick="saveDataQueueConfig()">Lưu</button>
+                    </div>
+                  </section>
+                  <section class="dl-queue-card" data-kind="facebook">
+                    <div class="dl-queue-head">
+                      <span class="dl-queue-mark">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <g clip-path="url(#a)">
+                            <path fill="#1089FB" d="M12 0C5.373 0 0 5.373 0 12c0 6.016 4.432 10.984 10.207 11.852V15.18h-2.97v-3.155h2.97V9.927c0-3.475 1.693-5 4.58-5 1.384 0 2.115.102 2.462.149v2.753h-1.97c-1.226 0-1.655 1.163-1.655 2.473v1.724h3.594l-.488 3.155h-3.106v8.696C19.481 23.083 24 18.075 24 12c0-6.627-5.373-12-12-12Z"/>
+                          </g>
+                          <defs>
+                            <clipPath id="a">
+                              <path fill="#fff" d="M0 0h24v24H0z"/>
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </span>
+                      <div>
+                        <div class="dl-queue-title">Facebook</div>
+                        <div class="dl-queue-desc">Upload Drive và ghi sheet dữ liệu sau khi render.</div>
+                      </div>
+                      <label class="dl-queue-switch" for="fbqEnabled">
+                        <span class="rs-checkbox"><input type="checkbox" id="fbqEnabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg></span>
+                        <span>Upload Lên Drive</span>
+                      </label>
+                    </div>
+                    <div class="wf-row">
+                      <label>Folder Drive ID</label>
+                      <div class="wf-path">
+                        <input id="fbqFolder" placeholder="1AbCdeFgHiJk..." spellcheck="false">
+                      </div>
+                    </div>
+                    <div class="wf-row">
+                      <label>Sheet ID <a id="fbqSheetLink" class="wf-hint" href="#" target="_blank" rel="noopener">Mở Sheet</a></label>
+                      <div class="wf-path">
+                        <input id="fbqSheet" placeholder="để trống rồi bấm Khởi tạo Sheet" spellcheck="false">
+                      </div>
+                    </div>
+                    <div class="wf-stats-line">
+                      <span class="wf-stat is-pending">pending <b id="fbqPending">0</b></span>
+                      <span class="wf-stat is-claimed">claimed <b id="fbqClaimed">0</b></span>
+                      <span class="wf-stat is-posting">posting <b id="fbqPosting">0</b></span>
+                      <span class="wf-stat is-posted">posted <b id="fbqPosted">0</b></span>
+                      <span class="wf-stat is-failed">failed <b id="fbqFailed">0</b></span>
+                    </div>
+                    <div class="dl-queue-msg"><span id="fbqMsg" class="wf-msg"></span></div>
+                    <div class="wf-foot">
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="initFbSheet()">Khởi tạo Sheet</button>
+                      <button type="button" class="rs-btn rs-btn-ghost" onclick="refreshFbQueueStats()">Đếm job</button>
+                      <button type="button" class="rs-btn rs-btn-primary" onclick="saveFbQueueConfig()">Lưu</button>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+
+            <div class="download-panel">
+
+              <div class="download-panel-title">
+                ⚡ Thông báo tiến trình
+              </div>
+
+              <div id="txtLog" class="download-log" role="log"></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab_scene">
+      <div class="scene-page">
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">1</div>
+            <div class="card-head-text">
+              <div class="card-title">Flow Kit</div>
+              <div class="card-desc">Agent local và extension trên tab Flow đã đăng nhập</div>
+            </div>
+          </div>
+          <p class="scene-hint">Sinh ảnh và clip chạy trong Flow Kit. Cần agent cổng 8100, extension, và tab flow.google.com đang đăng nhập. Tab này không tự vẽ khi extension chưa nối.</p>
+          <div class="scene-grid flow-connect">
+            <input id="flowAgentDir" placeholder="Thư mục Flow Kit" spellcheck="false">
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="pickFlowAgent()">Chọn thư mục</button>
+            <button type="button" class="rs-btn rs-btn-primary" onclick="startFlowAgent()">Khởi động agent</button>
+          </div>
+          <div class="scene-grid flow-connect">
+            <input id="flowProjectPin" placeholder="Flow project ID, để trống nếu extension sẽ tạo" spellcheck="false">
+            <select id="flowMaterial">
+              <option value="realistic">Ảnh thật</option>
+              <option value="3d_pixar">3D Pixar</option>
+              <option value="anime">Anime</option>
+              <option value="ghibli">Ghibli</option>
+              <option value="stop_motion">Stop motion</option>
+              <option value="minecraft">Minecraft</option>
+              <option value="oil_painting">Sơn dầu</option>
+              <option value="watercolor">Màu nước</option>
+              <option value="comic_book">Truyện tranh</option>
+              <option value="cyberpunk">Cyberpunk</option>
+              <option value="claymation">Đất sét</option>
+              <option value="lego">Lego</option>
+              <option value="retro_vhs">VHS</option>
+            </select>
+            <select id="flowOrient">
+              <option value="VERTICAL">Dọc</option>
+              <option value="HORIZONTAL">Ngang</option>
+            </select>
+          </div>
+          <p id="flowAgentLine" class="flow-status">Agent: chưa kiểm tra.</p>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">2</div>
+            <div class="card-head-text">
+              <div class="card-title">Project</div>
+              <div class="card-desc">Tên, câu chuyện và ngôn ngữ gửi sang Flow Kit</div>
+            </div>
+          </div>
+          <div class="scene-grid flow-project">
+            <input id="flowName" placeholder="Tên project" spellcheck="false">
+            <select id="flowLanguage">
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <textarea id="flowStory" class="scene-story" placeholder="Câu chuyện. Ngoại hình chỉ viết ở ảnh tham chiếu, cảnh chỉ viết hành động."></textarea>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">3</div>
+            <div class="card-head-text">
+              <div class="card-title">Ảnh tham chiếu</div>
+              <div class="card-desc">Nhân vật, địa điểm, đạo cụ. Mỗi tên một lần</div>
+            </div>
+          </div>
+          <p class="scene-hint">Flow Kit sinh ảnh tham chiếu và giữ media id. Cảnh sau gọi đúng tên này.</p>
+          <div id="flowEntities" class="scene-list"></div>
+          <div class="scene-actions">
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="addFlowEntity()">Thêm</button>
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="enqueueFlow('refs')">Sinh ảnh tham chiếu</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">4</div>
+            <div class="card-head-text">
+              <div class="card-title">Từng cảnh</div>
+              <div class="card-desc">Ảnh cảnh trước, clip khoảng 8 giây sau</div>
+            </div>
+          </div>
+          <p class="scene-hint">Mỗi cảnh là một ảnh, rồi clip từ ảnh đó. Tạo lại ảnh sẽ xóa clip của cảnh đó trên Flow Kit. Upscale 4K không có trên API mới nên tab không gọi.</p>
+          <div id="flowScenes" class="scene-list"></div>
+          <div class="scene-actions">
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="addFlowScene()">Thêm cảnh</button>
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="enqueueFlow('images')">Sinh ảnh cảnh</button>
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="enqueueFlow('videos')">Sinh clip</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">5</div>
+            <div class="card-head-text">
+              <div class="card-title">Đưa vào Ready</div>
+              <div class="card-desc">Ghép clip đã sinh, theo thứ tự cảnh</div>
+            </div>
+          </div>
+          <p class="scene-hint">Ready: <span id="flowReady">Chưa chọn thư mục Ready</span></p>
+          <p class="scene-hint">Job: <span id="flowJobs">chưa có</span></p>
+          <div class="scene-actions">
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="saveFlowDraft()">Lưu nháp</button>
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="syncFlow()">Đồng bộ sang Flow Kit</button>
+            <button type="button" class="rs-btn rs-btn-ghost" onclick="forgetFlowProject()">Project mới</button>
+            <button type="button" class="rs-btn rs-btn-primary" onclick="exportFlow()">Ghép vào Ready</button>
+          </div>
+          <p id="flowMsg" class="scene-msg"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <div id="mediaContextMenu" class="media-context-menu">
+
+    <!-- Phân cảnh -->
+    <div data-action="add-scene">
+      <span class="menu-icon icon-add ">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Thêm phân cảnh</span>
+    </div>
+    <div class="separator"></div>
+    <div data-action="upfiles-srt">
+      <span class="menu-icon icon-text">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 4H6.5C5.67 4 5 4.67 5 5.5V18.5C5 19.33 5.67 20 6.5 20H17.5C18.33 20 19 19.33 19 18.5V9L14 4Z"
+              stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M14 4V9H19" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M8 13H16M8 16H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      </span>
+      <span>Tải danh sách file (.txt/.srt)</span>
+    </div>
+    <div data-action="translate-attached">
+      <span class="menu-icon icon-text">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 7h14M5 12h8M5 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M16 12h3l-4 7h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span>Dịch file đính kèm (.txt / .srt)</span>
+    </div>
+    <div data-action="translate-srt-web">
+      <span class="menu-icon icon-text">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 7h14M5 12h8M5 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M16 12h3l-4 7h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span>Dịch file (Gemini Web)</span>
+    </div>
+
+    <div data-action="upfiles-audio">
+      <span class="menu-icon icon-audio "><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 10V14H8L13 18V6L8 10H5Z"
+        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M16 9C17.1 10.1 17.1 13.9 16 15"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M18.5 6.5C21.5 9.5 21.5 14.5 18.5 17.5"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg></span>
+      <span>Tải danh sách audio</span>
+    </div>
+
+    <div data-action="delete-upfiles">
+      <span class="menu-icon icon-delete "><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 7H19"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M9 7V5.5C9 4.67 9.67 4 10.5 4H13.5C14.33 4 15 4.67 15 5.5V7"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M7 7L7.7 18.2C7.76 19.2 8.59 20 9.6 20H14.4C15.41 20 16.24 19.2 16.3 18.2L17 7"
+        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M10 10.5V16.5M14 10.5V16.5"
+        stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+</svg></span>
+      <span>Xóa danh sách file đính kèm</span>
+    </div>
+
+    <div class="separator"></div>
+
+
+    <!-- Xuất dữ liệu -->
+    <div data-action="export-frame">
+      <span class="menu-icon icon-image "><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="16" height="16" rx="2.5"
+        stroke="currentColor" stroke-width="1.8"/>
+  <circle cx="9" cy="9" r="1.5"
+          stroke="currentColor" stroke-width="1.6"/>
+  <path d="M4.5 17L9 12.5L12 15.5L14 13.5L19.5 19"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></span>
+      <span>Xuất frame hình ảnh</span>
+    </div>
+
+
+    <div data-action="export-subtitle">
+      <span class="menu-icon icon-text ">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3.5" y="5" width="17" height="14" rx="3"
+        stroke="currentColor" stroke-width="1.8"/>
+  <path d="M7.2 11.3C7.65 10.65 8.25 10.3 9 10.3C9.75 10.3 10.35 10.65 10.8 11.3"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M13.2 11.3C13.65 10.65 14.25 10.3 15 10.3C15.75 10.3 16.35 10.65 16.8 11.3"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M7.2 14.3H10.8M13.2 14.3H16.8"
+        stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+</svg></span>
+      <span>Lấy file phụ đề</span>
+    </div>
+
+    <div data-action="export-ocr-subtitle">
+      <span class="menu-icon icon-text">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3.5" y="5" width="17" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M7 10h4M7 13h10M7 16h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>OCR & dịch (track OCR)</span>
+    </div>
+
+
+    <div data-action="export-audio">
+      <span class="menu-icon icon-audio"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 10V14H8L13 18V6L8 10H5Z"
+        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M16 9C17.1 10.1 17.1 13.9 16 15"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M18.5 6.5C21.5 9.5 21.5 14.5 18.5 17.5"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+</svg></span>
+      <span>Xuất âm thanh</span>
+    </div>
+
+
+    <div class="separator"></div>
+
+
+    <!-- Quản lý -->
+    <div data-action="remove-list">
+      <span class="menu-icon icon-delete"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M5 7H19"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M9 7V5.5C9 4.67 9.67 4 10.5 4H13.5C14.33 4 15 4.67 15 5.5V7"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M7 7L7.7 18.2C7.76 19.2 8.59 20 9.6 20H14.4C15.41 20 16.24 19.2 16.3 18.2L17 7"
+        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M10 10.5V16.5M14 10.5V16.5"
+        stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+</svg></span>
+      <span>Xóa khỏi danh sách</span>
+    </div>
+
+
+    <div data-action="delete-file" class="danger">
+      <span class="menu-icon">⚠️</span>
+      <span>Xóa khỏi máy tính</span>
+    </div>
+
+  </div>
+
+
+  <!--Dialog-->
+  <div class="rs-modal" id="folderDialog">
+
+    <div class="rs-modal-box">
+
+      <div class="folder-item">
+        <div class="folder-group-title" style="margin-bottom: 5px;">
+          📦 Thư mục Download
+        </div>
+
+        <div class="folder-input-row">
+
+          <input id="folderfolderDownload" readonly="">
+
+          <button onclick="chooseFolder('folderfolderDownload')">
+            Chọn
+          </button>
+
+          <button onclick="openFolder('folderfolderDownload')">
+            Mở
+          </button>
+
+        </div>
+      </div>
+      <div class="folder-group folder-group-full" style="margin-bottom: 10px;">
+          <div class="folder-item" style="margin-bottom: 0px;">
+            <label>Gemini API key (dạng AQ. từ AI Studio)</label>
+            <div class="folder-input-row">
+              <select id="geminiModel" title="Model Gemini" style="height:36px;min-width:170px;background:#2b3140;color:#fff;border:1px solid #343b48;border-radius:8px;padding:0 8px;">
+                <option value="gemini-3.7-flash" selected>Gemini 3.7 Flash</option>
+                <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+              </select>
+              <input id="geminiApiKey" type="password" placeholder="Dán key rồi bấm Lưu key" autocomplete="off">
+              <button type="button" onclick="saveGeminiApiKey()">Lưu key</button>
+            </div>
+          </div>
+        </div>
+      <div class="folder-config-grid">
+
+        <!-- Output -->
+        <div class="folder-group">
+
+          <div class="folder-group-title">
+            📦 Thư mục Output
+          </div>
+
+          <div class="folder-item">
+            <label>Render Video</label>
+
+            <div class="folder-input-row">
+              <input id="folderRenderVideo" readonly>
+
+              <button onclick="chooseFolder('folderRenderVideo')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderRenderVideo')">
+                Mở
+              </button>
+            </div>
+          </div>
+
+          <div class="folder-item">
+            <label>Trim Video</label>
+
+            <div class="folder-input-row">
+              <input id="folderTrimVideo" readonly>
+
+              <button onclick="chooseFolder('folderTrimVideo')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderTrimVideo')">
+                Mở
+              </button>
+            </div>
+          </div>
+
+          <div class="folder-item">
+            <label>Crop Video</label>
+
+            <div class="folder-input-row">
+              <input id="folderCropVideo" readonly>
+
+              <button onclick="chooseFolder('folderCropVideo')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderCropVideo')">
+                Mở
+              </button>
+            </div>
+          </div>
+          <div class="folder-item">
+
+            <label>Ghép Video</label>
+
+            <div class="folder-input-row">
+
+              <input id="folderMerge" readonly>
+
+              <button onclick="chooseFolder('folderMerge')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderMerge')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- Audio -->
+        <div class="folder-group">
+
+          <div class="folder-group-title">
+            🎵 Âm thanh - Hình ảnh
+          </div>
+
+          <div class="folder-item">
+
+            <label>Xuất Audio</label>
+
+            <div class="folder-input-row">
+
+              <input id="folderAudio" readonly>
+
+              <button onclick="chooseFolder('folderAudio')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderAudio')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+          <div class="folder-item">
+
+            <label>Image từ Video</label>
+
+            <div class="folder-input-row">
+
+              <input id="folderFrame" readonly>
+
+              <button onclick="chooseFolder('folderFrame')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderFrame')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="folder-item rs-disabled">
+
+            <label>Dự phòng</label>
+
+            <div class="folder-input-row">
+
+              <input id="folderImageFromVideo" readonly>
+
+              <button onclick="chooseFolder('folderImageFromVideo')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderImageFromVideo')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="folder-item">
+
+            <label>Video từ Image</label>
+
+            <div class="folder-input-row">
+
+              <input id="folderVideoFromImage" readonly>
+
+              <button onclick="chooseFolder('folderVideoFromImage')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderVideoFromImage')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Subtitle -->
+        <div class="folder-group">
+
+          <div class="folder-group-title" style="margin-bottom: 10px;">
+            💬 Subtitle
+          </div>
+
+          <div class="folder-item">
+
+
+
+            <div class="folder-input-row">
+
+              <input id="folderSubtitle" readonly>
+
+              <button onclick="chooseFolder('folderSubtitle')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderSubtitle')">
+                Mở
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Image -->
+        <div class="folder-group">
+
+          <div class="folder-group-title" style="margin-bottom: 10px;">
+            🖼 Voice -Subtitle
+          </div>
+          <div class="folder-item">
+            <div class="folder-input-row">
+
+              <input id="folderVoiceSubtitle" readonly>
+
+              <button onclick="chooseFolder('folderVoiceSubtitle')">
+                Chọn
+              </button>
+
+              <button onclick="openFolder('folderVoiceSubtitle')">
+                Mở
+              </button>
+
+            </div>
+
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <div class="folder-option">
+
+          <label>
+
+            <input type="checkbox" id="autoSubFolder">
+
+            Tự động tạo thư mục con theo tên Project
+
+          </label>
+
+        </div>
+
+        <div class="folder-footer">
+
+          <button class="rs-btn rs-btn-danger" onclick="closeFolderDialog()">
+            Hủy
+          </button>
+
+          <button class="rs-btn rs-btn-primary" onclick="saveFolderConfig()">
+            Lưu cấu hình
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Dialog Confim-->
+  <div class="rs-dialog" id="confirmDialog">
+    <div class="rs-dialog-box">
+      <div class="rs-dialog-title">Xác nhận</div>
+
+      <div class="rs-dialog-body">
+        Bạn có chắc muốn xóa tất cả nội dung?
+      </div>
+
+      <div class="rs-dialog-actions">
+        <button class="rs-btn-confim rs-btn-cancel" id="confirmCancel">
+          Hủy
+        </button>
+
+        <button class="rs-btn-confim rs-btn-danger" id="confirmOk">
+          Xóa
+        </button>
+      </div>
+    </div>
+  </div>
+  <!--Dialog OK-->
+  <div class="rs-dialog" id="okDialog">
+    <div class="rs-dialog-box">
+      <div class="rs-dialog-title">Thông báo!</div>
+
+      <div class="rs-dialog-body">
+        Bạn có chắc muốn xóa tất cả nội dung?
+      </div>
+
+      <div class="rs-dialog-actions">
+        <button class="rs-btn-confim rs-btn-danger" id="okCancel">
+          Hủy
+        </button>
+
+        <button class="rs-btn-confim  rs-btn-primary" id="okOk">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="rsToast" class="rs-toast" role="status" aria-live="polite"></div>
+
+  <div class="rs-dialog" id="cropSegmentsDialog">
+    <div class="rs-dialog-box rs-crop-seg-dialog">
+      <div class="rs-crop-seg-head">
+
+        <div>
+          <div class="rs-dialog-title">Thêm Crop theo đoạn</div>
+          <p class="rs-crop-seg-hint">Mỗi đoạn 2s · 5 đoạn · cách 0.1s → 0–2, 2.1–4.1…</p>
+        </div>
+      </div>
+      <div class="rs-dialog-body">
+        <div class="rs-crop-seg-grid">
+          <label class="rs-crop-seg-field">
+            <span>Thời gian mỗi đoạn</span>
+            <div class="rs-crop-seg-input">
+              <div class="rs-stepper rs-crop-seg-stepper">
+                <button type="button" onclick="stepCropSeg('cropSegDuration', -0.1)">–</button>
+                <input id="cropSegDuration" type="text" inputmode="decimal" value="2" oninput="updateCropSegmentsPreview()">
+                <button type="button" onclick="stepCropSeg('cropSegDuration', 0.1)">+</button>
+              </div>
+              <em>giây</em>
+            </div>
+          </label>
+          <label class="rs-crop-seg-field">
+            <span>Số đoạn</span>
+            <div class="rs-crop-seg-input">
+              <div class="rs-stepper rs-crop-seg-stepper">
+                <button type="button" onclick="stepCropSeg('cropSegCount', -1)">–</button>
+                <input id="cropSegCount" type="text" inputmode="numeric" value="5" oninput="updateCropSegmentsPreview()">
+                <button type="button" onclick="stepCropSeg('cropSegCount', 1)">+</button>
+              </div>
+              <em>đoạn</em>
+            </div>
+          </label>
+          <label class="rs-crop-seg-field">
+            <span>Thời gian phân chia</span>
+            <div class="rs-crop-seg-input">
+              <div class="rs-stepper rs-crop-seg-stepper">
+                <button type="button" onclick="stepCropSeg('cropSegGap', -0.1)">–</button>
+                <input id="cropSegGap" type="text" inputmode="decimal" value="0.1" oninput="updateCropSegmentsPreview()">
+                <button type="button" onclick="stepCropSeg('cropSegGap', 0.1)">+</button>
+              </div>
+              <em>giây</em>
+            </div>
+          </label>
+          <label class="rs-crop-seg-field">
+            <span>Bắt đầu từ</span>
+            <div class="rs-crop-seg-input">
+              <div class="rs-stepper rs-crop-seg-stepper">
+                <button type="button" onclick="stepCropSeg('cropSegOrigin', -0.1)">–</button>
+                <input id="cropSegOrigin" type="text" inputmode="decimal" value="0" oninput="updateCropSegmentsPreview()">
+                <button type="button" onclick="stepCropSeg('cropSegOrigin', 0.1)">+</button>
+              </div>
+              <em>giây</em>
+            </div>
+          </label>
+        </div>
+        <div class="rs-crop-seg-preview-wrap">
+          <div class="rs-crop-seg-preview-label">Xem trước</div>
+          <div id="cropSegPreview" class="rs-crop-seg-preview"></div>
+        </div>
+      </div>
+      <div class="rs-dialog-actions">
+        <button class="rs-btn-confim rs-btn-danger" onclick="closeCropSegmentsDialog()">Hủy</button>
+        <button class="rs-btn-confim rs-btn-ok" onclick="confirmCropSegments()">Thêm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rs-dialog" id="saveTemplateDialog">
+    <div class="rs-dialog-box" style="width:380px;">
+      <div class="rs-dialog-title">Lưu template</div>
+      <div class="rs-dialog-body">
+        <label style="display:block;font-size:12px;color:#9aa8b4;margin-bottom:8px;">Tên template</label>
+        <input id="templateNameInput" class="rs-ta rs-source-input" type="text" placeholder="VD: Hook vàng + Sub karaoke"
+          style="width:100%;height:38px;padding:0 12px;resize:none;line-height:38px;background: #2b2b2b;border-radius: 5px;">
+          <div class="error-input" id="errortemplateNameInput">Vui lòng nhập tên Template</div>
+      </div>
+      <div class="rs-dialog-actions">
+        <button class="rs-btn-confim rs-btn-danger" onclick="closeSaveTemplateDialog()">HỦY</button>
+        <button class="rs-btn-confim rs-btn-ok" onclick="confirmSaveTimelineTemplate()">LƯU</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rs-dialog" id="loadTemplateDialog">
+    <div class="rs-dialog-box rs-tpl-dialog">
+      <div class="rs-dialog-title">Tải template</div>
+      <div class="rs-dialog-body">
+        <div id="templateList" class="rs-tpl-list"></div>
+      </div>
+      <div class="rs-dialog-actions">
+        <button class="rs-btn-confim rs-btn-cancel" onclick="closeLoadTemplateDialog()">Đóng</button>
+      </div>
+    </div>
+  </div>
+  <!--EDIT Dialog-->
+
+  <div id="overlayEditDialog" class="rs-dialog rs-scope">
+
+    <div class="rs-dialog-box">
+      <div class="rs-dialog-title">Chỉnh sửa lớp phủ</div>
+
+      <div class="rs-dialog-body">
+        <div class="rs-opt-row-dialog">
+          <span class="rs-lbl" style="padding-right: 11px; font-size: 12px; color: #878787;">Bắt đầu (giây)</span>
+          <div class="rs-stepper"><button onclick="stepOverlayStart(-0.1)">–</button><input id="overlayStart" value="10"><button
+              onclick="stepOverlayStart(0.1)">+</button></div>
+        </div>
+
+        <div class="rs-opt-row-dialog">
+          <span class="rs-lbl" style="padding-right: 11px; font-size: 12px; color: #878787;">Kết thúc (giây)</span>
+          <div class="rs-stepper"><button onclick="stepOverlayEnd(-0.1)">–</button><input id="overlayEnd" value="10"><button
+              onclick="stepOverlayEnd(0.1)">+</button></div>
+        </div>
+        <div class="rs-slider-field" style="margin-top:10px;">
+          <div class="rs-top"><span class="rs-name">Độ mờ lớp phủ</span><span class="rs-val" id="opValEach">1.0</span></div>
+          <input type="range" id="numopValEach"  min="0" max="10" value="10"
+            oninput="document.getElementById('opValEach').innerText=(this.value/10).toFixed(1)">
+        </div>
+        <div class="rs-opt-row"><span class="rs-lbl">Thời gian kết thúc theo video</span>
+          <div class="rs-checkbox"><input type="checkbox" id="cb_TimeSameVideo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="3">
+              <path d="M5 13l4 4L19 7"></path>
+            </svg></div>
+        </div>
+      </div>
+
+      <div class="rs-dialog-actions">
+
+        <button class="rs-btn-confim rs-btn-cancel" onclick="closeOverlayEdit()">
+          Hủy
+        </button>
+        <button class="rs-btn-confim rs-btn-ok" onclick="saveOverlayTime()">
+          Lưu
+        </button>
+
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!--ADD PhanCanh-->
+  <div class="rs-modal" id="addSceneFromSelection">
+    <div class="rs-modal-box" style="
+    width: 400px;
+    border-radius: 10px;">
+      <div class="folder-item">
+        <div class="folder-group-title" style="margin-bottom: 5px;">
+          Đặt tên cho phân cảnh
+        </div>
+
+        <div class="folder-input-row">
+          <input id="NameScene">
+        </div>
+      </div><div class="folder-footer">
+          <button class="rs-btn rs-btn-danger" onclick="closeAddScene()">
+            Hủy
+          </button>
+          <button class="rs-btn rs-btn-primary" onclick="AddSceneDialogName()">Thêm phân cảnh</button>
+
+        </div>
+	  </div>
+        
+</div>
+  <div class="rs-modal" id="geminiWebOcrDialog">
+    <div class="rs-modal-box" style="width:720px; max-width:92vw; border-radius:10px;">
+      <div class="folder-item">
+        <div class="folder-group-title" style="margin-bottom:8px;">Dán bản dịch Gemini Pro</div>
+        <div class="rs-fsub" id="geminiWebOcrHint" style="margin-bottom:10px;">OCR xong. Copy là file SRT đầy đủ (số cue + mốc thời gian). Mở Gemini Pro, dán bản dịch SRT rồi nhấn Lưu.</div>
+        <label class="rs-fsub">SRT gốc (đã copy khi mở web)</label>
+        <textarea id="geminiWebOcrSrc" rows="10" readonly style="width:100%; margin-bottom:10px; font-family:ui-monospace,Consolas,monospace;"></textarea>
+        <label class="rs-fsub">Dán SRT đã dịch từ Gemini (số câu có thể ít hơn gốc)</label>
+        <textarea id="geminiWebOcrDst" rows="10" placeholder="1&#10;00:00:01,000 --&gt; 00:00:03,200&#10;Câu đã dịch..." style="width:100%; font-family:ui-monospace,Consolas,monospace;"></textarea>
+      </div>
+      <div class="folder-footer" style="gap:8px; flex-wrap:wrap;">
+        <button class="rs-btn rs-btn-ghost" type="button" onclick="openGeminiWebFromRegionOcr()">Mở Gemini Pro</button>
+        <button class="rs-btn rs-btn-danger" type="button" onclick="closeGeminiWebOcrDialog()">Đóng</button>
+        <button class="rs-btn rs-btn-primary" type="button" onclick="saveGeminiWebOcrTranslation()">Lưu file dịch</button>
+      </div>
+    </div>
+  </div>
+  <div class="rs-modal" id="srtEditorDialog">
+    <div class="rs-modal-box" style="width:720px; max-width:92vw; border-radius:10px;">
+      <div class="folder-item">
+        <div class="folder-group-title" style="margin-bottom:8px;">Sửa phụ đề SRT</div>
+        <div id="srtEditorPath" class="rs-fsub" style="margin-bottom:10px; word-break:break-all;"></div>
+        <div class="rs-srt-editor-list" id="srtEditorList"></div>
+      </div>
+      <div class="folder-footer" style="gap:8px; flex-wrap:wrap;">
+        <button class="rs-btn rs-btn-ghost" type="button" onclick="srtEditorAddCue()">+ Thêm câu</button>
+        <button class="rs-btn rs-btn-ghost" type="button" onclick="srtEditorMergeSelected()">Gộp câu</button>
+        <button class="rs-btn rs-btn-danger" type="button" onclick="closeSrtEditor()">Đóng</button>
+        <button class="rs-btn rs-btn-primary" type="button" onclick="saveSrtEditor()">Lưu &amp; lên track Text</button>
+      </div>
+    </div>
+  </div>
+  <div id="srtSplitContextMenu" class="media-context-menu" style="z-index:100001;">
+    <div id="srtSplitCueItem">Tách câu tại con trỏ</div>
+    <div id="srtMergeCueItem">Gộp câu đã chọn</div>
+  </div>
+  <!--ADD PhanCanh-->
+<div class="rs-modal" id="choseTypeText">
+    <div class="rs-modal-box" style="
+        width: 420px;
+        border-radius: 10px;">
+
+        <div class="folder-item">
+            <div class="folder-group-title" style="margin-bottom: 15px;">
+                Chọn loại Text
+            </div>
+
+           <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;">
+
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                padding: 12px;
+                border: 1px solid #3a4350;
+                border-radius: 8px;">
+
+                <input type="radio"
+                      id="hook"
+                      name="sceneType"
+                      value="hook"
+                      checked>
+
+                <span>Hook</span>
+            </label>
+
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                padding: 12px;
+                border: 1px solid #3a4350;
+                border-radius: 8px;">
+
+                <input type="radio"
+                      id="sub"
+                      name="sceneType"
+                      value="sub">
+
+                <span>Sub</span>
+            </label>
+
+            <label style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                padding: 12px;
+                border: 1px solid #3a4350;
+                border-radius: 8px;">
+
+                <input type="radio"
+                      id="text"
+                      name="sceneType"
+                      value="text">
+
+                <span>Text</span>
+            </label>
+
+        </div>
+        </div>
+
+        <div class="folder-footer">
+            <button class="rs-btn rs-btn-danger"
+                    onclick="closeAddcloseAddText()">HỦY</button>
+
+          <button class="rs-btn rs-btn-primary"
+            onclick="AddAddTextByType()">THÊM
+          </button>
+        </div>
+
+    </div>
+</div>
+  <script>
+    let systemFonts = [];
+    let apiReady = false;
+    // async function waitPywebview() {
+
+    //     while (!window.pywebview || !window.pywebview.api) {
+    //         await new Promise(r => setTimeout(r, 500));
+    //     }
+
+    //     systemFonts = await pywebview.api.get_system_fonts();
+
+    //     console.log("Fonts:", systemFonts);
+    // }
+    async function loadFonts() {
+        if (apiReady) return; // tránh gọi 2 lần
+        apiReady = true;
+        try {
+            systemFonts = await window.pywebview.api.get_system_fonts();
+            console.log("Fonts:", systemFonts);
+           await getCloneConfig()
+            // onFontsLoaded(); // gọi hàm xử lý UI của bạn ở đây
+        } catch (err) {
+            apiReady = false; // cho phép thử lại nếu lỗi
+        }
+    }
+  window.addEventListener("pywebviewready", loadFonts);
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+        requestAnimationFrame(() => {
+            document.body.classList.add("loaded");
+        });
+
+    });
+  </script>
+  <script src="/js/main.js"></script>
+  <!-- <script src="https://unpkg.com/moveable/dist/moveable.min.js"></script> -->
+  <script src="/js/00-ui-buttons.js"></script>
+  <script src="/js/01-state.js"></script>
+  <script src="/js/02-timeline.js"></script>
+  <script src="/js/03-media-list.js"></script>
+  <!-- <script src="/js/04-overlay.js"></script> -->
+  <script src="/js/05-crop.js"></script>
+  <script src="/js/06-render.js"></script>
+  <script src="/js/07-ui-controls.js"></script>
+  <script src="/js/09-translate.js"></script>
+  <script src="/js/10-ocr.js"></script>
+  <script src="/js/11-srt-editor.js"></script>
+  <script src="/js/download_function.js"></script>
+    <script src="/js/08-bulk-bar.js"></script>
+  <script src="/js/12-workflow.js"></script>
+  <script src="/js/scene_studio.js"></script>
+
+
+  <script>
+
+    async function getCloneConfig() {
+
+
+      try {
+
+        // gọi python lấy config
+        let config = await window.pywebview.api.get_clone_config();
+        if (config) {
+            renderCloneVoices(config);
+        }
+      }
+      catch (e) {
+          showCheck("Sever Voice chưa được mở. Vui lòng tắt app. Mở Sever rồi mở lại App để sử dụng!", () => {
+        });
+
+      }
+    }
+
+    async function showFolderDialog() {
+
+
+      try {
+
+        // gọi python lấy config
+        let config = await window.pywebview.api.get_folder_config();
+
+
+        if (config) {
+
+          document.getElementById("folderfolderDownload").value =
+            config.download_video || "";
+
+          document.getElementById("folderRenderVideo").value =
+            config.render_video || "";
+
+
+          document.getElementById("folderTrimVideo").value =
+            config.trim_video || "";
+
+
+          document.getElementById("folderCropVideo").value =
+            config.crop_video || "";
+
+
+          document.getElementById("folderAudio").value =
+            config.audio || "";
+
+
+          document.getElementById("folderSubtitle").value =
+            config.subtitle || "";
+
+
+          document.getElementById("folderFrame").value =
+            config.frame_image || "";
+
+
+          document.getElementById("folderImageFromVideo").value =
+            config.image_from_video || "";
+
+
+          document.getElementById("folderVideoFromImage").value =
+            config.video_from_image || "";
+
+
+          document.getElementById("folderMerge").value =
+            config.merge_video || "";
+
+          document.getElementById("folderVoiceSubtitle").value =
+            config.voice_subtitle || "";
+          document.getElementById("autoSubFolder").checked =
+            config.auto_sub_folder || false;
+
+
+        }
+
+        if (typeof loadTranslateSettings === "function") {
+          await loadTranslateSettings();
+        }
+
+      }
+      catch (e) {
+
+        console.error("Load folder config error:", e);
+
+      }
+
+
+
+      // cuối cùng mới mở dialog
+      document
+        .getElementById("folderDialog")
+        .classList.add("show");
+
+    }
+    function closeFolderDialog() {
+
+      document
+        .getElementById("folderDialog")
+        .classList.remove("show");
+
+    }
+    function closeAddScene() {
+
+      document
+        .getElementById("addSceneFromSelection")
+        .classList.remove("show");
+
+    }
+    function OpenChose() {
+
+      document
+        .getElementById("choseTypeText")
+        .classList.add("show");
+
+    }
+    function AddAddTextByType() {
+        const type = document.querySelector('input[name="sceneType"]:checked').value;
+        addLayer(type);
+        document
+          .getElementById("choseTypeText")
+          .classList.remove("show");
+    }
+    function closeAddcloseAddText() {
+
+      document
+        .getElementById("choseTypeText")
+        .classList.remove("show");
+
+    }
+    async function saveFolderConfig() {
+
+      let config = {
+        download_video: document.getElementById("folderfolderDownload").value,
+        render_video: document.getElementById("folderRenderVideo").value,
+        trim_video: document.getElementById("folderTrimVideo").value,
+        crop_video: document.getElementById("folderCropVideo").value,
+        audio: document.getElementById("folderAudio").value,
+        subtitle: document.getElementById("folderSubtitle").value,
+        frame_image: document.getElementById("folderFrame").value,
+        image_from_video: document.getElementById("folderImageFromVideo").value,
+        video_from_image: document.getElementById("folderVideoFromImage").value,
+        merge_video: document.getElementById("folderMerge").value,
+        voice_subtitle: document.getElementById("folderVoiceSubtitle").value,
+        auto_sub_folder: document.getElementById("autoSubFolder").checked,
+        scan_video_api: (document.getElementById("downloadScanApi") || {}).value || "",
+        scan_video_minutes: Number((document.getElementById("downloadScanMinutes") || {}).value) || 5
+
+      };
+
+
+      console.log(config);
+
+
+      let result = await window.pywebview.api.save_folder_config(config);
+
+      const keyInput = document.getElementById("geminiApiKey");
+      if (keyInput && String(keyInput.value || "").trim() && typeof saveGeminiApiKey === "function") {
+        await saveGeminiApiKey();
+      }
+
+      if (result) {
+
+
+        closeFolderDialog();
+
+      }
+      else {
+
+
+      }
+
+    }
+
+
+    async function chooseFolder(id) {
+
+      const path = await window.pywebview.api.pick_output_folder();
+
+      if (path) {
+
+        document.getElementById(id).value = path;
+
+      }
+
+    }
+    async function openFolder(id) {
+
+      const path = document.getElementById(id).value;
+
+      if (path) {
+
+        await window.pywebview.api.open_folder(path);
+
+      }
+
+    }
+    function showNote(){
+        showConfirm("Chưa có đâu. Đợi đi em zai", () => {
+        // e.preventDefault();
+    });
+    }
+
+      setCheckbox(document.querySelector("#penHand"),true);
+      setCheckbox(document.querySelector("#RenderOverlay"),true);
+      setCheckbox(document.querySelector("#RenderAudio"),true);
+      setCheckbox(document.querySelector("#RenderRenderAutoTrim"),true);
+      
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "download_auto_render": true,
+  "render_crop": false,
+  "render_random_cut": false,
+  "render_color": false,
+  "render_volume": false,
+  "render_combo_a": false,
+  "render_highlight": true,
+  "render_two_screen": true,
+  "highlight_volume": true,
+  "highlight_score": 0.9,
+  "highlight_seconds": 120,
+  "oauth_json": "D:\\Affila_Tool\\Sub_studio\\New\\json.json",
+  "folder_id": "1iXla1560Me5c_5xXxuTy9DTdO8OBz3vm",
+  "spreadsheet_id": "18zgLU0m-sGOJmq3GmrDtq_CtFViitZavk2iZusNQIvo",
+  "sheet_name": "data"
+}

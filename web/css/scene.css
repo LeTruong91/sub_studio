@@ -1,0 +1,199 @@
+#tab_scene {
+  overflow: hidden;
+}
+#tab_scene .scene-page {
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  padding: 16px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+#tab_scene .card {
+  animation: none;
+  padding: 18px;
+  min-width: 0;
+}
+#tab_scene .card:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+#tab_scene .card-head {
+  margin-bottom: 14px;
+}
+#tab_scene .scene-hint {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+#tab_scene .flow-status {
+  margin: 2px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-primary);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+#tab_scene input:not([type="checkbox"]),
+#tab_scene select,
+#tab_scene textarea {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 0 12px;
+  font-size: 13px;
+  outline: none;
+}
+#tab_scene textarea {
+  height: auto;
+  min-height: 72px;
+  padding: 10px 12px;
+  line-height: 1.45;
+  resize: vertical;
+}
+#tab_scene input:not([type="checkbox"]):focus,
+#tab_scene select:focus,
+#tab_scene textarea:focus {
+  border-color: rgba(0, 182, 227, 0.55);
+}
+#tab_scene select {
+  cursor: pointer;
+}
+#tab_scene .flow-connect,
+#tab_scene .flow-project,
+#tab_scene .scene-row-top,
+#tab_scene .scene-head,
+#tab_scene .scene-row-actions,
+#tab_scene .scene-actions,
+#tab_scene .scene-refs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+#tab_scene .flow-connect,
+#tab_scene .flow-project {
+  margin-bottom: 8px;
+}
+#tab_scene .flow-connect > input,
+#tab_scene .flow-project > input {
+  flex: 1 1 220px;
+}
+#tab_scene #flowMaterial {
+  flex: 0 1 180px;
+  width: 180px;
+}
+#tab_scene #flowOrient,
+#tab_scene #flowLanguage {
+  flex: 0 0 132px;
+  width: 132px;
+}
+#tab_scene .scene-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#tab_scene .scene-row,
+#tab_scene .scene-card {
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+#tab_scene .scene-row-top > input {
+  flex: 1 1 180px;
+}
+#tab_scene .scene-row-top > select {
+  flex: 0 0 140px;
+  width: 140px;
+}
+#tab_scene .scene-row-actions {
+  margin-left: auto;
+}
+#tab_scene .scene-row textarea,
+#tab_scene .scene-card textarea {
+  margin-top: 8px;
+}
+#tab_scene .scene-head strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+#tab_scene .scene-refs {
+  gap: 8px 14px;
+  margin-top: 8px;
+}
+#tab_scene .scene-refs label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+#tab_scene .scene-refs input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+#tab_scene .scene-actions {
+  margin-top: 12px;
+}
+#tab_scene .rs-btn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+#tab_scene .flow-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+#tab_scene .flow-chip.is-ok {
+  color: #3dd68c;
+  border-color: rgba(61, 214, 140, 0.35);
+  background: rgba(61, 214, 140, 0.1);
+}
+#tab_scene .flow-chip.is-run {
+  color: #f0c674;
+  border-color: rgba(240, 198, 116, 0.35);
+  background: rgba(240, 198, 116, 0.1);
+}
+#tab_scene .flow-chip.is-err {
+  color: #ff6b7a;
+  border-color: rgba(255, 107, 122, 0.4);
+  background: rgba(255, 107, 122, 0.1);
+}
+#tab_scene .scene-msg {
+  min-height: 18px;
+  margin: 10px 0 0;
+  font-size: 12.5px;
+}
+#tab_scene .scene-msg.is-ok { color: var(--success, #3dd68c); }
+#tab_scene .scene-msg.is-err { color: #ff6b7a; }
+@media (max-width: 900px) {
+  #tab_scene #flowMaterial,
+  #tab_scene #flowOrient,
+  #tab_scene #flowLanguage,
+  #tab_scene .scene-row-top > select {
+    flex: 1 1 140px;
+    width: auto;
+  }
+  #tab_scene .scene-row-actions {
+    margin-left: 0;
+  }
+}

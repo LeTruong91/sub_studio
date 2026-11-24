@@ -1,0 +1,19 @@
+{
+    "download_video": "D:\\VideoAffilte\\SuyNgam\\Veu\\New folder",
+    "render_video": "D:\\Test\\RENDER\\ok",
+    "trim_video": "D:\\Test\\TRIM",
+    "crop_video": "D:\\Test\\CROP",
+    "audio": "D:\\Test\\AUDIO",
+    "subtitle": "D:\\Test\\SUB",
+    "frame_image": "D:\\Test\\IMAGE",
+    "image_from_video": "D:\\Test\\IMAGE_FROM_VIDEO",
+    "video_from_image": "D:\\Test\\VIDEO_FROM_IMAGE",
+    "merge_video": "D:\\VideoAffilte\\Thucung\\Demo\\Ghep",
+    "voice_subtitle": "D:\\Test\\VOCE",
+    "auto_sub_folder": true,
+    "scan_video_api": "http://youtubelisting.duckdns.org/api/v1/channels/e8b0cf47-d13f-4ac2-a834-58b11835dd8b/videos?kind=video&sort=publishedAt&order=desc&page=1&limit=1",
+    "scan_video_minutes": 5,
+    "render_per_channel_day": 6,
+    "download_proxies": "",
+    "download_use_proxy": false
+}
