@@ -2900,3 +2900,25 @@ input[type="range"] {
   padding: 4px 8px;
   outline: none;
 }
+
+/* Ô thời lượng mini ở hàng Lưu thành (đồng bộ với ô trong thẻ Thời lượng) */
+.vn-duration-mini {
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  color: #e8eaef;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12.5px;
+  font-family: 'JetBrains Mono', monospace;
+  width: 76px;
+  margin-left: 6px;
+  outline: none;
+}
+
+.vn-duration-mini:focus {
+  border-color: #4a9eff;
+}
+
+.vn-duration-mini::placeholder {
+  color: #6b6b7a;
+}

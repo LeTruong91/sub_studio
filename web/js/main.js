@@ -352,6 +352,12 @@ function setNumStep(v){
 
   let targetDurationValue = null;
 
+  function syncDurationFromSave(value){
+    const main = document.getElementById('durationInput');
+    if (main && main.value !== value) main.value = value;
+    updateDurationTarget(value);
+  }
+
   function toggleDurationCalc(){
     document.getElementById('durationToggle').classList.toggle('open');
     document.getElementById('durationBody').classList.toggle('open');
@@ -377,6 +383,9 @@ function setNumStep(v){
     const speedBlock = document.getElementById('speedBlock');
     const speedSlider = document.getElementById('speedSlider');
     const speedPresetBtns = speedBlock.querySelectorAll('.preset-btn');
+    // Đồng bộ ô thời lượng mini ở hàng Lưu thành
+    const saveInput = document.getElementById('durationInputSave');
+    if (saveInput && saveInput.value !== value) saveInput.value = value;
 
     if(seconds === null || seconds <= 0){
       targetDurationValue = null;

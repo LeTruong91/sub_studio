@@ -282,6 +282,7 @@
             <span class="vn-save-sep">/</span>
             <input type="text" class="vn-filename" id="namePattern" value="{file}_{index}" spellcheck="false">
             <span class="vn-save-ext">.wav</span>
+            <input type="text" class="vn-duration-mini" id="durationInputSave" placeholder="1:30" title="Thời lượng mong muốn — vd: 1:30 hoặc 90 (giây)" spellcheck="false" oninput="syncDurationFromSave(this.value)">
           </div>
           <div class="vn-save-right">
             <span class="vn-charcount" id="charCount">0 ký tự</span>
