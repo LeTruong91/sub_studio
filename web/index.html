@@ -297,6 +297,24 @@
         <div class="vn-save-note"><span id="charCountNote">0 ký tự</span> · lưu vào thư mục Output · Server Voice trên máy, miễn phí</div>
       </section>
 
+<section class="vn-recent card">
+        <div class="vn-recent-head">
+          <span>Bản ghi gần đây <span id="recentCount">(0)</span></span>
+          <span class="vn-recent-path" id="recentPath" title="Mở thư mục" onclick="openRecentFolder()"></span>
+        </div>
+        <div class="status-log active" id="statusLog">
+<div class="progress-wrap" id="progressWrap">
+              <div class="progress-label"><span id="progressText">Đang xử lý…</span><span id="progressPct">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+<div class="error-banner" id="errorBanner"></div>
+        </div>
+        <div class="vn-recent-list" id="recentList"></div>
+      </section>
+
       <section class="vn-advanced">
 
 <div class="card">
@@ -399,23 +417,7 @@
 
       </section>
 
-      <section class="vn-recent card">
-        <div class="vn-recent-head">
-          <span>Bản ghi gần đây</span>
-          <span class="vn-recent-path" id="recentPath"></span>
-        </div>
-        <div class="status-log active" id="statusLog">
-<div class="progress-wrap" id="progressWrap">
-              <div class="progress-label"><span id="progressText">Đang xử lý…</span><span id="progressPct">0%</span>
-              </div>
-              <div class="progress-track">
-                <div class="progress-fill" id="progressFill"></div>
-              </div>
-            </div>
-        <div class="status-log-content" id="statusLogContent"></div>
-<div class="error-banner" id="errorBanner"></div>
-        </div>
-      </section>
+      
     </main>
   </div>
 
@@ -784,6 +786,7 @@
                const rp = document.getElementById('recentPath');
                if (rp && out) rp.textContent = out;
            } catch (e) {}
+           if (typeof refreshRecentList === 'function') refreshRecentList();
             // onFontsLoaded(); // gọi hàm xử lý UI của bạn ở đây
         } catch (err) {
             apiReady = false; // cho phép thử lại nếu lỗi

@@ -284,7 +284,94 @@ class Api:
      #Serve media       
     #THEM 
 
+    def _resolve_output_dir(self):
+        """Thư mục xuất file wav — cùng logic với worker tạo batch."""
+        voice_subtitle = None
+        if os.path.exists(output_dir_path):
+            try:
+                with open(output_dir_path, "r", encoding="utf-8") as f:
+                    voice_subtitle = json.load(f).get("voice_subtitle")
+            except Exception:
+                voice_subtitle = None
+        return Path(voice_subtitle) if voice_subtitle else OUTPUT_DIR
 
+    def list_recent_files(self, limit=10):
+        """Liệt kê file wav mới nhất trong thư mục xuất (cho mục Bản ghi gần đây)."""
+        try:
+            output_dir = self._resolve_output_dir()
+            if not output_dir.exists():
+                return {"output_dir": str(output_dir), "files": []}
+            wavs = [p for p in output_dir.glob("*.wav") if p.is_file()]
+            wavs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+            items = []
+            for p in wavs[:max(1, int(limit or 10))]:
+                st = p.stat()
+                dur = ""
+                try:
+                    import wave as _wave
+                    with _wave.open(str(p), "rb") as w:
+                        secs = w.getnframes() / float(w.getframerate() or 1)
+                        dur = f"{int(secs // 60)}:{int(secs % 60):02d}"
+                except Exception:
+                    dur = ""
+                size = st.st_size
+                size_str = f"{size / 1024:.0f} KB" if size < 1024 * 1024 else f"{size / (1024 * 1024):.1f} MB"
+                items.append({
+                    "name": p.stem,
+                    "path": str(p),
+                    "size": size_str,
+                    "duration": dur,
+                    "time": time.strftime("%H:%M %d-%m", time.localtime(st.st_mtime)),
+                })
+            return {"output_dir": str(output_dir), "files": items}
+        except Exception as e:
+            return {"output_dir": "", "files": [], "error": str(e)}
+
+    def _recent_file_in_output(self, path):
+        """Kiểm tra file có nằm trong thư mục xuất không (chống xóa/đổi tên nhầm)."""
+        try:
+            output_dir = self._resolve_output_dir().resolve()
+            p = Path(unicodedata.normalize('NFC', path)).resolve()
+            return p if (output_dir in p.parents and p.suffix.lower() == ".wav") else None
+        except Exception:
+            return None
+
+    def delete_recent_file(self, path):
+        """Xóa 1 file wav bản ghi (kèm file .srt cùng tên nếu có)."""
+        try:
+            p = self._recent_file_in_output(path)
+            if p is None:
+                return False
+            p.unlink(missing_ok=True)
+            srt = p.with_suffix(".srt")
+            if srt.exists():
+                srt.unlink()
+            return True
+        except Exception:
+            return False
+
+    def rename_recent_file(self, path, new_name):
+        """Đổi tên 1 file wav bản ghi (kèm file .srt cùng tên nếu có)."""
+        try:
+            p = self._recent_file_in_output(path)
+            if p is None:
+                return {"ok": False, "error": "Đường dẫn không hợp lệ"}
+            stem = unicodedata.normalize('NFC', (new_name or "").strip())
+            for ch in '\\/:*?"<>|':
+                stem = stem.replace(ch, "")
+            stem = stem.strip().strip(".")
+            if not stem:
+                return {"ok": False, "error": "Tên mới trống"}
+            target = p.with_name(stem + ".wav")
+            if target.exists() and target != p:
+                return {"ok": False, "error": "Đã có file trùng tên"}
+            p.rename(target)
+            srt = p.with_suffix(".srt")
+            if srt.exists():
+                srt.rename(target.with_suffix(".srt"))
+            return {"ok": True, "path": str(target)}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
 
     #END THEM
     def get_system_fonts(self):

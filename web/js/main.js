@@ -10,7 +10,6 @@ const wave = document.getElementById('wave');
 let selectedFilePath = null;
 let cloneAudioPath = null;
 let lastOutputDir = null;
-let audioPlayers = {}; // Theo dõi các audio đang phát
 let selectedFiles = [];
 let _genBatchWaiter = null; 
 const _originalOnBackendEvent = window.onBackendEvent;   
@@ -571,15 +570,7 @@ window.onBackendEvent = function(event, payload){
     fill.style.width = overallPct + '%';
     pct.textContent = overallPct + '%';
 
-    payload.files.forEach(name=>{
-      const isAudio = name.endsWith('.wav');
-      if (isAudio) {
-        const audioId = 'audio_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        addFileMessage(name, audioId);
-      } else {
-        addStatusMessage('📄 ' + name, 'success');
-      }
-    });
+    refreshRecentList();
   }else if(event === 'file_done'){
     addStatusMessage(`✅ [${payload.file_name}] Xử lý xong (${payload.file_index}/${payload.total_files}).`, 'success');
 
@@ -616,6 +607,7 @@ window.onBackendEvent = function(event, payload){
     btn.disabled = false;
     setGenButtonRunning(false);
     document.getElementById('wave').classList.add('idle');
+    refreshRecentList();
 
   } else if(event === 'cancelled'){
     lastOutputDir = payload.output_dir;
@@ -625,6 +617,7 @@ window.onBackendEvent = function(event, payload){
     setGenButtonRunning(false);
     document.getElementById('wave').classList.add('idle');
     setStatus('ready', 'ĐÃ DỪNG');
+    refreshRecentList();
 
   } else if(event === 'error'){
     errorBanner.textContent = 'Lỗi: ' + payload.message;
@@ -701,81 +694,191 @@ window.onBackendEvent = function(event, payload){
 //       break;
 //   }
 // };
-  // Helper cho nhật ký trạng thái
+  // Nhật ký đã bỏ — chỉ giữ hàm rỗng để các chỗ gọi cũ không lỗi
   function addStatusMessage(text, type = 'info') {
-    const container = document.getElementById('statusLogContent');
-    const log = document.getElementById('statusLog');
-    
-    // Hiện log nếu đang ẩn
-    if (!log.classList.contains('active')) {
-      log.classList.add('active');
-    }
-
-    const msg = document.createElement('div');
-    msg.className = `status-message ${type}`;
-    
-    const now = new Date();
-    const time = now.toLocaleTimeString('vi-VN').split(' ')[0]; // HH:MM:SS
-    
-    msg.innerHTML = `
-      <div class="status-message-time">${time}</div>
-      <div class="status-message-text">${text}</div>
-    `;
-    
-    container.appendChild(msg);
-    container.scrollTop = container.scrollHeight;
+    return;
   }
 
   function clearStatusLog() {
-    const container = document.getElementById('statusLogContent');
-    container.innerHTML = '';
+    return;
   }
 
-  // Giống addStatusMessage(), nhưng phần nội dung là audio-player thay vì text thường,
-  // và luôn dùng class "status-message success" để có cùng khung/viền với các dòng log khác.
-  function addFileMessage(name, audioId) {
-    const container = document.getElementById('statusLogContent');
-    const log = document.getElementById('statusLog');
+  // ===== Bản ghi gần đây (kiểu VieNeu) =====
+  let _recentFiles = [];
+  let _recentOutputDir = '';
+  let _recentReq = 0;
+  let _recentAudio = null;
+  let _recentPlayingPath = '';
 
-    if (!log.classList.contains('active')) {
-      log.classList.add('active');
+  function escHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  }
+
+  async function refreshRecentList() {
+    const listEl = document.getElementById('recentList');
+    const countEl = document.getElementById('recentCount');
+    if (!listEl || !window.pywebview || !window.pywebview.api || !window.pywebview.api.list_recent_files) return;
+    const req = ++_recentReq;
+    let res;
+    try {
+      res = await window.pywebview.api.list_recent_files(10);
+    } catch (e) {
+      return;
     }
-
-    const now = new Date();
-    const time = now.toLocaleTimeString('vi-VN').split(' ')[0];
-
-    const msg = document.createElement('div');
-    msg.className = 'status-message success';
-
-    msg.innerHTML = `
-      <div class="status-message-time">${time}</div>
-      <div class="status-message-text">
-        <div class="audio-player" style="flex-direction:column; align-items:stretch; gap:6px;">
-          <span class="filename-label">${name}</span>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <button class="play-btn" id="btn_${audioId}">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-            </button>
-            <audio id="${audioId}" style="display:none;"></audio>
-            <div class="progress-bar-mini" style="flex:1;">
-              <div class="progress-bar-mini-fill" id="fill_${audioId}"></div>
-            </div>
-            <span class="time-display" id="time_${audioId}">0:00</span>
-          </div>
+    if (req !== _recentReq) return;
+    _recentFiles = res.files || [];
+    _recentOutputDir = res.output_dir || '';
+    if (countEl) countEl.textContent = `(${_recentFiles.length})`;
+    if (!_recentFiles.length) {
+      listEl.innerHTML = '<div class="vn-rec-empty">Chưa có bản ghi nào — tạo giọng xong sẽ hiện ở đây.</div>';
+      return;
+    }
+    listEl.innerHTML = _recentFiles.map((f, i) => {
+      const meta = [f.duration, 'WAV ' + f.size, f.time].filter(Boolean).join(' · ');
+      return `<div class="vn-rec-row">
+        <button class="vn-rec-play" data-i="${i}" title="Phát">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8V4z"/></svg>
+        </button>
+        <div class="vn-rec-main">
+          <div class="vn-rec-title" title="${escHtml(f.name)}">${escHtml(f.name)}</div>
+          <div class="vn-rec-meta">${escHtml(meta)}</div>
         </div>
-      </div>
-    `;
+        <div class="vn-rec-actions">
+          <button class="vn-rec-act" data-act="rename" data-i="${i}" title="Đổi tên">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          </button>
+          <button class="vn-rec-act" data-act="folder" data-i="${i}" title="Mở thư mục">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+          </button>
+          <button class="vn-rec-act music" data-act="open" data-i="${i}" title="Mở bằng trình phát mặc định">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </button>
+          <button class="vn-rec-act danger" data-act="delete" data-i="${i}" title="Xóa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+    listEl.querySelectorAll('.vn-rec-play').forEach(btn => btn.addEventListener('click', () => toggleRecentPlay(+btn.dataset.i)));
+    listEl.querySelectorAll('.vn-rec-act').forEach(btn => btn.addEventListener('click', () => recentAction(btn.dataset.act, +btn.dataset.i)));
+  }
 
-    container.appendChild(msg);
-    container.scrollTop = container.scrollHeight;
+  function setRecentPlayIcon(btn, playing) {
+    if (!btn) return;
+    btn.classList.toggle('playing', !!playing);
+    btn.innerHTML = playing
+      ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8V4z"/></svg>';
+  }
 
-    // Gắn sự kiện bằng JS thật, không qua chuỗi HTML (tránh lỗi escaping đường dẫn)
-    const playBtn = msg.querySelector('.play-btn');
-    const currentOutputDir = lastOutputDir;
-    const currentName = name;
-    playBtn.addEventListener('click', () => {
-      toggleAudio(audioId, currentOutputDir, currentName);
+  async function toggleRecentPlay(i) {
+    const f = _recentFiles[i];
+    if (!f || !window.pywebview || !window.pywebview.api || !window.pywebview.api.serve_audio) return;
+    const btn = document.querySelectorAll('.vn-rec-play')[i];
+    if (_recentPlayingPath === f.path && _recentAudio && !_recentAudio.paused) {
+      _recentAudio.pause();
+      _recentPlayingPath = '';
+      setRecentPlayIcon(btn, false);
+      return;
+    }
+    if (_recentAudio) {
+      _recentAudio.pause();
+      _recentAudio = null;
+    }
+    document.querySelectorAll('.vn-rec-play.playing').forEach(b => setRecentPlayIcon(b, false));
+    let res;
+    try {
+      res = await window.pywebview.api.serve_audio(f.path);
+    } catch (e) {
+      res = null;
+    }
+    if (!res || res.error || !res.url) {
+      const eb = document.getElementById('errorBanner');
+      if (eb) {
+        eb.textContent = 'Không tải được file audio: ' + (res && res.error ? res.error : f.name);
+        eb.classList.add('active');
+      }
+      return;
+    }
+    const audio = new Audio(res.url);
+    _recentAudio = audio;
+    _recentPlayingPath = f.path;
+    setRecentPlayIcon(btn, true);
+    audio.addEventListener('ended', () => {
+      _recentPlayingPath = '';
+      setRecentPlayIcon(btn, false);
     });
+    try {
+      await audio.play();
+    } catch (e) {
+      _recentPlayingPath = '';
+      setRecentPlayIcon(btn, false);
+    }
+  }
+
+  async function openRecentFolder() {
+    if (!_recentOutputDir || !window.pywebview || !window.pywebview.api || !window.pywebview.api.open_folder) return;
+    try {
+      await window.pywebview.api.open_folder(_recentOutputDir);
+    } catch (e) {}
+  }
+
+  async function recentAction(act, i) {
+    const f = _recentFiles[i];
+    if (!f || !window.pywebview || !window.pywebview.api) return;
+    if (act === 'folder') {
+      openRecentFolder();
+    } else if (act === 'open') {
+      try {
+        await window.pywebview.api.open_folder(f.path);
+      } catch (e) {}
+    } else if (act === 'delete') {
+      showConfirm(`Xóa bản ghi "${f.name}.wav"?`, async () => {
+        try {
+          await window.pywebview.api.delete_recent_file(f.path);
+        } catch (e) {}
+        refreshRecentList();
+      }, { title: 'Xóa bản ghi', okText: 'Xóa', cancelText: 'Hủy' });
+    } else if (act === 'rename') {
+      startRecentRename(i);
+    }
+  }
+
+  function startRecentRename(i) {
+    const f = _recentFiles[i];
+    const row = document.querySelectorAll('.vn-rec-row')[i];
+    const titleEl = row ? row.querySelector('.vn-rec-title') : null;
+    if (!f || !titleEl) return;
+    const input = document.createElement('input');
+    input.className = 'vn-rec-rename';
+    input.value = f.name;
+    input.spellcheck = false;
+    titleEl.replaceWith(input);
+    input.focus();
+    input.select();
+    let done = false;
+    const commit = async (save) => {
+      if (done) return;
+      done = true;
+      if (save && input.value.trim() && input.value.trim() !== f.name) {
+        try {
+          const res = await window.pywebview.api.rename_recent_file(f.path, input.value.trim());
+          if (res && !res.ok) {
+            const eb = document.getElementById('errorBanner');
+            if (eb) {
+              eb.textContent = 'Không đổi được tên: ' + (res.error || '');
+              eb.classList.add('active');
+            }
+          }
+        } catch (e) {}
+      }
+      refreshRecentList();
+    };
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') commit(true);
+      else if (e.key === 'Escape') commit(false);
+    });
+    input.addEventListener('blur', () => commit(true));
   }
 
   // function showTab(tabId) {
@@ -855,109 +958,6 @@ function showTab(tabId) {
 
   // ==================== PHÁT ÂM THANH ====================
   
-  function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  }
-
-  async function toggleAudio(audioId, outputDir, filename) {
-    // Dừng các audio khác đang phát
-    Object.keys(audioPlayers).forEach(id => {
-      if (id !== audioId) {
-        const other = audioPlayers[id];
-        if (other && !other.paused) {
-          other.pause();
-          const otherBtn = document.getElementById('btn_' + id);
-          if (otherBtn) {
-            otherBtn.classList.remove('playing');
-            setPlayIcon(otherBtn);
-          }
-        }
-      }
-    });
-
-    const audio = document.getElementById(audioId);
-    const btn = document.getElementById('btn_' + audioId);
-    if (!audio) return;
-
-    if (!audio.src) {
-      try {
-        const filepath = outputDir + '/' + filename;
-        let result;
-        if (window.pywebview && window.pywebview.api && window.pywebview.api.serve_audio) {
-          result = await window.pywebview.api.serve_audio(filepath);
-        }
-        if (!result || result.error || !result.url) {
-          alert('Không tải được file audio: ' + (result?.error || 'không rõ đường dẫn: ' + filepath));
-          return;
-        }
-        audio.src = result.url;
-
-        audio.addEventListener('timeupdate', () => updateAudioUI(audioId));
-        audio.addEventListener('ended', () => {
-          btn.classList.remove('playing');
-          setPlayIcon(btn);
-          document.getElementById('fill_' + audioId).style.width = '0%';
-        });
-      } catch (e) {
-        console.error('Failed to load audio:', e);
-        alert('Không tải được file audio: ' + filename);
-        return;
-      }
-    }
-
-    if (audio.paused) {
-      audio.play();
-      btn.classList.add('playing');
-      setPauseIcon(btn);
-      audioPlayers[audioId] = audio;
-    } else {
-      audio.pause();
-      btn.classList.remove('playing');
-      setPlayIcon(btn);
-    }
-  }
-
-  function setPlayIcon(btn) {
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent-blue); width:16px; height:16px;">
-        <path d="M5 3l14 9-14 9V3z"/>
-      </svg>
-    `;
-  }
-
-  function setPauseIcon(btn) {
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent-red); width:16px; height:16px;">
-        <rect x="6" y="4" width="4" height="16" rx="1"/>
-        <rect x="14" y="4" width="4" height="16" rx="1"/>
-      </svg>
-    `;
-  }
-
-  function updateAudioUI(audioId) {
-    const audio = document.getElementById(audioId);
-    const fillBar = document.getElementById('fill_' + audioId);
-    const timeDisplay = document.getElementById('time_' + audioId);
-
-    if (!audio) return;
-
-    // Cập nhật thanh tiến trình
-    if (audio.duration) {
-      const percent = (audio.currentTime / audio.duration) * 100;
-      fillBar.style.width = percent + '%';
-    }
-
-    // Cập nhật hiển thị thời gian
-    timeDisplay.textContent = formatTime(audio.currentTime);
-  }
-
-
-
-  //
-
 let currentEmotion = "Kể chuyện";
 
 

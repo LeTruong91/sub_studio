@@ -2753,3 +2753,150 @@ input[type="range"] {
 .vn-save-row {
   margin-top: 20px;
 }
+
+/* ===== Bản ghi gần đây kiểu VieNeu ===== */
+#recentCount {
+  color: var(--text-secondary);
+}
+
+.vn-recent-path {
+  cursor: pointer;
+}
+
+.vn-recent-path:hover {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
+.vn-recent-list {
+  margin-top: 4px;
+}
+
+.vn-rec-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 6px;
+  border-top: 1px solid #1e1e28;
+}
+
+.vn-rec-row:first-child {
+  border-top: none;
+}
+
+.vn-rec-play {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid #3a3a46;
+  background: transparent;
+  color: #d6d6de;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.vn-rec-play svg {
+  width: 14px;
+  height: 14px;
+  margin-left: 2px;
+}
+
+.vn-rec-play:hover {
+  border-color: #4a9eff;
+  color: #4a9eff;
+}
+
+.vn-rec-play.playing {
+  border-color: #4a9eff;
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.12);
+}
+
+.vn-rec-play.playing svg {
+  margin-left: 0;
+}
+
+.vn-rec-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.vn-rec-title {
+  font-size: 13.5px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vn-rec-meta {
+  font-size: 11.5px;
+  color: #8a8a96;
+  margin-top: 3px;
+}
+
+.vn-rec-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.vn-rec-act {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #9a9aa5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.vn-rec-act svg {
+  width: 16px;
+  height: 16px;
+}
+
+.vn-rec-act:hover {
+  background: #1e1e28;
+  color: #fff;
+}
+
+.vn-rec-act.music {
+  background: rgba(74, 158, 255, 0.15);
+  color: #4a9eff;
+}
+
+.vn-rec-act.music:hover {
+  background: rgba(74, 158, 255, 0.25);
+}
+
+.vn-rec-act.danger:hover {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+.vn-rec-empty {
+  padding: 20px 12px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+}
+
+.vn-rec-rename {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid #4a9eff;
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13.5px;
+  padding: 4px 8px;
+  outline: none;
+}
