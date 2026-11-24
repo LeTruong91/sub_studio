@@ -54,7 +54,7 @@ OUTPUT_DIR = APP_DIR / "outputs"
 TMP_DIR = APP_DIR / "_tmp"
 FONT_DIR = os.path.join(RESOURCE_DIR, "web", "fonts") 
 ICON_PATH = RESOURCE_DIR  / "icon.ico"
-API_BASE_URL = "http://127.0.0.1:8282"
+API_BASE_URL = "http://127.0.0.1:8282/v1"  # server chuẩn VieNeu (apps/openai_speech.py)
 TIMEOUT = 600  # giây - tổng hợp SRT dài có thể mất vài phút
 def set_window_icon(window):
     """Đổi icon title bar + taskbar cho cửa sổ pywebview trên Windows."""
@@ -694,6 +694,7 @@ class Api:
                         language= language if language else "vi",
                         num_step=num_step,
                         instruct=instruct or None,
+                        voices_dir=str(APP_DIR / "voices"),
                         # speed=1.0,
                         # pitch=0
                     )
@@ -1021,7 +1022,14 @@ class Api:
                 timeout=TIMEOUT,
             )
             resp.raise_for_status()
-            return resp.json()
+            data = resp.json()
+            # server chuẩn VieNeu trả về {"object": "list", "data": [...]}
+            if isinstance(data, dict):
+                data = data.get("data", [])
+            if not isinstance(data, list):
+                return {}
+            # ẩn giọng clone tạm thời (đăng ký nội bộ cho mỗi lần nhân bản)
+            return [v for v in data if v.get("name") != vera_tts.TEMP_CLONE_NAME]
         except:
             return {}
 
