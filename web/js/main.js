@@ -139,6 +139,7 @@ let _contentEditorFile = null;
 let _activeFileIndex = 0;
 let _contentSaveTimer = null;
 let _contentEditorBound = false;
+let _freeText = '';
 
 function updateCharCount(){
   const editor = document.getElementById('contentEditor');
@@ -159,8 +160,8 @@ async function loadContentEditor(){
   }
   if(!selectedFiles || selectedFiles.length === 0){
     _contentEditorFile = null;
-    editor.value = '';
-    chips.forEach(c => c.disabled = true);
+    editor.value = _freeText || '';
+    chips.forEach(c => c.disabled = false);
     document.getElementById('contentEditorFile').textContent = '-';
     if(saved) saved.textContent = '';
     updateCharCount();
@@ -208,7 +209,7 @@ function selectEditorFile(event, index){
 
 function insertEmotionTag(tag){
   const editor = document.getElementById('contentEditor');
-  if(!editor || !_contentEditorFile) return;
+  if(!editor) return;
   editor.focus();
   const start = (editor.selectionStart !== null && editor.selectionStart !== undefined) ? editor.selectionStart : editor.value.length;
   const end = (editor.selectionEnd !== null && editor.selectionEnd !== undefined) ? editor.selectionEnd : editor.value.length;
@@ -220,6 +221,8 @@ function insertEmotionTag(tag){
 
 function scheduleContentSave(){
   const saved = document.getElementById('contentEditorSaved');
+  const editor = document.getElementById('contentEditor');
+  if(editor && !_contentEditorFile) _freeText = editor.value;
   if(saved) saved.textContent = 'Đang lưu…';
   updateCharCount();
   clearTimeout(_contentSaveTimer);
@@ -229,7 +232,8 @@ function scheduleContentSave(){
 async function saveContentEditor(){
   const editor = document.getElementById('contentEditor');
   const saved = document.getElementById('contentEditorSaved');
-  if(!editor || !_contentEditorFile || !window.pywebview) return;
+  if(!editor || !window.pywebview) return;
+  if(!_contentEditorFile){ if(saved) saved.textContent = ''; return; }
   try{
     const ok = await window.pywebview.api.save_text_file(_contentEditorFile.path, editor.value);
     if(saved) saved.textContent = ok ? 'Đã lưu ✓' : 'Lưu thất bại';
@@ -512,8 +516,10 @@ async function runGenerate(){
   const isSaveClone = document.getElementById("enableSaveClone");
   const nameCloneSave = document.getElementById("nameSaveClone");
   let name_out ="";
-  if(!selectedFiles || selectedFiles.length === 0){
-    errorBanner.textContent = 'Vui lòng chọn file trước.';
+  const editorText = (document.getElementById('contentEditor').value || '').trim();
+  const hasFiles = selectedFiles && selectedFiles.length > 0;
+  if(!hasFiles && !editorText){
+    errorBanner.textContent = 'Vui lòng chọn file hoặc nhập văn bản trước.';
     errorBanner.classList.add('active');
     return;
   }
@@ -544,7 +550,7 @@ async function runGenerate(){
   setStatus('busy', 'ĐANG XỬ LÝ');
   
   const config = {
-    files: selectedFiles.map(f => ({ path: f.path, name: f.name })), // gửi cả danh sách
+    files: hasFiles ? selectedFiles.map(f => ({ path: f.path, name: f.name })) : [], // gửi cả danh sách
     voice: getSelectedVoice(),
     language: getSelectedLag(),
     instruct: getVoiceInstruct(),
@@ -562,9 +568,11 @@ async function runGenerate(){
     ref_text: document.getElementById('refText').value.trim(),
   };
 
+  if(!hasFiles) config.text = editorText;
+
   console.log('Config for generation:', config);
   label.textContent = 'Đang khởi tạo…';
-  addStatusMessage(`Bắt đầu xử lý ${selectedFiles.length} file theo thứ tự...`, 'info');
+  addStatusMessage(hasFiles ? `Bắt đầu xử lý ${selectedFiles.length} file theo thứ tự...` : 'Bắt đầu xử lý văn bản trong ô soạn…', 'info');
 
   await window.pywebview.api.generate_batch(config);
 

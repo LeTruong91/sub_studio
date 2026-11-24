@@ -708,6 +708,7 @@
                if (rp && out) rp.textContent = out;
            } catch (e) {}
            if (typeof refreshRecentList === 'function') refreshRecentList();
+           if (typeof loadContentEditor === 'function') loadContentEditor();
             // onFontsLoaded(); // gọi hàm xử lý UI của bạn ở đây
         } catch (err) {
             apiReady = false; // cho phép thử lại nếu lỗi

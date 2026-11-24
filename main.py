@@ -571,6 +571,14 @@ class Api:
                 files = [{"path": single, "name": Path(single).name}]
 
         if not files:
+            text_source = str(config.get("text") or "").strip()
+            if text_source:
+                TMP_DIR.mkdir(parents=True, exist_ok=True)
+                text_path = TMP_DIR / "van_ban.txt"
+                text_path.write_text(text_source, encoding="utf-8")
+                files = [{"path": str(text_path), "name": "van_ban.txt"}]
+
+        if not files:
             self._emit("error", {"message": "Không nhận được danh sách file từ giao diện."})
             return
 
