@@ -27,7 +27,7 @@
 <body>
   <div class="app rs-scope">
 
-    <div class="topbar">
+    <div class="topbar hero-box">
       <div class="brand">
         <div class="brand-mark">
           <svg viewBox="0 0 24 24" fill="none">
@@ -36,31 +36,37 @@
           </svg>
         </div>
         <div class="brand-text">
-          <div class="title">Video Studio</div>
-          <div class="sub">Công cụ tạo giọng nói & chỉnh sử video · CIT</div>
-
-        </div>
-        <div class="tabs">
-          <button class="tab-btn active" data-tab="batch" onclick="showTab('batch')">Sub Generator Studio</button>
+          <div class="title gradient-text">Sub Generator Studio</div>
+          <div class="sub">Tạo giọng nói từ file văn bản &amp; phụ đề — nhanh, khớp thời gian, nhân bản được giọng</div>
+          <div class="hero-info">
+            <span class="hero-info-item">🗣️ Server Voice · 127.0.0.1:8282</span>
+            <span class="hero-info-item">📄 .txt · .srt · .vtt</span>
+            <span class="hero-info-item">🎭 Nhân bản giọng + Voice Design</span>
+          </div>
         </div>
       </div>
 
       <div class="rs-appbar-right">
         <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Sẵn sàng</span>
         </div>
-          <!-- <button class="rs-btn rs-btn-ghost" onclick="showNote()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-            <path d="M9 9h6v6H9z"></path>
-          </svg>
-            Tạo dự án mới</button> -->
-        <!-- <div class="rs-gpu-pill" id="rs-gpu-pill">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-            <path d="M9 9h6v6H9z"></path>
-          </svg>
-          GPU · Balanced
-        </div> -->
+      </div>
+    </div>
+
+    <div class="tips-banner">
+      <div class="tips-banner-title">💡 Gợi ý</div>
+      <div class="tips-banner-grid">
+        <div class="tips-banner-item">
+          <strong>🎭 Thẻ cảm xúc</strong>
+          <div class="tips-banner-content">Chip <b>[cười]</b> <b>[thở dài]</b> <b>[hắng giọng]</b> chèn tag vào nội dung file ở bước 1. Chỉ có tác dụng nếu Server Voice hỗ trợ tag — thử 1 câu ngắn trước, nếu giọng đọc luôn chữ "[cười]" thì server không hỗ trợ.</div>
+        </div>
+        <div class="tips-banner-item">
+          <strong>⏱️ Khớp thời gian</strong>
+          <div class="tips-banner-content">File <b>.srt</b> giữ nguyên mốc thời gian. File <b>.txt</b> sẽ tự tạo phụ đề theo giọng đọc. Đặt <b>thời lượng mong muốn</b> ở bước 6 để app tự tính tốc độ vừa khung.</div>
+        </div>
+        <div class="tips-banner-item">
+          <strong>🎙️ Nhân bản giọng</strong>
+          <div class="tips-banner-content">Bật <b>Nhân Bản Giọng Nói</b> ở bước 5 rồi chọn mẫu âm thanh + nhập đúng văn bản trong mẫu. Tick <b>Lưu Mẫu clone giọng</b> để dùng lại lần sau không cần chọn lại mẫu.</div>
+        </div>
       </div>
     </div>
 
@@ -107,6 +113,28 @@
               <div id="dzFilledList" style="display:none; flex-direction:column; width:100%; gap:8px;"></div>
             </div>
 
+            <div class="emotion-row">
+              <div class="field-caption">
+                <p>🎭 Chèn cảm xúc vào nội dung</p>
+              </div>
+              <div class="emotion-chips">
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[cười]')" disabled>[cười]</button>
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[thở dài]')" disabled>[thở dài]</button>
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[hắng giọng]')" disabled>[hắng giọng]</button>
+              </div>
+              <div class="emotion-hint">Bấm chip để chèn tag vào vị trí con trỏ trong ô nội dung bên dưới — cần chọn file trước.</div>
+            </div>
+
+            <div class="content-editor" id="contentEditorWrap" style="display:none">
+              <div class="content-editor-head">
+                <span class="content-editor-title">📝 Nội dung: <b id="contentEditorFile">-</b></span>
+                <span class="content-editor-saved" id="contentEditorSaved"></span>
+              </div>
+              <textarea id="contentEditor" rows="6" spellcheck="false"
+                placeholder="Nội dung file sẽ hiện ở đây..."></textarea>
+              <div class="content-editor-note">Sửa xong tự lưu vào file gốc — file .srt giữ nguyên mốc thời gian, chỉ sửa phần chữ.</div>
+            </div>
+
           </div>
 
           <div class="dual-col-row">
@@ -118,6 +146,9 @@
                   <div class="card-title">Chọn Giọng Đọc</div>
                   <div class="card-desc">Chọn giọng cho âm thanh đầu ra</div>
                 </div>
+              </div>
+              <div class="field-caption">
+                <p>Giọng mẫu — chọn giọng cho âm thanh đầu ra</p>
               </div>
               <div class="voice-dropdown" id="voiceDropdown" style="display: flex; justify-content: center; align-items: center;">
                 <button type="button" class="voice-select-btn" id="voiceSelectBtn" onclick="toggleVoiceDropdown()">
@@ -132,7 +163,7 @@
                 </button>
                 <div class="voice-select-panel" id="voiceCloneSelectPanel">
                 </div>
-                <div style="margin-left: 20px;cursor: pointer;" onclick="ReloadCloneVoice()">
+                <div class="voice-reload-btn" onclick="ReloadCloneVoice()" title="Tải lại danh sách giọng">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 11a8 8 0 1 0 1 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
                     <path d="M20 5v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>

@@ -30,6 +30,8 @@ async function pickFileSub(){
 
   renderFileList();
 
+  loadContentEditor();
+
   document.getElementById('sumFile').textContent =
     selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles.length} file`;
   document.getElementById('sumFile').classList.remove('muted');
@@ -57,6 +59,7 @@ function clearOneFile(event, index){
   event.stopPropagation();
   selectedFiles.splice(index, 1);
   renderFileList();
+  loadContentEditor();
 
   if (selectedFiles.length === 0){
     document.getElementById('sumFile').textContent = 'Chưa chọn file';
@@ -73,6 +76,7 @@ function clearFile(event){
 
       selectedFiles = [];
       renderFileList();
+      loadContentEditor();
       document.getElementById('sumFile').textContent = 'Chưa chọn file';
       document.getElementById('sumFile').classList.add('muted');
     })
@@ -95,6 +99,83 @@ function renderFileRow(file, index){
     </div>
   `;
 }
+/* ===== Ô nội dung + chip cảm xúc (kiểu VieNeu) ===== */
+let _contentEditorFile = null;
+let _contentSaveTimer = null;
+let _contentEditorBound = false;
+
+async function loadContentEditor(){
+  const wrap = document.getElementById('contentEditorWrap');
+  const editor = document.getElementById('contentEditor');
+  const saved = document.getElementById('contentEditorSaved');
+  const chips = document.querySelectorAll('.emotion-chip');
+  if(!wrap || !editor) return;
+  if(!_contentEditorBound){
+    _contentEditorBound = true;
+    editor.addEventListener('input', scheduleContentSave);
+  }
+  if(!selectedFiles || selectedFiles.length === 0){
+    _contentEditorFile = null;
+    wrap.style.display = 'none';
+    chips.forEach(c => c.disabled = true);
+    return;
+  }
+  const file = selectedFiles[0];
+  _contentEditorFile = file;
+  chips.forEach(c => c.disabled = false);
+  wrap.style.display = 'block';
+  document.getElementById('contentEditorFile').textContent = file.name;
+  if(saved) saved.textContent = 'Đang tải…';
+  if(!window.pywebview){
+    editor.value = '';
+    if(saved) saved.textContent = 'Chưa kết nối app';
+    return;
+  }
+  try{
+    const res = await window.pywebview.api.read_text_file(file.path);
+    if(res && res.ok){
+      editor.value = res.text || '';
+      if(saved) saved.textContent = '';
+    } else {
+      editor.value = '';
+      if(saved) saved.textContent = 'Không đọc được file: ' + (res && res.error ? res.error : '');
+    }
+  }catch(e){
+    if(saved) saved.textContent = 'Không đọc được file.';
+  }
+}
+
+function insertEmotionTag(tag){
+  const editor = document.getElementById('contentEditor');
+  if(!editor || !_contentEditorFile) return;
+  editor.focus();
+  const start = (editor.selectionStart !== null && editor.selectionStart !== undefined) ? editor.selectionStart : editor.value.length;
+  const end = (editor.selectionEnd !== null && editor.selectionEnd !== undefined) ? editor.selectionEnd : editor.value.length;
+  editor.value = editor.value.slice(0, start) + ' ' + tag + editor.value.slice(end);
+  const pos = start + tag.length + 1;
+  try{ editor.setSelectionRange(pos, pos); }catch(e){}
+  scheduleContentSave();
+}
+
+function scheduleContentSave(){
+  const saved = document.getElementById('contentEditorSaved');
+  if(saved) saved.textContent = 'Đang lưu…';
+  clearTimeout(_contentSaveTimer);
+  _contentSaveTimer = setTimeout(saveContentEditor, 800);
+}
+
+async function saveContentEditor(){
+  const editor = document.getElementById('contentEditor');
+  const saved = document.getElementById('contentEditorSaved');
+  if(!editor || !_contentEditorFile || !window.pywebview) return;
+  try{
+    const ok = await window.pywebview.api.save_text_file(_contentEditorFile.path, editor.value);
+    if(saved) saved.textContent = ok ? 'Đã lưu ✓' : 'Lưu thất bại';
+  }catch(e){
+    if(saved) saved.textContent = 'Lưu thất bại';
+  }
+}
+
   function toggleVoiceDropdown(){
     document.getElementById('voiceDropdown').classList.toggle('open');
   }

@@ -11,6 +11,7 @@
     --text-tertiary:#7a8291;
     --accent-blue:#4a9eff;
     --accent-blue-dark:#2980ff;
+    --accent-cyan:#00c2ff;
     --accent-teal:#26d07c;
     --accent-amber:#ffb338;
     --accent-red:#ff6b6b;
@@ -55,14 +56,18 @@ a[href] {
     overflow: hidden;
   }
 
-  /* ==================== TOPBAR ==================== */
+  /* ==================== TOPBAR / HERO (kiểu VieNeu: hộp header gradient) ==================== */
   .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border-secondary);
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid var(--border-primary);
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
     animation: slideDown 0.5s ease;
   }
 
@@ -110,19 +115,92 @@ a[href] {
   .brand-text .title {
     font-family: 'Sora', sans-serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 26px;
     letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-teal) 100%);
+    background: linear-gradient(45deg, #60a5fa 0%, #22d3ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .brand-text .sub {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-top: 2px;
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin-top: 4px;
   }
+
+  /* Hàng thông tin dưới tiêu đề hero (kiểu model-card của VieNeu) */
+  .hero-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .hero-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  /* ==================== TIPS BANNER (kiểu warning-banner của VieNeu, nền tối) ==================== */
+  .tips-banner {
+    background: rgba(255, 179, 56, 0.07);
+    border: 1px solid rgba(255, 179, 56, 0.25);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.6s ease backwards 0.05s;
+  }
+
+  .tips-banner-title {
+    color: var(--accent-amber);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .tips-banner-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tips-banner-item {
+    flex: 1;
+    min-width: 240px;
+    background: rgba(255, 179, 56, 0.08);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 179, 56, 0.18);
+  }
+
+  .tips-banner-item strong {
+    color: #fcd34d;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+
+  .tips-banner-content {
+    color: #d8c9a3;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .tips-banner-content b {
+    color: #fde68a;
+  }
+
+  /* Caption trên từng ô điều khiển (kiểu field-caption của VieNeu) */
+  .field-caption { margin: 4px 0 8px 0; }
+  .field-caption p { margin: 0; font-size: 12.5px; color: var(--text-secondary); font-weight: 500; }
 
   .status-pill {
     display: flex;
@@ -349,7 +427,7 @@ a[href] {
     font-family: 'Sora', sans-serif;
     font-size: 16px;
     font-weight: 600;
-    color: #b3b3b3;
+    color: var(--text-primary);
   }
 
   .card-desc {
@@ -1099,7 +1177,7 @@ a[href] {
   .generate-btn {
     width: 100%;
     margin-top: 20px;
-    /* background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-teal) 100%); */
+    background: linear-gradient(90deg, #4a9eff 0%, #00c2ff 100%);
     color: white;
     border: none;
     border-radius: 11px;
@@ -1116,9 +1194,6 @@ a[href] {
     box-shadow: 0 8px 24px rgba(74, 158, 255, 0.3);
     position: relative;
     overflow: hidden;
-    background: rgba(0, 182, 227, .12);
-    color: var(--accent);
-    border: 1px solid rgba(0, 182, 227, .28);
   }
 
   .generate-btn::before {
@@ -2010,4 +2085,121 @@ a[href] {
 @media (max-width: 1100px){
   .wf-page{flex-direction:column; align-items:center; overflow:auto;}
   .wf-page > .wf-card{flex:none; width:100%; max-width:700px; height:auto; max-height:none;}
+}
+
+/* ==================== EMOTION CHIPS + CONTENT EDITOR (kiểu VieNeu) ==================== */
+.emotion-row {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.emotion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.emotion-chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(74, 158, 255, 0.08);
+  border: 1px solid rgba(74, 158, 255, 0.35);
+  border-radius: 20px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.emotion-chip:hover:not(:disabled) {
+  background: linear-gradient(90deg, #4a9eff 0%, #00c2ff 100%);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.35);
+}
+
+.emotion-chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.emotion-hint {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+}
+
+.content-editor {
+  margin-top: 14px;
+}
+
+.content-editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.content-editor-saved {
+  font-size: 11.5px;
+  color: var(--accent-teal);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#contentEditor {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  max-height: 260px;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-y: auto;
+}
+
+#contentEditor:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
+}
+
+.content-editor-note {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+/* Nút tải lại giọng (card 2) — cùng hàng với dropdown, kiểu VieNeu inline-row */
+.voice-reload-btn {
+  margin-left: 12px;
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--border-primary);
+  background: rgba(74, 158, 255, 0.08);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.voice-reload-btn:hover {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 12px rgba(74, 158, 255, 0.25);
 }

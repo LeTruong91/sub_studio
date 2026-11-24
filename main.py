@@ -223,6 +223,30 @@ class Api:
                 "size_kb": size_kb
             })
         return files
+    def read_text_file(self, path):
+        """Đọc nội dung file văn bản/phụ đề để sửa trong ô nội dung (kèm chip cảm xúc)."""
+        try:
+            p = Path(path)
+            if not p.is_file():
+                return {"ok": False, "error": "Không tìm thấy file."}
+            if p.stat().st_size > 2 * 1024 * 1024:
+                return {"ok": False, "error": "File quá lớn (>2MB)."}
+            text = p.read_text(encoding="utf-8-sig", errors="replace")
+            return {"ok": True, "text": text}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+    def save_text_file(self, path, text):
+        """Ghi lại nội dung đã sửa vào file gốc (ô nội dung + chip cảm xúc)."""
+        try:
+            p = Path(path)
+            if not p.is_file():
+                return False
+            if len(text or "") > 2 * 1024 * 1024:
+                return False
+            p.write_text(text or "", encoding="utf-8")
+            return True
+        except Exception:
+            return False
     def pick_output_folder(self):
         """Mở hộp thoại chọn thư mục xuất."""
         result = self._window.create_file_dialog(webview.FOLDER_DIALOG)
