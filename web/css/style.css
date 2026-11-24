@@ -2619,7 +2619,7 @@ a[href] {
   gap: 16px;
 }
 
-.vn-advanced .card,
+.vn-clone-full,
 .vn-recent.card {
   background: #121218;
   border-color: #23232e;
@@ -2627,7 +2627,7 @@ a[href] {
   animation: none;
 }
 
-.vn-advanced .card:hover {
+.vn-clone-full:hover {
   transform: none;
   box-shadow: none;
 }
