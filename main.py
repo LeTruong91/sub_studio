@@ -97,10 +97,13 @@ def _find_voice_server_dir():
     if _VOICE_SERVER_DIR:
         return _VOICE_SERVER_DIR
     candidates = [
+        APP_DIR / "Server",
         APP_DIR / "VieNeu-TTS",
         APP_DIR / "VoiceStudio" / "VieNeu-TTS",
+        APP_DIR.parent / "Server",
         APP_DIR.parent / "VieNeu-TTS",
         APP_DIR.parent / "VoiceStudio" / "VieNeu-TTS",
+        APP_DIR,
     ]
     for root in candidates:
         if (root / "apps" / "openai_speech.py").is_file():
