@@ -1312,3 +1312,58 @@ async function ReloadCloneVoice(){
 
       }
 }
+
+// Nut Mo Server o sidebar: chi hien khi server chua ket noi.
+// Bam -> mo server, cho len roi tai lai danh sach giong.
+let _serverPollTimer = null;
+function showServerError(msg){
+  const eb = document.getElementById('errorBanner');
+  if(!eb) return;
+  eb.textContent = msg;
+  eb.classList.add('active');
+}
+async function refreshServerButton(){
+  const btn = document.getElementById('serverStartBtn');
+  if(!btn || !window.pywebview) return true;
+  try{
+    const st = await window.pywebview.api.check_voice_server();
+    if(st && st.connected){
+      btn.style.display = 'none';
+      if(_serverPollTimer){ clearInterval(_serverPollTimer); _serverPollTimer = null; }
+      return false;
+    }
+  }catch(e){}
+  btn.style.display = '';
+  return true;
+}
+async function onServerStartClick(){
+  const btn = document.getElementById('serverStartBtn');
+  if(!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = 'Đang mở…';
+  try{
+    const res = await window.pywebview.api.start_voice_server();
+    if(res && res.ok){
+      let waited = 0;
+      if(_serverPollTimer) clearInterval(_serverPollTimer);
+      _serverPollTimer = setInterval(async () => {
+        waited += 1;
+        const disconnected = await refreshServerButton();
+        if(!disconnected){
+          btn.disabled = false; btn.textContent = 'Mở Server';
+          if(typeof ReloadCloneVoice === 'function') ReloadCloneVoice();
+        } else if(waited >= 180){
+          clearInterval(_serverPollTimer); _serverPollTimer = null;
+          btn.disabled = false; btn.textContent = 'Mở Server';
+          showServerError('Server chưa lên sau 3 phút — xem _tmp/server.log rồi thử lại.');
+        }
+      }, 1000);
+    } else {
+      btn.disabled = false; btn.textContent = 'Mở Server';
+      showServerError('Không mở được Server: ' + (res && res.error ? res.error : 'lỗi không rõ'));
+    }
+  }catch(e){
+    btn.disabled = false; btn.textContent = 'Mở Server';
+    showServerError('Không mở được Server: ' + e);
+  }
+}

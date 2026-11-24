@@ -49,6 +49,7 @@
         <span class="vn-badge">Server Voice</span>
         <span class="vn-server-addr">127.0.0.1:8282</span>
       </div>
+      <button class="vn-server-btn" id="serverStartBtn" onclick="onServerStartClick()">Mở Server</button>
       <div class="vn-server-note">Mở Server Voice rồi bấm tải lại giọng nếu danh sách trống.</div>
 
       <section class="vn-sec">
@@ -705,6 +706,7 @@
             systemFonts = await window.pywebview.api.get_system_fonts();
             console.log("Fonts:", systemFonts);
            await getCloneConfig()
+           if (typeof refreshServerButton === 'function') refreshServerButton();
            try {
                const fc = await window.pywebview.api.get_folder_config();
                const out = fc && fc.voice_subtitle ? fc.voice_subtitle : '';

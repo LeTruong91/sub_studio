@@ -83,6 +83,126 @@ def _safe_print(*args, **kwargs):
         print(*args, **kwargs)
     except UnicodeEncodeError:
         pass
+VOICE_SERVER_PORT = 8282
+VOICE_SERVER_URL = f"http://127.0.0.1:{VOICE_SERVER_PORT}"
+_VOICE_SERVER_PROC = None   # tien trinh server do app mo (None neu server da chay san)
+_VOICE_SERVER_LOG = None    # file log server (giu tham chieu de khong bi dong som)
+_VOICE_SERVER_DIR = None    # thu muc server da tim thay (cache)
+
+
+def _find_voice_server_dir():
+    """Tim thu muc server VieNeu-TTS: noi co apps/openai_speech.py.
+    Uu tien thu muc VieNeu-TTS canh file exe (sau nay build)."""
+    global _VOICE_SERVER_DIR
+    if _VOICE_SERVER_DIR:
+        return _VOICE_SERVER_DIR
+    candidates = [
+        APP_DIR / "VieNeu-TTS",
+        APP_DIR / "VoiceStudio" / "VieNeu-TTS",
+        APP_DIR.parent / "VieNeu-TTS",
+        APP_DIR.parent / "VoiceStudio" / "VieNeu-TTS",
+    ]
+    for root in candidates:
+        if (root / "apps" / "openai_speech.py").is_file():
+            _VOICE_SERVER_DIR = root
+            return root
+    for base in (APP_DIR, APP_DIR.parent):
+        try:
+            for sub in sorted(base.iterdir()):
+                if not sub.is_dir():
+                    continue
+                if (sub / "apps" / "openai_speech.py").is_file():
+                    _VOICE_SERVER_DIR = sub
+                    return sub
+                for sub2 in sorted(sub.iterdir()):
+                    if sub2.is_dir() and (sub2 / "apps" / "openai_speech.py").is_file():
+                        _VOICE_SERVER_DIR = sub2
+                        return sub2
+        except Exception:
+            continue
+    return None
+
+
+def _find_python():
+    """Tim python de chay server: python tren PATH, roi py launcher, roi python cua app (dev)."""
+    for name in ("python", "py"):
+        path = shutil.which(name)
+        if path:
+            return path
+    if not getattr(sys, "frozen", False):
+        return sys.executable
+    return None
+
+
+def _voice_server_alive():
+    """Server da nghe o 8282 chua (GET /health, timeout ngan)."""
+    try:
+        resp = requests.get(f"{VOICE_SERVER_URL}/health", timeout=2)
+        return resp.status_code == 200
+    except Exception:
+        return False
+
+
+def _start_voice_server():
+    """Mo server neu chua chay. Chi mo tien trinh, khong cho san sang.
+    Tra ve dict {ok, already|started|error}."""
+    global _VOICE_SERVER_PROC, _VOICE_SERVER_LOG
+    if _voice_server_alive():
+        return {"ok": True, "already": True}
+    server_dir = _find_voice_server_dir()
+    if server_dir is None:
+        return {"ok": False, "error": "Không tìm thấy thư mục server (cần có apps/openai_speech.py cạnh file exe)."}
+    py = _find_python()
+    if not py:
+        return {"ok": False, "error": "Không tìm thấy Python trên máy để chạy server."}
+    try:
+        TMP_DIR.mkdir(parents=True, exist_ok=True)
+        log_file = open(TMP_DIR / "server.log", "ab")
+        _VOICE_SERVER_LOG = log_file
+        env = dict(os.environ)
+        env["PORT"] = str(VOICE_SERVER_PORT)
+        env["PYTHONUNBUFFERED"] = "1"
+        cmd = [py, "-m", "apps.openai_speech"]
+        if os.path.basename(py).lower() in ("py.exe", "py"):
+            cmd = [py, "-3", "-m", "apps.openai_speech"]
+        _VOICE_SERVER_PROC = popen_hidden(
+            cmd, cwd=str(server_dir), env=env,
+            stdout=log_file, stderr=log_file,
+        )
+        return {"ok": True, "started": True}
+    except Exception as e:
+        return {"ok": False, "error": f"Không mở được server: {e}"}
+
+
+def _wait_voice_server(timeout_s=120):
+    """Cho server nghe o 8282, toi da timeout_s giay."""
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        if _voice_server_alive():
+            return True
+        if _VOICE_SERVER_PROC is not None and _VOICE_SERVER_PROC.poll() is not None:
+            return False  # tien trinh do app mo da tat (xem _tmp/server.log)
+        time.sleep(1)
+    return _voice_server_alive()
+
+
+def _stop_voice_server():
+    """Tat server neu chinh app da mo no (khong tat server do anh mo tay)."""
+    global _VOICE_SERVER_PROC
+    proc = _VOICE_SERVER_PROC
+    _VOICE_SERVER_PROC = None
+    if proc is None:
+        return
+    try:
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except Exception:
+            proc.kill()
+    except Exception:
+        pass
+
+
 class Api:
 
     def __init__(self):
@@ -118,12 +238,14 @@ class Api:
 
     def on_window_closing(self):
         if self._allow_close:
+            _stop_voice_server()
             return True
         try:
             url = ""
             if self._window and hasattr(self._window, "get_current_url"):
                 url = self._window.get_current_url() or ""
             if "loading.html" in str(url):
+                _stop_voice_server()
                 return True
             if not self._quit_prompt_open:
                 self._pending_quit_prompt = True
@@ -898,6 +1020,14 @@ class Api:
         return max(1, n)
 
     
+    def start_voice_server(self):
+        """JS goi khi bam Mo Server o sidebar. Chi mo tien trinh, khong cho san sang."""
+        return _start_voice_server()
+
+    def check_voice_server(self):
+        """JS goi de biet server da nghe chua: {connected: bool}."""
+        return {"connected": _voice_server_alive()}
+
     #RENDER 
 
 
@@ -1105,20 +1235,35 @@ class Api:
 
 
 
-def _init_background(window):
-    """Chạy sau khi cửa sổ loading đã hiện, load model, rồi chuyển sang giao diện chính."""
+def _set_loading_msg(window, text):
     try:
-        whisper_utils.init_models(num_models=2)
-    except Exception as e:
-        traceback.print_exc()
         window.evaluate_js(
-            f'document.getElementById("msg").innerText = {json.dumps("Lỗi khởi tạo: " + str(e))};'
+            f'document.getElementById("msg").innerText = {json.dumps(text)};'
         )
-        return
+    except Exception:
+        pass
 
-    # # load xong -> chuyển sang giao diện chính
-    window.maximize() 
+
+def _init_background(window):
+    """Chạy sau khi cửa sổ loading đã hiện: khởi động Server Voice, rồi chuyển sang trang đăng nhập."""
+    # 1. Khởi động Server Voice (thay cho whisper_utils.init_models trước đây —
+    #    whisper giờ tự load khi cần dùng, xem whisper_utils._acquire_model).
+    _set_loading_msg(window, "Đang khởi động Server Voice…")
+    res = _start_voice_server()
+    if res.get("already"):
+        _set_loading_msg(window, "Server Voice đã chạy sẵn.")
+    elif res.get("ok"):
+        if _wait_voice_server(timeout_s=120):
+            _set_loading_msg(window, "Server Voice đã sẵn sàng.")
+        else:
+            _set_loading_msg(window, "Server Voice chưa lên kịp — vào app rồi bấm Mở Server ở sidebar.")
+    else:
+        _set_loading_msg(window, "Không mở được Server Voice: " + str(res.get("error", "")))
+    # 2. Vào trang đăng nhập (server lỗi cũng vẫn vào app, mở tay từ sidebar sau).
+    window.maximize()
     window.load_url(str(RESOURCE_DIR / "web" / "login.html"))
+
+
 
 def main():
     api = Api()
