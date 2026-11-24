@@ -235,15 +235,33 @@ async function saveContentEditor(){
       .filter(Boolean)
       .join(", ");
   }
+let cloneCloseTimer = null;
+
 function toggleClone() {
     const enable = document.getElementById('enableClone').checked;
     const boxes = document.querySelectorAll('.clone-box');
+    const form = document.getElementById('cloneForm');
 
-    boxes.forEach(box => {
-        box.classList.toggle('active', enable);
-    });
-
-    document.getElementById('cloneForm').classList.toggle('open', enable);
+    if (enable) {
+        clearTimeout(cloneCloseTimer);
+        boxes.forEach(box => {
+            box.classList.add('active');
+        });
+        form.classList.add('open');
+        if (!cloneAudioPath) {
+            document.getElementById('cloneEmpty').style.display = 'block';
+            document.getElementById('cloneFilled').style.display = 'none';
+        }
+    } else {
+        form.classList.remove('open');
+        cloneCloseTimer = setTimeout(() => {
+            boxes.forEach(box => {
+                box.classList.remove('active');
+            });
+            document.getElementById('cloneEmpty').style.display = 'block';
+            document.getElementById('cloneFilled').style.display = 'none';
+        }, 450);
+    }
 
     const saveCb = document.getElementById('enableSaveClone');
     saveCb.disabled = !enable;
@@ -261,8 +279,6 @@ function toggleClone() {
         toggleVoiceDisabled(false);
         document.getElementById('sumVoice').textContent =
             document.getElementById('voiceSelectName').textContent;
-        document.getElementById('cloneEmpty').style.display = 'block';
-        document.getElementById('cloneFilled').style.display = 'none';
         addStatusMessage('🔊 Nhân bản giọng nói: TẮT', 'info');
     }
 
