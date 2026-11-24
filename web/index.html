@@ -25,132 +25,41 @@
 </head>
 
 <body>
-  <div class="app rs-scope">
+  <div class="app rs-scope vn-app">
 
-    <div class="topbar hero-box">
-      <div class="brand">
-        <div class="brand-mark">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M8 6v12M4 9v6M12 3v18M16 7v10M20 10v4" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" />
-          </svg>
-        </div>
-        <div class="brand-text">
-          <div class="title gradient-text">Sub Generator Studio</div>
-          <div class="sub">Tạo giọng nói từ file văn bản &amp; phụ đề — nhanh, khớp thời gian, nhân bản được giọng</div>
-          <div class="hero-info">
-            <span class="hero-info-item">🗣️ Server Voice · 127.0.0.1:8282</span>
-            <span class="hero-info-item">📄 .txt · .srt · .vtt</span>
-            <span class="hero-info-item">🎭 Nhân bản giọng + Voice Design</span>
-          </div>
-        </div>
+    <!-- Rail trái kiểu app VieNeu -->
+    <aside class="vn-rail">
+      <div class="brand-mark vn-rail-logo">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M8 6v12M4 9v6M12 3v18M16 7v10M20 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
       </div>
+      <button type="button" class="vn-rail-btn active" title="Giọng nói">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
+      </button>
+      <button type="button" class="vn-rail-btn" title="Chọn file" onclick="pickFileSub()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5z"/><path d="M13 3v5h5"/></svg>
+      </button>
+      <button type="button" class="vn-rail-btn" title="Thư mục &amp; cài đặt" onclick="showFolderDialog()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+      </button>
+      <div class="vn-rail-spacer"></div>
+      <button type="button" class="vn-rail-btn" title="Cài đặt" onclick="showFolderDialog()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </aside>
 
-      <div class="rs-appbar-right">
-        <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Sẵn sàng</span>
-        </div>
+    <!-- Sidebar trái kiểu app VieNeu -->
+    <aside class="vn-sidebar">
+      <div class="vn-server">
+        <span class="vn-badge">Server Voice</span>
+        <span class="vn-server-addr">127.0.0.1:8282</span>
       </div>
-    </div>
+      <div class="vn-server-note">Giọng chạy trực tiếp trên máy của bạn, miễn phí. Mở Server Voice rồi bấm tải lại giọng nếu danh sách trống.</div>
 
-    <div class="tips-banner">
-      <div class="tips-banner-title">💡 Gợi ý</div>
-      <div class="tips-banner-grid">
-        <div class="tips-banner-item">
-          <strong>🎭 Thẻ cảm xúc</strong>
-          <div class="tips-banner-content">Chip <b>[cười]</b> <b>[thở dài]</b> <b>[hắng giọng]</b> chèn tag vào nội dung file ở bước 1. Chỉ có tác dụng nếu Server Voice hỗ trợ tag — thử 1 câu ngắn trước, nếu giọng đọc luôn chữ "[cười]" thì server không hỗ trợ.</div>
-        </div>
-        <div class="tips-banner-item">
-          <strong>⏱️ Khớp thời gian</strong>
-          <div class="tips-banner-content">File <b>.srt</b> giữ nguyên mốc thời gian. File <b>.txt</b> sẽ tự tạo phụ đề theo giọng đọc. Đặt <b>thời lượng mong muốn</b> ở bước 6 để app tự tính tốc độ vừa khung.</div>
-        </div>
-        <div class="tips-banner-item">
-          <strong>🎙️ Nhân bản giọng</strong>
-          <div class="tips-banner-content">Bật <b>Nhân Bản Giọng Nói</b> ở bước 5 rồi chọn mẫu âm thanh + nhập đúng văn bản trong mẫu. Tick <b>Lưu Mẫu clone giọng</b> để dùng lại lần sau không cần chọn lại mẫu.</div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <div class="tab-panel active" id="tab_batch">
-      <div class="grid"  style="height: -webkit-fill-available">
-        <div class="stack">
-
-          <!-- Step 1: Text file -->
-          <div class="card">
-            <div class="card-head">
-              <div class="step-num">1</div>
-              <div class="card-head-text">
-                <div class="card-title">Chọn Nội Dung</div>
-                <div class="card-desc">Chọn file gốc để tạo giọng nói & phụ đề</div>
-              </div>
-            </div>
-            <div class="dropzone" id="dropzone" onclick="pickFileSub()">
-              <div id="dzEmpty" style="display:flex;align-items:center;gap:12px;width:100%;">
-                <div class="dz-icon">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5z" stroke="currentColor"
-                      stroke-width="1.5" />
-                    <path d="M13 3v5h5" stroke="currentColor" stroke-width="1.5" />
-                  </svg>
-                </div>
-                <div>
-                  <div class="dz-text-main"><b>Chọn file</b> hoặc duyệt</div>
-                  <div class="dz-hint">Hỗ trợ .txt · .srt · .vtt</div>
-                </div>
-              </div>
-              <div id="btn_delete_files_sub_tab" style="display: none;">
-                <button class="btn_rs_delete rs-tooltip" data-tooltip="Xóa danh sách" onmouseenter="this.style.transform='translateY(-1px) scale(1.06)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';" onmouseleave="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)';" onmousedown="this.style.transform='scale(0.92)';" onmouseup="this.style.transform='translateY(-1px) scale(1.06)';" onclick="clearFile(event)" style="transform: translateY(0px) scale(1); position: absolute; top: -12px; right: 28px; width: 22px; height: 22px; border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 5px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset; background: linear-gradient(145deg, rgb(119, 0, 30), rgb(119, 0, 30));">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"></path>
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                        <path d="M10 11v6"></path>
-                        <path d="M14 11v6"></path>
-                      </svg>
-                </button>
-              </div>
-              <div id="dzFilledList" style="display:none; flex-direction:column; width:100%; gap:8px;"></div>
-            </div>
-
-            <div class="emotion-row">
-              <div class="field-caption">
-                <p>🎭 Chèn cảm xúc vào nội dung</p>
-              </div>
-              <div class="emotion-chips">
-                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[cười]')" disabled>[cười]</button>
-                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[thở dài]')" disabled>[thở dài]</button>
-                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[hắng giọng]')" disabled>[hắng giọng]</button>
-              </div>
-              <div class="emotion-hint">Bấm chip để chèn tag vào vị trí con trỏ trong ô nội dung bên dưới — cần chọn file trước.</div>
-            </div>
-
-            <div class="content-editor" id="contentEditorWrap" style="display:none">
-              <div class="content-editor-head">
-                <span class="content-editor-title">📝 Nội dung: <b id="contentEditorFile">-</b></span>
-                <span class="content-editor-saved" id="contentEditorSaved"></span>
-              </div>
-              <textarea id="contentEditor" rows="6" spellcheck="false"
-                placeholder="Nội dung file sẽ hiện ở đây..."></textarea>
-              <div class="content-editor-note">Sửa xong tự lưu vào file gốc — file .srt giữ nguyên mốc thời gian, chỉ sửa phần chữ.</div>
-            </div>
-
-          </div>
-
-          <div class="dual-col-row">
-            <!-- Step 2: Voice -->
-            <div class="card" style="height: 200px;">
-              <div class="card-head">
-                <div class="step-num">2</div>
-                <div class="card-head-text">
-                  <div class="card-title">Chọn Giọng Đọc</div>
-                  <div class="card-desc">Chọn giọng cho âm thanh đầu ra</div>
-                </div>
-              </div>
-              <div class="field-caption">
-                <p>Giọng mẫu — chọn giọng cho âm thanh đầu ra</p>
-              </div>
-              <div class="voice-dropdown" id="voiceDropdown" style="display: flex; justify-content: center; align-items: center;">
+      <section class="vn-sec">
+        <div class="vn-sec-title">Giọng nói <span id="voiceCount"></span></div>
+<div class="voice-dropdown" id="voiceDropdown" style="display: flex; justify-content: center; align-items: center;">
                 <button type="button" class="voice-select-btn" id="voiceSelectBtn" onclick="toggleVoiceDropdown()">
                   <span class="voice-select-current">
                     <span class="voice-select-name" id="voiceSelectName">Vui lòng chọn giọng đọc</span>
@@ -170,33 +79,80 @@
                   </svg>
                 </div>
               </div>
-            </div>
+        <div class="vn-sec-desc">Giọng đọc lấy từ Server Voice. Chip cảm xúc chỉ có tác dụng nếu server hỗ trợ tag — thử 1 câu ngắn trước.</div>
+      </section>
 
-            <!-- Step 3: Quality + language -->
-            <div class="card">
-              <div class="card-head">
-                <div class="step-num">3</div>
-                <div class="card-head-text">
-                  <div class="card-title">Chất lượng &amp; ngôn ngữ</div>
-                  
-                </div>
+      <section class="vn-sec">
+        <div class="vn-sec-title">Chèn vào câu</div>
+<div class="emotion-chips">
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[cười]')" disabled>Cười</button>
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[thở dài]')" disabled>Thở dài</button>
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[hắng giọng]')" disabled>Hắng giọng</button>
+                <button type="button" class="emotion-chip" onclick="insertEmotionTag('[1]')" disabled>Nghỉ 1s</button>
               </div>
-              <div class="slider-row" id="sliderRow">
-                <div class="slider-block">
+        <div class="vn-sec-desc">Bấm để chèn vào chỗ con trỏ. [1] là nghỉ 1 giây, tối đa [10].</div>
+      </section>
+
+      <section class="vn-sec">
+        <div class="vn-sec-title">Tốc độ đọc</div>
+<div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
                   <div class="field-top">
-                    <label class="field-label" style="margin-bottom:0;">Chất lượng âm thanh</label>
-                    <span class="slider-value" id="numStepVal">+8 NT</span>
+                    <label class="field-label" style="margin-bottom:0;">Tốc Độ Phát</label>
+                    <span class="slider-value" id="speedVal">1.00×</span>
                   </div>
-                  <input type="range" id="NumStepSlider" min="4" max="64" step="1" value="8"
-                    oninput="updateNumStep(this.value)">
-                  <div class="slider-scale"><span>4 NT</span><span>32 NT</span><span>64 NT</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setNumStep(6)">Thấp hơn</button>
-                    <button class="preset-btn" onclick="setNumStep(32)">Bình thường</button>
-                    <button class="preset-btn" onclick="setNumStep(40)">Cao hơn</button>
+                  <input type="range" id="speedSlider" min="0.0" max="2" step="0.05" value="1"
+                    oninput="updateSpeed(this.value)">
+                  <div class="slider-scale"><span>0.50</span><span>1×</span><span>2×</span></div>
+                  <div class="vn-presets">
+                    <button type="button" class="vn-preset" onclick="setSpeed(0.75)">0.75x</button>
+                    <button type="button" class="vn-preset" onclick="setSpeed(1)">1x</button>
+                    <button type="button" class="vn-preset" onclick="setSpeed(1.25)">1.25x</button>
+                    <button type="button" class="vn-preset" onclick="setSpeed(1.5)">1.5x</button>
+                    <button type="button" class="vn-preset" onclick="setSpeed(2)">2x</button>
                   </div>
                 </div>
-                <div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
+        <div class="vn-sec-desc">Chậm 0.5x · Nhanh 2x</div>
+      </section>
+
+      <section class="vn-sec">
+        <div class="vn-sec-title">Âm lượng</div>
+<div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Âm lượng (Volume)</label>
+                    <span class="slider-value" id="volumeVal">+0 dB</span>
+                  </div>
+                  <input type="range" id="volumeSlider" min="0.0" max="2" step="0.05" value="1"
+                    oninput="updateVolume(this.value)">
+                  <div class="slider-scale"><span>0.0×</span><span>1×</span><span>2×</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setVolume(0.7)">Ít hơn</button>
+                    <button class="preset-btn" onclick="setVolume(1.0)">Bình thường</button>
+                    <button class="preset-btn" onclick="setVolume(1.5)">Nhiều hơn</button>
+                  </div>
+                </div>
+      </section>
+
+      <section class="vn-sec">
+        <div class="vn-sec-title">Cao độ</div>
+<div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Cao Độ (Semitone)</label>
+                    <span class="slider-value" id="pitchVal">+0 st</span>
+                  </div>
+                  <input type="range" id="pitchSlider" min="-12" max="12" step="0.1" value="0"
+                    oninput="updatePitch(this.value)">
+                  <div class="slider-scale"><span>-12</span><span>0</span><span>+12</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setPitch(-4)">Thấp hơn</button>
+                    <button class="preset-btn" onclick="setPitch(0)">Tự nhiên</button>
+                    <button class="preset-btn" onclick="setPitch(4)">Cao hơn</button>
+                  </div>
+                </div>
+      </section>
+
+      <section class="vn-sec">
+        <div class="vn-sec-title">Ngôn ngữ</div>
+<div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
                   <div class="field-top" style="margin-bottom: 22px;">
                     <label class="field-label" style="margin-bottom:0;">Ngôn ngữ Voice</label>
                   </div>
@@ -231,10 +187,137 @@
                 </div>
               </div>
                 </div>
-              </div>
-            </div>
+      </section>
+
+      <section class="vn-sec">
+        <div class="vn-sec-title">Chất lượng âm thanh</div>
+<div class="slider-block">
+                  <div class="field-top">
+                    <label class="field-label" style="margin-bottom:0;">Chất lượng âm thanh</label>
+                    <span class="slider-value" id="numStepVal">+8 NT</span>
+                  </div>
+                  <input type="range" id="NumStepSlider" min="4" max="64" step="1" value="8"
+                    oninput="updateNumStep(this.value)">
+                  <div class="slider-scale"><span>4 NT</span><span>32 NT</span><span>64 NT</span></div>
+                  <div class="preset-row">
+                    <button class="preset-btn" onclick="setNumStep(6)">Thấp hơn</button>
+                    <button class="preset-btn" onclick="setNumStep(32)">Bình thường</button>
+                    <button class="preset-btn" onclick="setNumStep(40)">Cao hơn</button>
+                  </div>
+                </div>
+      </section>
+    </aside>
+
+    <!-- Cột chính kiểu app VieNeu -->
+    <main class="vn-main">
+      <div class="vn-tabs">
+        <button type="button" class="vn-tab active">Giọng nói</button>
+        <div class="vn-tabs-right">
+<div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Sẵn sàng</span>
+        </div>
+        </div>
+      </div>
+
+      <div class="vn-summary">
+<div class="summary-row">
+            <span class="summary-label">File</span>
+            <span class="summary-value muted" id="sumFile">Chưa chọn</span>
           </div>
-          <div class="card">
+<div class="summary-row">
+            <span class="summary-label">Giọng đọc</span>
+            <span class="summary-value" id="sumVoice">Minh Đức</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Nhân bản giọng</span>
+            <span class="summary-value muted" id="sumClone">Tắt</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Âm lượng</span>
+            <span class="summary-value" id="sumVolume">1.00x</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Tốc độ</span>
+            <span class="summary-value" id="sumSpeed">1.00×</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Cao độ</span>
+            <span class="summary-value" id="sumPitch">+0 st</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Số phiên bản</span>
+            <span class="summary-value" id="sumCount">1</span>
+          </div>
+<div class="summary-row">
+            <span class="summary-label">Luồng</span>
+            <span class="summary-value" id="sumThreads">2</span>
+          </div>
+      </div>
+
+      <section class="vn-text-card">
+        <div class="vn-text-head">
+          <span>Văn bản</span>
+          <a class="vn-import-link" onclick="pickFileSub()">Nhập từ tệp .txt · .srt · .vtt</a>
+        </div>
+<div class="dropzone" id="dropzone" onclick="pickFileSub()">
+              <div id="dzEmpty" style="display:flex;align-items:center;gap:12px;width:100%;">
+                <div class="dz-icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5z" stroke="currentColor"
+                      stroke-width="1.5" />
+                    <path d="M13 3v5h5" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="dz-text-main"><b>Chọn file</b> hoặc duyệt</div>
+                  <div class="dz-hint">Hỗ trợ .txt · .srt · .vtt</div>
+                </div>
+              </div>
+              <div id="btn_delete_files_sub_tab" style="display: none;">
+                <button class="btn_rs_delete rs-tooltip" data-tooltip="Xóa danh sách" onmouseenter="this.style.transform='translateY(-1px) scale(1.06)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';" onmouseleave="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)';" onmousedown="this.style.transform='scale(0.92)';" onmouseup="this.style.transform='translateY(-1px) scale(1.06)';" onclick="clearFile(event)" style="transform: translateY(0px) scale(1); position: absolute; top: -12px; right: 28px; width: 22px; height: 22px; border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 5px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset; background: linear-gradient(145deg, rgb(119, 0, 30), rgb(119, 0, 30));">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                      </svg>
+                </button>
+              </div>
+              <div id="dzFilledList" style="display:none; flex-direction:column; width:100%; gap:8px;"></div>
+            </div>
+<div class="content-editor" id="contentEditorWrap">
+              <div class="content-editor-head">
+                <span class="content-editor-title">📝 Nội dung: <b id="contentEditorFile">-</b></span>
+                <span class="content-editor-saved" id="contentEditorSaved"></span>
+              </div>
+              <textarea id="contentEditor" rows="6" spellcheck="false"
+                placeholder="Chọn file .txt / .srt / .vtt ở trên để hiện nội dung tại đây — bấm chip cảm xúc để chèn tag vào câu."></textarea>
+              <div class="content-editor-note">Sửa xong tự lưu vào file gốc — file .srt giữ nguyên mốc thời gian, chỉ sửa phần chữ.</div>
+            </div>
+        <div class="vn-save-row">
+          <div class="vn-save-left">
+            <span class="vn-save-label">Lưu thành</span>
+            <span class="vn-save-folder" id="outputPath">Thư mục chính</span>
+            <span class="vn-save-sep">/</span>
+            <input type="text" class="vn-filename" id="namePattern" value="{file}_{index}" spellcheck="false">
+            <span class="vn-save-ext">.wav</span>
+          </div>
+          <div class="vn-save-right">
+            <span class="vn-charcount" id="charCount">0 ký tự</span>
+<div class="wave idle" id="wave"></div>
+<button class="generate-btn vn-generate" id="genBtn" onclick="runGenerate()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 3l14 9-14 9V3z" fill="currentColor" />
+            </svg>
+            <span id="genLabel">Tạo Ngay</span>
+          </button>
+          </div>
+        </div>
+        <div class="vn-save-note"><span id="charCountNote">0 ký tự</span> · lưu vào thư mục Output · Server Voice trên máy, miễn phí</div>
+      </section>
+
+      <section class="vn-advanced">
+<div class="card">
             <div class="card-head">
               <div class="step-num">4</div>
               <div class="card-head-text">
@@ -296,7 +379,7 @@
                 </label>
               </div>
           </div>
-          <div class="card">
+<div class="card">
              <div class="card-head">
               <div class="step-num">5</div>
               <div class="card-head-text">
@@ -368,73 +451,15 @@
             </div>
 
           </div>
-          <!-- <div class="dual-col-row"> -->
-          <!-- Step 4: Speed & Pitch -->
-
-
-          <!-- Step 5: Batch Count -->
-          <div class="tree-col-row">
-            <div class="card">
-              <div class="card-head">
-                <div class="step-num">6</div>
-                <div class="card-head-text">
-                  <div class="card-title">Tốc Độ & Cao Độ</div>
-                  <div class="card-desc">Tinh chỉnh tốc độ phát và cao độ giọng nói</div>
-                </div>
-              </div>
-              <div class="slider-row" id="sliderRow">
-                <div class="slider-block">
-                  <div class="field-top">
-                    <label class="field-label" style="margin-bottom:0;">Âm lượng (Volume)</label>
-                    <span class="slider-value" id="volumeVal">+0 dB</span>
-                  </div>
-                  <input type="range" id="volumeSlider" min="0.0" max="2" step="0.05" value="1"
-                    oninput="updateVolume(this.value)">
-                  <div class="slider-scale"><span>0.0×</span><span>1×</span><span>2×</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setVolume(0.7)">Ít hơn</button>
-                    <button class="preset-btn" onclick="setVolume(1.0)">Bình thường</button>
-                    <button class="preset-btn" onclick="setVolume(1.5)">Nhiều hơn</button>
-                  </div>
-                </div>
-                <div class="slider-block" id="speedBlock" style="padding: 0 10px 0 10px;">
-                  <div class="field-top">
-                    <label class="field-label" style="margin-bottom:0;">Tốc Độ Phát</label>
-                    <span class="slider-value" id="speedVal">1.00×</span>
-                  </div>
-                  <input type="range" id="speedSlider" min="0.0" max="2" step="0.05" value="1"
-                    oninput="updateSpeed(this.value)">
-                  <div class="slider-scale"><span>0.50</span><span>1×</span><span>2×</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setSpeed(0.85)">Chậm</button>
-                    <button class="preset-btn" onclick="setSpeed(1)">Bình thường</button>
-                    <button class="preset-btn" onclick="setSpeed(1.25)">Nhanh</button>
-                  </div>
-                </div>
-                <div class="slider-block">
-                  <div class="field-top">
-                    <label class="field-label" style="margin-bottom:0;">Cao Độ (Semitone)</label>
-                    <span class="slider-value" id="pitchVal">+0 st</span>
-                  </div>
-                  <input type="range" id="pitchSlider" min="-12" max="12" step="0.1" value="0"
-                    oninput="updatePitch(this.value)">
-                  <div class="slider-scale"><span>-12</span><span>0</span><span>+12</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setPitch(-4)">Thấp hơn</button>
-                    <button class="preset-btn" onclick="setPitch(0)">Tự nhiên</button>
-                    <button class="preset-btn" onclick="setPitch(4)">Cao hơn</button>
-                  </div>
-                </div>
-
-
-              </div>
-              <!-- Emotion / Style -->
-              <!-- <div class="emotion-block">
-
-          
-
-        </div> -->
-              <div class="duration-calc">
+        <div class="card">
+          <div class="card-head">
+            <div class="step-num">6</div>
+            <div class="card-head-text">
+              <div class="card-title">Thời lượng mong muốn</div>
+              <div class="card-desc">Tự động tính tốc độ vừa khung thời gian</div>
+            </div>
+          </div>
+<div class="duration-calc">
                 <div class="duration-calc-toggle open" id="durationToggle" onclick="toggleDurationCalc()">
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -450,8 +475,8 @@
                   <div class="duration-result" id="durationResult">Chưa đặt thời lượng — sẽ dùng tốc độ ở trên</div>
                 </div>
               </div>
-            </div>
-            <div class="card" style="height: -webkit-fill-available;">
+        </div>
+<div class="card" style="height: -webkit-fill-available;">
               <div class="card-head">
                 <div class="step-num">7</div>
                 <div class="card-head-text">
@@ -488,93 +513,29 @@
                   margin-top: 10px;"><label class="rs-switch"><input type="checkbox" id="NameTSSByContent"><span class="rs-switch-track"></span><span
                       class="rs-label">Sử dụng tên từ danh sách nội dung</span></label></div>
               </div>
-              <div style="margin-top:43px;">
-
-                <textarea class="name-pattern" rows="1" id="namePattern">{file}_{index}</textarea>
-              </div>
+              
             </div>
+      </section>
 
-          </div>
-
-
-          <!-- </div> -->
-
+      <section class="vn-recent card">
+        <div class="vn-recent-head">
+          <span>Bản ghi gần đây</span>
+          <span class="vn-recent-path" id="recentPath"></span>
         </div>
-
-        <!-- Right: Summary Card -->
-        <div class="card summary-card">
-          <div class="wave idle" id="wave"></div>
-
-          <div class="summary-row">
-            <span class="summary-label">File</span>
-            <span class="summary-value muted" id="sumFile">Chưa chọn</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Giọng đọc</span>
-            <span class="summary-value" id="sumVoice">Minh Đức</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Nhân bản giọng</span>
-            <span class="summary-value muted" id="sumClone">Tắt</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Âm lượng</span>
-            <span class="summary-value" id="sumVolume">1.00x</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Tốc độ</span>
-            <span class="summary-value" id="sumSpeed">1.00×</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Cao độ</span>
-            <span class="summary-value" id="sumPitch">+0 st</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Số phiên bản</span>
-            <span class="summary-value" id="sumCount">1</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Luồng</span>
-            <span class="summary-value" id="sumThreads">2</span>
-          </div>
-
-          <button class="generate-btn" id="genBtn" onclick="runGenerate()">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M5 3l14 9-14 9V3z" fill="currentColor" />
-            </svg>
-            <span id="genLabel">Tạo Ngay</span>
-          </button>
-
-          <!--
-        Đã gộp khối tiến trình (progress-wrap: thanh %, danh sách file + nút play)
-        vào NẰM BÊN TRONG khối "Nhật Ký Trạng Thái" thay vì 2 khối tách rời.
-      -->
-          <div class="status-log" id="statusLog">
-            <div class="status-log-header">📋 Nhật Ký Trạng Thái</div>
-
-            <div class="progress-wrap" id="progressWrap">
+        <div class="status-log active" id="statusLog">
+<div class="progress-wrap" id="progressWrap">
               <div class="progress-label"><span id="progressText">Đang xử lý…</span><span id="progressPct">0%</span>
               </div>
               <div class="progress-track">
                 <div class="progress-fill" id="progressFill"></div>
               </div>
             </div>
-
-            <div class="status-log-content" id="statusLogContent"></div>
-            
-          <div class="error-banner" id="errorBanner"></div>
-          </div>
-
+        <div class="status-log-content" id="statusLogContent"></div>
+<div class="error-banner" id="errorBanner"></div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
-
-
-
-
-
-
 
 
   <!--Dialog-->
@@ -933,6 +894,14 @@
             systemFonts = await window.pywebview.api.get_system_fonts();
             console.log("Fonts:", systemFonts);
            await getCloneConfig()
+           try {
+               const fc = await window.pywebview.api.get_folder_config();
+               const out = fc && fc.voice_subtitle ? fc.voice_subtitle : '';
+               const op = document.getElementById('outputPath');
+               if (op && out) op.textContent = out;
+               const rp = document.getElementById('recentPath');
+               if (rp && out) rp.textContent = out;
+           } catch (e) {}
             // onFontsLoaded(); // gọi hàm xử lý UI của bạn ở đây
         } catch (err) {
             apiReady = false; // cho phép thử lại nếu lỗi

@@ -411,7 +411,7 @@ a[href] {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: white;
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
     width: 28px;
     height: 28px;
     border-radius: 8px;
@@ -420,7 +420,7 @@ a[href] {
     justify-content: center;
     flex-shrink: 0;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
   }
 
   .card-title {
@@ -2202,4 +2202,497 @@ a[href] {
   color: var(--accent-blue);
   border-color: var(--accent-blue);
   box-shadow: 0 0 12px rgba(74, 158, 255, 0.25);
+}
+
+/* ==================== LAYOUT KIỂU APP VIENEU (rail + sidebar + main) ==================== */
+.vn-app {
+  flex-direction: row !important;
+  padding: 0 !important;
+  gap: 0;
+  height: 100%;
+  background: #0b0b10;
+}
+
+/* Rail trái */
+.vn-rail {
+  width: 60px;
+  flex-shrink: 0;
+  background: #0d0d12;
+  border-right: 1px solid #1e1e28;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 8px;
+}
+
+.vn-rail-logo {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35) !important;
+  animation: none !important;
+  margin-bottom: 8px;
+}
+
+.vn-rail-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #8b8b9e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.vn-rail-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.vn-rail-btn:hover {
+  background: #1a1a24;
+  color: #fff;
+}
+
+.vn-rail-btn.active {
+  background: rgba(139, 92, 246, 0.18);
+  color: #a78bfa;
+}
+
+.vn-rail-spacer {
+  flex: 1;
+}
+
+/* Sidebar trái */
+.vn-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: #101016;
+  border-right: 1px solid #1e1e28;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.vn-sidebar::-webkit-scrollbar { width: 4px; }
+.vn-sidebar::-webkit-scrollbar-thumb { background: #2a2a36; border-radius: 4px; }
+
+.vn-server {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vn-badge {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vn-server-addr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.vn-server-note {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.55;
+  margin: 10px 0 4px;
+}
+
+.vn-sec {
+  padding: 16px 0;
+  border-bottom: 1px solid #1c1c26;
+}
+
+.vn-sec:last-child {
+  border-bottom: none;
+}
+
+.vn-sec-title {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.vn-sec-desc {
+  font-size: 12px;
+  color: #8b8b9e;
+  line-height: 1.55;
+  margin-top: 10px;
+}
+
+.vn-sidebar .voice-dropdown {
+  display: flex;
+}
+
+.vn-sidebar .voice-select-btn {
+  flex: 1;
+  min-width: 0;
+}
+
+.vn-sidebar .slider-block {
+  padding: 0 !important;
+}
+
+.vn-sidebar .field-top {
+  margin-bottom: 8px;
+}
+
+.vn-presets {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.vn-preset {
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 8px;
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  color: #c7c7d4;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vn-preset:hover {
+  border-color: #8b5cf6;
+  color: #fff;
+}
+
+.vn-sidebar .emotion-chip {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.vn-sidebar .emotion-chip:hover:not(:disabled) {
+  background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+}
+
+/* Cột chính */
+.vn-main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 14px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #0b0b10;
+}
+
+.vn-main::-webkit-scrollbar { width: 6px; }
+.vn-main::-webkit-scrollbar-thumb { background: #2a2a36; border-radius: 4px; }
+
+.vn-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  border-bottom: 1px solid #23232e;
+}
+
+.vn-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  color: #9ca3af;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.vn-tab.active {
+  color: #fff;
+  border-bottom-color: #8b5cf6;
+}
+
+.vn-tabs-right {
+  margin-left: auto;
+  padding-bottom: 8px;
+}
+
+.vn-tabs-right .status-pill {
+  height: 34px;
+}
+
+/* Dải tóm tắt */
+.vn-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+}
+
+.vn-summary .summary-row {
+  border-bottom: none;
+  padding: 0;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.vn-summary .summary-label {
+  color: #8b8b9e;
+}
+
+.vn-summary .summary-value {
+  color: #c4b5fd;
+}
+
+/* Thẻ văn bản lớn */
+.vn-text-card {
+  background: #121218;
+  border: 1px solid #23232e;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 540px;
+}
+
+.vn-text-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.vn-import-link {
+  color: #a78bfa !important;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.vn-import-link:hover {
+  text-decoration: underline;
+}
+
+.vn-text-card .dropzone {
+  padding: 12px 16px;
+}
+
+.vn-text-card .content-editor {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.vn-text-card #contentEditor {
+  flex: 1;
+  min-height: 300px;
+  max-height: none;
+  background: #0d0d12;
+  border-color: #26262f;
+}
+
+.vn-text-card #contentEditor:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.vn-save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.vn-save-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.vn-save-label {
+  font-size: 12.5px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.vn-save-folder {
+  font-size: 12.5px;
+  color: #e8eaef;
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  border-radius: 8px;
+  padding: 7px 10px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vn-save-sep {
+  color: #6b7280;
+}
+
+.vn-filename {
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  color: #e8eaef;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12.5px;
+  font-family: 'JetBrains Mono', monospace;
+  width: 180px;
+}
+
+.vn-filename:focus {
+  outline: none;
+  border-color: #8b5cf6;
+}
+
+.vn-save-ext {
+  color: #9ca3af;
+  font-size: 12.5px;
+}
+
+.vn-save-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vn-charcount {
+  font-size: 12px;
+  color: #8b8b9e;
+  white-space: nowrap;
+}
+
+.vn-save-row .wave {
+  width: 56px;
+}
+
+.vn-generate {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 13px 28px !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35) !important;
+}
+
+.vn-generate:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.45) !important;
+}
+
+.vn-save-note {
+  font-size: 12px;
+  color: #8b8b9e;
+  margin-top: 10px;
+}
+
+/* Cài đặt nâng cao + bản ghi gần đây */
+.vn-advanced {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.vn-advanced .card,
+.vn-recent.card {
+  background: #121218;
+  border-color: #23232e;
+  box-shadow: none;
+  animation: none;
+}
+
+.vn-advanced .card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.vn-recent-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.vn-recent-path {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: #8b8b9e;
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  border-radius: 8px;
+  padding: 5px 10px;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vn-recent .status-log-content {
+  min-height: 80px;
+}
+
+/* Slider tím kiểu VieNeu */
+input[type="range"] {
+  accent-color: #8b5cf6;
+}
+
+/* Nút chọn giọng trong sidebar hẹp: tên không xuống dòng */
+.vn-sidebar .voice-select-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.vn-sidebar .voice-select-tag {
+  flex-shrink: 0;
+}
+
+/* Sidebar: ưu tiên tên giọng, tag mô tả gọn lại */
+.vn-sidebar .voice-select-name {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+}
+
+.vn-sidebar .voice-select-tag {
+  max-width: 96px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Lưới Voice Design trong thẻ hẹp: 3 cột để select không bị cắt chữ */
+.vn-advanced .instruct-select-grid {
+  grid-template-columns: repeat(3, 1fr);
 }

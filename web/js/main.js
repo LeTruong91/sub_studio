@@ -104,6 +104,15 @@ let _contentEditorFile = null;
 let _contentSaveTimer = null;
 let _contentEditorBound = false;
 
+function updateCharCount(){
+  const editor = document.getElementById('contentEditor');
+  const n = editor ? editor.value.length : 0;
+  const cc = document.getElementById('charCount');
+  if(cc) cc.textContent = n + ' ký tự';
+  const cn = document.getElementById('charCountNote');
+  if(cn) cn.textContent = n + ' ký tự';
+}
+
 async function loadContentEditor(){
   const wrap = document.getElementById('contentEditorWrap');
   const editor = document.getElementById('contentEditor');
@@ -116,19 +125,22 @@ async function loadContentEditor(){
   }
   if(!selectedFiles || selectedFiles.length === 0){
     _contentEditorFile = null;
-    wrap.style.display = 'none';
+    editor.value = '';
     chips.forEach(c => c.disabled = true);
+    document.getElementById('contentEditorFile').textContent = '-';
+    if(saved) saved.textContent = '';
+    updateCharCount();
     return;
   }
   const file = selectedFiles[0];
   _contentEditorFile = file;
   chips.forEach(c => c.disabled = false);
-  wrap.style.display = 'block';
   document.getElementById('contentEditorFile').textContent = file.name;
   if(saved) saved.textContent = 'Đang tải…';
   if(!window.pywebview){
     editor.value = '';
     if(saved) saved.textContent = 'Chưa kết nối app';
+    updateCharCount();
     return;
   }
   try{
@@ -143,6 +155,7 @@ async function loadContentEditor(){
   }catch(e){
     if(saved) saved.textContent = 'Không đọc được file.';
   }
+  updateCharCount();
 }
 
 function insertEmotionTag(tag){
@@ -160,6 +173,7 @@ function insertEmotionTag(tag){
 function scheduleContentSave(){
   const saved = document.getElementById('contentEditorSaved');
   if(saved) saved.textContent = 'Đang lưu…';
+  updateCharCount();
   clearTimeout(_contentSaveTimer);
   _contentSaveTimer = setTimeout(saveContentEditor, 800);
 }
@@ -1198,6 +1212,8 @@ function renderCloneVoices(voices) {
     if (!voices || voices.length === 0) {
         document.getElementById("voiceSelectName").textContent = "Vui lòng chọn giọng đọc";
         document.getElementById("voiceSelectTag").textContent = "Chưa chọn giọng";
+        const vc0 = document.getElementById("voiceCount");
+        if (vc0) vc0.textContent = "(0)";
         return;
     }
 
@@ -1230,6 +1246,9 @@ function renderCloneVoices(voices) {
     if (firstVoice) {
         pickVoice(firstVoice);
     }
+
+    const vc = document.getElementById("voiceCount");
+    if (vc) vc.textContent = "(" + voices.length + ")";
 }
 
 async function ReloadCloneVoice(){
