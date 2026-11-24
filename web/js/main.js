@@ -501,9 +501,10 @@ function composeCloneDescription(){
   const genEl = document.getElementById('genderSaveClone');
   let out = descEl ? (descEl.value || '').trim().replace(/\u00b7/g, '-') : '';
   const gender = genEl ? (genEl.value || '') : '';
+  const label = gender === 'male' ? 'Nam' : gender === 'female' ? 'Nữ' : '';
   const first = (out.split(/[\s-]+/)[0] || '').toLowerCase();
-  if (gender && first !== 'nam' && first !== 'nữ') {
-    out = out ? gender + ' - ' + out : gender;
+  if (label && first !== 'nam' && first !== 'nữ') {
+    out = out ? label + ' - ' + out : label;
   }
   return out.slice(0, 64);
 }

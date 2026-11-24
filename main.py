@@ -648,6 +648,19 @@ class Api:
                 base_cues = subtitle_utils.load_cues(original_path)
                 base_script_text = subtitle_utils.full_script_text(base_cues)
 
+                # Tên file ra: {index} là số phiên bản. Tìm số còn trống để
+                # tạo lại cùng tên không đè file cũ (vd tạo tiếp từ text).
+                def _stem_for(idx):
+                    s = name_pattern.replace("{index}", str(idx).zfill(2)) \
+                                    .replace("{voice}", voice) \
+                                    .replace("{file}", source_stem)
+                    return unicodedata.normalize('NFC', Path(s).stem)
+
+                start_index = 1
+                while ((output_dir / f"{_stem_for(start_index)}.wav").exists()
+                       or (output_dir / f"{_stem_for(start_index)}.srt").exists()):
+                    start_index += 1
+
                 # ====== VÒNG LẶP TUẦN TỰ QUA TỪNG PHIÊN BẢN ======
                 for index in range(1, count + 1):
                     if self._gen_stop.is_set():
@@ -657,7 +670,8 @@ class Api:
                         })
                         return {"success": False, "stopped": True, "file_name": original_name}
 
-                    idx_str = str(index).zfill(2)
+                    version_no = start_index + index - 1
+                    idx_str = str(version_no).zfill(2)
 
                     cues = base_cues
                     script_text = base_script_text
@@ -670,10 +684,7 @@ class Api:
                     # TTS đọc từ file gốc
                     synth_source_path = original_path
 
-                    stem = name_pattern.replace("{index}", idx_str) \
-                                        .replace("{voice}", voice) \
-                                        .replace("{file}", source_stem)
-                    stem = unicodedata.normalize('NFC', Path(stem).stem)
+                    stem = _stem_for(version_no)
 
                     version_base_wav = TMP_DIR / f"version_{file_index}_{idx_str}.wav"
 
