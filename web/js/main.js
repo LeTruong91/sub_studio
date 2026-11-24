@@ -744,12 +744,6 @@ function showTab(tabId) {
     panel.classList.toggle('active', panel.id === 'tab_' + tabId);
   });
 
-  if (tabId === 'render') {
-    requestAnimationFrame(updatePreviewFrameHeight);
-  }
-  if (tabId === 'scene' && typeof loadSceneStudio === 'function') {
-    loadSceneStudio();
-  }
 }
   // window.onBackendEvent = function(event, payload){
   //   const fill = document.getElementById('progressFill');
@@ -1156,4 +1150,20 @@ function renderCloneVoices(voices) {
     if (firstVoice) {
         pickVoice(firstVoice);
     }
+}
+
+async function ReloadCloneVoice(){
+      try {
+
+        // gọi python lấy config
+        let config = await window.pywebview.api.get_clone_config();
+        if (config) {
+            renderCloneVoices(config);
+        }
+      }
+      catch (e) {
+          showCheck("Sever Voice chưa được mở. Vui lòng mở Sever rồi tải lại!", () => {
+        });
+
+      }
 }
