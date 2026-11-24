@@ -387,17 +387,8 @@ function toggleSaveClone(){
     }
   }
 
-    function updateNumStep(v){
-    document.getElementById('numStepVal').textContent = parseFloat(v)+" NT";
+    
 
-  }
-
-
-//
-function setNumStep(v){
-      document.getElementById('NumStepSlider').value = v;
-      updateNumStep(v)
-}
 
   function updateSpeed(v){
     document.getElementById('speedVal').textContent = parseFloat(v).toFixed(2)+'×';
@@ -520,7 +511,6 @@ async function runGenerate(){
   const errorBanner = document.getElementById('errorBanner');
   const isSaveClone = document.getElementById("enableSaveClone");
   const nameCloneSave = document.getElementById("nameSaveClone");
-  const num_step = document.getElementById("NumStepSlider").value;
   let name_out ="";
   if(!selectedFiles || selectedFiles.length === 0){
     errorBanner.textContent = 'Vui lòng chọn file trước.';
@@ -557,7 +547,6 @@ async function runGenerate(){
     files: selectedFiles.map(f => ({ path: f.path, name: f.name })), // gửi cả danh sách
     voice: getSelectedVoice(),
     language: getSelectedLag(),
-    num_step:parseInt(num_step),
     instruct: getVoiceInstruct(),
     enable_clone_save:isSaveClone.checked,
     nameCloneSave:nameCloneSave.value,

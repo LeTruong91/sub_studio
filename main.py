@@ -588,7 +588,6 @@ class Api:
         nameCloneSave = config.get("nameCloneSave","NameVoice")
         desCLoneSave = config.get("desCLoneSave","Mô Tả Voice")
         language = config.get("language","vi")
-        num_step = config.get("num_step",16)
         instruct = str(config.get("instruct") or "").strip()
         # ====== SỐ LUỒNG CHO FILE (không còn dùng cho count nữa) ======
         file_threads = max(1, min(16, self._batch_thread_count(config, 1)))
@@ -692,7 +691,6 @@ class Api:
                         ref_audio=clone_audio if enable_clone else None,
                         ref_text=ref_text if enable_clone else None,
                         language= language if language else "vi",
-                        num_step=num_step,
                         instruct=instruct or None,
                         voices_dir=str(APP_DIR / "voices"),
                         # speed=1.0,
