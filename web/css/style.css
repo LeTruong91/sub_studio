@@ -3267,3 +3267,18 @@ input[type="range"] {
   color: #fff;
   box-shadow: 0 4px 14px rgba(74, 158, 255, 0.4);
 }
+
+/* Nut gat Luu mau doi xuong tren o ten: mo khi chua bat nhan ban */
+.vn-clone-full .clone-toggle:has(input:disabled) {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* O ten giong full chieu rong (khong con trong hang 2 cot) */
+.vn-clone-full .clone-name-wrap {
+  display: flex;
+}
+
+.vn-clone-full .clone-name-wrap input {
+  flex: 1;
+}

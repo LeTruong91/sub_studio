@@ -295,7 +295,7 @@
           </button>
           </div>
         </div>
-        <div class="vn-save-note">Lưu vào thư mục Output · Server Voice trên máy, miễn phí</div>
+        
       </section>
 
 <div class="card vn-clone-full">
@@ -311,10 +311,7 @@
               <input type="checkbox" id="enableClone" onchange="toggleClone()" />
               <span>Bật Nhân Bản Giọng Nói</span>
             </label>
-                <label class="clone-toggle" style="margin-bottom: 10px;">
-              <input type="checkbox" id="enableSaveClone" onchange="toggleSaveClone()" disabled />
-              <span>Lưu Mẫu clone giọng</span>
-            </label>
+                
               </div>
             </div>
               
@@ -357,13 +354,15 @@
                   placeholder="Nhập nội dung được đọc trong mẫu âm thanh..."></textarea>
                 </div>
               </div>
-              <div class="clone-box" id="cloneSaveFields">
-                <div class="clone-row">
+              <div class="clone-box">
+                <label class="clone-toggle" style="margin-bottom: 10px;">
+              <input type="checkbox" id="enableSaveClone" onchange="toggleSaveClone()" disabled />
+              <span>Lưu Mẫu clone giọng</span>
+            </label>
+                <div id="cloneSaveFields">
                   <div class="clone-name-wrap">
                     <input type="text" class="rs-source-input" id="nameSaveClone"  placeholder="Nhập tên giọng nói"/>
                   </div>
-                  <textarea id="CloneSaveText" class="name-pattern"
-                  placeholder="Nhập mô ta cho mẫu âm thanh..."></textarea>
                 </div>
               </div>
             </div>

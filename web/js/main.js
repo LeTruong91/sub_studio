@@ -471,7 +471,6 @@ async function runGenerate(){
   const errorBanner = document.getElementById('errorBanner');
   const isSaveClone = document.getElementById("enableSaveClone");
   const nameCloneSave = document.getElementById("nameSaveClone");
-  const desCLoneSave= document.getElementById("CloneSaveText");
   const num_step = document.getElementById("NumStepSlider").value;
   let name_out ="";
   if(!selectedFiles || selectedFiles.length === 0){
@@ -513,7 +512,7 @@ async function runGenerate(){
     instruct: getVoiceInstruct(),
     enable_clone_save:isSaveClone.checked,
     nameCloneSave:nameCloneSave.value,
-    desCLoneSave:desCLoneSave.value,
+    desCLoneSave:"",
     speed: parseFloat(document.getElementById('speedSlider').value),
     pitch: parseFloat(document.getElementById('pitchSlider').value),
     count: 1,
