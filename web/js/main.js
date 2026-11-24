@@ -34,7 +34,6 @@ async function pickFileSub(){
 
   document.getElementById('dropzone').classList.add('has-file');
   document.getElementById('dzEmpty').style.display = 'none';
-  document.getElementById('btn_delete_files_sub_tab').style.display = 'none';
 
   renderFileList();
 
@@ -54,13 +53,37 @@ function renderFileList(){
     listEl.style.display = 'none';
     listEl.innerHTML = '';
     document.getElementById('dzEmpty').style.display = 'flex';
-    document.getElementById('btn_delete_files_sub_tab').style.display = 'none';
+    syncFileActionButtons();
     document.getElementById('dropzone').classList.remove('has-file');
     return;
   }
-  document.getElementById('btn_delete_files_sub_tab').style.display = 'flex';
+  syncFileActionButtons();
   listEl.style.display = 'flex';
   listEl.innerHTML = selectedFiles.map((f, i) => renderFileRow(f, i)).join('');
+}
+
+function syncFileActionButtons(){
+  const del = document.getElementById('btnDeleteAllFiles');
+  const exp = document.getElementById('btnExpandFileList');
+  const listEl = document.getElementById('dzFilledList');
+  if (del) del.disabled = selectedFiles.length === 0;
+  if (exp) {
+    exp.disabled = selectedFiles.length <= 1;
+    if (selectedFiles.length <= 1 && listEl.classList.contains('expanded')) {
+      listEl.classList.remove('expanded');
+      exp.classList.remove('open');
+      exp.title = 'Xem toàn bộ danh sách';
+    }
+  }
+}
+
+function toggleFileListExpand(event){
+  if (event) event.stopPropagation();
+  const listEl = document.getElementById('dzFilledList');
+  const btn = document.getElementById('btnExpandFileList');
+  const open = listEl.classList.toggle('expanded');
+  btn.classList.toggle('open', open);
+  btn.title = open ? 'Thu gọn danh sách' : 'Xem toàn bộ danh sách';
 }
 
 function clearOneFile(event, index){

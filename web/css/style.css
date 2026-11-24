@@ -3494,3 +3494,75 @@ input[type="range"] {
 #voiceDropdown .voice-select-current {
   text-align: left;
 }
+
+/* Nut hanh dong o dau the Van ban: xem full + xoa tat ca */
+.vn-text-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vn-head-icon-btn {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: #8b8b9e;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.vn-head-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.25s ease;
+}
+
+.vn-head-icon-btn:hover:not(:disabled) {
+  color: var(--accent-blue);
+  background: rgba(74, 158, 255, 0.12);
+}
+
+.vn-head-icon-btn.danger {
+  color: #ff6b6b;
+}
+
+.vn-head-icon-btn.danger:hover:not(:disabled) {
+  color: #ff8585;
+  background: rgba(255, 107, 107, 0.12);
+}
+
+.vn-head-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.vn-head-icon-btn.open svg {
+  transform: rotate(180deg);
+}
+
+/* Danh sach file mo rong: xem full */
+#dzFilledList.expanded {
+  max-height: 240px;
+}
+
+/* Moi hang file co nen rieng, khac nen the */
+.dz-file-row {
+  background: #1b2334;
+  border: 1px solid #26314a;
+}
+
+.dz-file-row:hover {
+  background: #212c42;
+}
+
+.dz-file-row.active {
+  background: rgba(74, 158, 255, 0.14);
+  border-color: rgba(74, 158, 255, 0.5);
+  box-shadow: none;
+}

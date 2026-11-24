@@ -201,7 +201,15 @@
       <section class="vn-text-card">
         <div class="vn-text-head">
           <span>Văn bản</span>
-          <a class="vn-import-link" onclick="pickFileSub()">Nhập từ tệp .txt · .srt · .vtt</a>
+          <div class="vn-text-actions">
+            <a class="vn-import-link" onclick="pickFileSub()">Nhập từ tệp .txt · .srt · .vtt</a>
+            <button type="button" id="btnExpandFileList" class="vn-head-icon-btn" title="Xem toàn bộ danh sách" onclick="toggleFileListExpand(event)" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <button type="button" id="btnDeleteAllFiles" class="vn-head-icon-btn danger" title="Xóa tất cả file" onclick="clearFile(event)" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            </button>
+          </div>
         </div>
 <div class="dropzone" id="dropzone" onclick="pickFileSub()">
               <div id="dzEmpty" style="display:flex;align-items:center;gap:12px;width:100%;">
@@ -217,17 +225,7 @@
                   <div class="dz-hint">Hỗ trợ .txt · .srt · .vtt · Chọn nhiều file cùng lúc</div>
                 </div>
               </div>
-              <div id="btn_delete_files_sub_tab" style="display: none;">
-                <button class="btn_rs_delete rs-tooltip" data-tooltip="Xóa danh sách" onmouseenter="this.style.transform='translateY(-1px) scale(1.06)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';" onmouseleave="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 2px 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)';" onmousedown="this.style.transform='scale(0.92)';" onmouseup="this.style.transform='translateY(-1px) scale(1.06)';" onclick="clearFile(event)" style="transform: translateY(0px) scale(1); position: absolute; top: -12px; right: 28px; width: 22px; height: 22px; border-radius: 50%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 5px, rgba(255, 255, 255, 0.3) 0px 1px 0px inset; background: linear-gradient(145deg, rgb(119, 0, 30), rgb(119, 0, 30));">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"></path>
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                        <path d="M10 11v6"></path>
-                        <path d="M14 11v6"></path>
-                      </svg>
-                </button>
-              </div>
+              
               <div id="dzFilledList" style="display:none; flex-direction:column; width:100%; gap:8px;"></div>
             </div>
 <div class="content-editor" id="contentEditorWrap">
