@@ -3426,7 +3426,7 @@ input[type="range"] {
 
 /* Cuon trong cho danh sach file va ban ghi gan day */
 #dzFilledList {
-  max-height: 200px;
+  max-height: 46px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(74, 158, 255, 0.35) transparent;
