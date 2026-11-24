@@ -16,7 +16,7 @@ import json
 import platform
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from subprocess_utils import popen_hidden
+from subprocess_utils import popen_hidden, run_hidden
 import webview
 import shutil
 import audio_utils
@@ -186,21 +186,67 @@ def _wait_voice_server(timeout_s=120):
     return _voice_server_alive()
 
 
+def _pids_listening_on_port(netstat_text, port):
+    """Doc output cua netstat -ano, tra ve cac PID dang LISTEN o port cho truoc."""
+    pids = set()
+    for line in netstat_text.splitlines():
+        parts = line.split()
+        if (len(parts) >= 5 and parts[0].upper() == "TCP"
+                and parts[1].endswith(f":{port}")
+                and parts[3].upper() == "LISTENING"):
+            pids.add(parts[4])
+    return pids
+
+
+def _kill_voice_server_port():
+    """Tat bat ky tien trinh nao dang nghe o cong cua Server Voice (8282)."""
+    if os.name == "nt":
+        try:
+            out = run_hidden(["netstat", "-ano"], capture_output=True, text=True, timeout=10).stdout
+            for pid in _pids_listening_on_port(out, VOICE_SERVER_PORT):
+                try:
+                    run_hidden(["taskkill", "/PID", pid, "/F"], capture_output=True, timeout=10)
+                except Exception:
+                    pass
+            return True
+        except Exception:
+            return False
+    try:
+        run_hidden(["fuser", "-k", f"{VOICE_SERVER_PORT}/tcp"],
+                   capture_output=True, timeout=10)
+        return True
+    except Exception:
+        pass
+    try:
+        out = run_hidden(["lsof", "-ti", f":{VOICE_SERVER_PORT}"],
+                         capture_output=True, text=True, timeout=10).stdout
+        for pid in out.split():
+            try:
+                run_hidden(["kill", pid], capture_output=True, timeout=10)
+            except Exception:
+                pass
+        return True
+    except Exception:
+        return False
+
+
 def _stop_voice_server():
-    """Tat server neu chinh app da mo no (khong tat server do anh mo tay)."""
+    """Tat Server Voice khi dong app: tat tien trinh do app mo (neu co),
+    roi tat bat ky server nao con nghe o 8282 (ke ca server do anh mo tay)."""
     global _VOICE_SERVER_PROC
     proc = _VOICE_SERVER_PROC
     _VOICE_SERVER_PROC = None
-    if proc is None:
-        return
-    try:
-        proc.terminate()
+    if proc is not None:
         try:
-            proc.wait(timeout=10)
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except Exception:
+                proc.kill()
         except Exception:
-            proc.kill()
-    except Exception:
-        pass
+            pass
+    if _voice_server_alive():
+        _kill_voice_server_port()
 
 
 class Api:
