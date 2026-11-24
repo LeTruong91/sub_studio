@@ -406,38 +406,6 @@ function setNumStep(v){
     speedBlock.style.pointerEvents = 'none';
   }
 
-  function stepCount(delta){
-    const el = document.getElementById('countInput');
-    let v = parseInt(el.value)||1;
-    v = Math.min(99, Math.max(1, v+delta));
-    el.value = v;
-    document.getElementById('sumCount').textContent = v;
-  }
-
-  function sanitizeCount(el){
-    let v = el.value.replace(/[^0-9]/g,'');
-    if(v==='') v='1';
-    v = Math.min(99, Math.max(1, parseInt(v)));
-    el.value = v;
-    document.getElementById('sumCount').textContent = v;
-  }
-
-  function stepThreads(delta){
-    const el = document.getElementById('threadInput');
-    let v = parseInt(el.value)||1;
-    v = Math.min(16, Math.max(1, v+delta));
-    el.value = v;
-    document.getElementById('sumThreads').textContent = v;
-  }
-
-  function sanitizeThreads(el){
-    let v = el.value.replace(/[^0-9]/g,'');
-    if(v==='') v='1';
-    v = Math.min(16, Math.max(1, parseInt(v)));
-    el.value = v;
-    document.getElementById('sumThreads').textContent = v;
-  }
-
   function setStatus(kind, text){
     const dot = document.getElementById('statusDot');
     dot.classList.remove('busy','error');
@@ -504,19 +472,7 @@ async function runGenerate(){
     nameCloneSave.focus();
     return;
   }
-  const getTypeName = document.getElementById("NameTSSByContent");
-  if(getTypeName.checked==true){
-      const contents = getContentList();
-      if(contents.length==0){
-         errorBanner.textContent = 'Danh sách nội dung để thay tên không có. Vui lòng thêm';
-         errorBanner.classList.add('active');
-         return;
-      }else{
-        name_out = contents[Math.floor(Math.random() * contents.length)]+'_{index}';
-      }
-  }else{
-    name_out=document.getElementById('namePattern').value+'_{index}' || '{file}_{index}'
-  }
+  name_out=document.getElementById('namePattern').value+'_{index}' || '{file}_{index}'
 
   errorBanner.classList.remove('active');
   setGenButtonRunning(true);
@@ -540,8 +496,8 @@ async function runGenerate(){
     desCLoneSave:desCLoneSave.value,
     speed: parseFloat(document.getElementById('speedSlider').value),
     pitch: parseFloat(document.getElementById('pitchSlider').value),
-    count: parseInt(document.getElementById('countInput').value) || 1,
-    threads: parseInt(document.getElementById('threadInput').value) || 1,
+    count: 1,
+    threads: 1,
     name_pattern: name_out,
     target_duration: targetDurationValue,
     enable_clone: document.getElementById('enableClone').checked,

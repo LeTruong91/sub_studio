@@ -230,14 +230,8 @@
             <span class="summary-label">Cao độ</span>
             <span class="summary-value" id="sumPitch">+0 st</span>
           </div>
-<div class="summary-row">
-            <span class="summary-label">Số phiên bản</span>
-            <span class="summary-value" id="sumCount">1</span>
-          </div>
-<div class="summary-row">
-            <span class="summary-label">Luồng</span>
-            <span class="summary-value" id="sumThreads">2</span>
-          </div>
+
+
       </div>
 
       <section class="vn-text-card">
@@ -304,71 +298,10 @@
       </section>
 
       <section class="vn-advanced">
-<div class="card">
-            <div class="card-head">
-              <div class="step-num">4</div>
-              <div class="card-head-text">
-                <div class="card-title">Voice Design</div>
-                <div class="card-desc">Chọn thuộc tính giọng OmniVoice (instruct). Bỏ trống nếu chỉ dùng giọng clone.</div>
-              </div>
-            </div>
-              <div class="instruct-select-grid">
-                <label class="instruct-select">
-                  <span>Giới tính</span>
-                  <select id="instructGender" class="rs-select-field">
-                    <option value="">Không chọn</option>
-                    <option value="female">Nữ (female)</option>
-                    <option value="male">Nam (male)</option>
-                  </select>
-                </label>
-                <label class="instruct-select">
-                  <span>Tuổi</span>
-                  <select id="instructAge" class="rs-select-field">
-                    <option value="">Không chọn</option>
-                    <option value="child">Trẻ em</option>
-                    <option value="teenager">Thiếu niên</option>
-                    <option value="young adult">Thanh niên</option>
-                    <option value="middle-aged">Trung niên</option>
-                    <option value="elderly">Người già</option>
-                  </select>
-                </label>
-                <label class="instruct-select">
-                  <span>Cao độ</span>
-                  <select id="instructPitch" class="rs-select-field">
-                    <option value="">Không chọn</option>
-                    <option value="very low pitch">Rất thấp</option>
-                    <option value="low pitch">Thấp</option>
-                    <option value="moderate pitch">Vừa</option>
-                    <option value="high pitch">Cao</option>
-                    <option value="very high pitch">Rất cao</option>
-                  </select>
-                </label>
-                <label class="instruct-select">
-                  <span>Kiểu</span>
-                  <select id="instructStyle" class="rs-select-field">
-                    <option value="">Không chọn</option>
-                    <option value="whisper">Thì thầm (whisper)</option>
-                  </select>
-                </label>
-                <label class="instruct-select instruct-select-wide">
-                  <span>Accent (chỉ hiệu quả với tiếng Anh)</span>
-                  <select id="instructAccent" class="rs-select-field">
-                    <option value="">Không chọn</option>
-                    <option value="american accent">American</option>
-                    <option value="british accent">British</option>
-                    <option value="australian accent">Australian</option>
-                    <option value="canadian accent">Canadian</option>
-                    <option value="indian accent">Indian</option>
-                    <option value="chinese accent">Chinese</option>
-                    <option value="korean accent">Korean</option>
-                    <option value="japanese accent">Japanese</option>
-                  </select>
-                </label>
-              </div>
-          </div>
+
 <div class="card">
              <div class="card-head">
-              <div class="step-num">5</div>
+              <div class="step-num">4</div>
               <div class="card-head-text">
                 <div class="card-title">Nhân Bản Giọng Nói (Tùy chọn)</div>
                 <div class="card-desc">Dùng mẫu âm thanh để nhân bản đặc điểm giọng nói</div>
@@ -440,7 +373,7 @@
           </div>
         <div class="card">
           <div class="card-head">
-            <div class="step-num">6</div>
+            <div class="step-num">5</div>
             <div class="card-head-text">
               <div class="card-title">Thời lượng mong muốn</div>
               <div class="card-desc">Tự động tính tốc độ vừa khung thời gian</div>
@@ -463,45 +396,7 @@
                 </div>
               </div>
         </div>
-<div class="card" style="height: -webkit-fill-available;">
-              <div class="card-head">
-                <div class="step-num">7</div>
-                <div class="card-head-text">
-                  <div class="card-title">Xuất Hàng Loạt</div>
-                  <div class="card-desc">Tạo nhiều phiên bản với các thiết lập khác nhau</div>
-                </div>
-              </div>
-              <div class="count-thread-row">
-                <div class="count-thread-col">
-                  <label class="field-label">Số Lượng Phiên Bản</label>
-                  <div class="stepper">
-                    <button onclick="stepCount(0)">−</button>
-                    <input type="text" id="countInput" value="1" oninput="sanitizeCount(this)">
-                    <button onclick="stepCount(0)">+</button>
-                  </div>
-                </div>
-                <div class="count-thread-col">
-                  <label class="field-label">Luồng Song Song</label>
-                  <div class="stepper">
-                    <button onclick="stepThreads(0)">−</button>
-                    <input type="text" id="threadInput" value="1" oninput="sanitizeThreads(this)">
-                    <button onclick="stepThreads(0)">+</button>
-                  </div>
-                </div>
-              </div>
-              <div class="stepper-note">Mỗi phiên bản được tạo bằng <b>1 lần gọi</b> TTS riêng biệt, sau đó xử lý tốc
-                độ/cao độ bằng ffmpeg.</div>
-              <div class="card-head" style="display: flow;">
-                <div class="card-head-text" style="margin-top: 5px;">
-                  <div class="card-desc">Dùng <b>{file}</b>, <b>{index}</b>, <b>{voice}</b> trong tên file để tự động
-                    thay thế.</div>
-                </div>
-                <div class="card-head-text" style="
-                  margin-top: 10px;"><label class="rs-switch"><input type="checkbox" id="NameTSSByContent"><span class="rs-switch-track"></span><span
-                      class="rs-label">Sử dụng tên từ danh sách nội dung</span></label></div>
-              </div>
-              
-            </div>
+
       </section>
 
       <section class="vn-recent card">
