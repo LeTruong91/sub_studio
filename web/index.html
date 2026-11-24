@@ -107,39 +107,9 @@
         <div class="vn-sec-desc">Chậm 0.5x · Nhanh 2x</div>
       </section>
 
-      <section class="vn-sec">
-        <div class="vn-sec-title">Âm lượng</div>
-<div class="slider-block">
-                  <div class="field-top">
-                    <span class="slider-value" id="volumeVal">+0 dB</span>
-                  </div>
-                  <input type="range" id="volumeSlider" min="0.0" max="2" step="0.05" value="1"
-                    oninput="updateVolume(this.value)">
-                  <div class="slider-scale"><span>0.0×</span><span>1×</span><span>2×</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setVolume(0.7)">Ít hơn</button>
-                    <button class="preset-btn" onclick="setVolume(1.0)">Bình thường</button>
-                    <button class="preset-btn" onclick="setVolume(1.5)">Nhiều hơn</button>
-                  </div>
-                </div>
-      </section>
+      
 
-      <section class="vn-sec">
-        <div class="vn-sec-title">Cao độ</div>
-<div class="slider-block">
-                  <div class="field-top">
-                    <span class="slider-value" id="pitchVal">+0 st</span>
-                  </div>
-                  <input type="range" id="pitchSlider" min="-12" max="12" step="0.1" value="0"
-                    oninput="updatePitch(this.value)">
-                  <div class="slider-scale"><span>-12</span><span>0</span><span>+12</span></div>
-                  <div class="preset-row">
-                    <button class="preset-btn" onclick="setPitch(-4)">Thấp hơn</button>
-                    <button class="preset-btn" onclick="setPitch(0)">Tự nhiên</button>
-                    <button class="preset-btn" onclick="setPitch(4)">Cao hơn</button>
-                  </div>
-                </div>
-      </section>
+      
 
       <section class="vn-sec">
         <div class="vn-sec-title">Ngôn ngữ</div>
@@ -218,18 +188,12 @@
             <span class="summary-label">Nhân bản giọng</span>
             <span class="summary-value muted" id="sumClone">Tắt</span>
           </div>
-<div class="summary-row">
-            <span class="summary-label">Âm lượng</span>
-            <span class="summary-value" id="sumVolume">1.00x</span>
-          </div>
+
 <div class="summary-row">
             <span class="summary-label">Tốc độ</span>
             <span class="summary-value" id="sumSpeed">1.00×</span>
           </div>
-<div class="summary-row">
-            <span class="summary-label">Cao độ</span>
-            <span class="summary-value" id="sumPitch">+0 st</span>
-          </div>
+
 
 
       </div>

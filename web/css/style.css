@@ -3334,3 +3334,45 @@ input[type="range"] {
   min-height: 0;
   overflow: hidden;
 }
+
+/* ===== Nut gat dang cong tac (thay checkbox vuong mac dinh) ===== */
+.clone-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: #2a3342;
+  border: 1px solid #3a4556;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.clone-toggle input[type="checkbox"]:checked {
+  background: linear-gradient(90deg, #4a9eff, #00c2ff);
+  border-color: transparent;
+}
+
+.clone-toggle input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease;
+}
+
+.clone-toggle input[type="checkbox"]:checked::after {
+  transform: translateX(18px);
+}
+
+.clone-toggle input[type="checkbox"]:disabled {
+  cursor: default;
+}

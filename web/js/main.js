@@ -320,21 +320,12 @@ function toggleSaveClone(){
     }
   }
 
-//
-  function updateVolume(v){
-    document.getElementById('volumeVal').textContent = parseFloat(v).toFixed(2)+'×';
-    document.getElementById('sumVolume').textContent = parseFloat(v).toFixed(2)+'db';
-  }
     function updateNumStep(v){
     document.getElementById('numStepVal').textContent = parseFloat(v)+" NT";
 
   }
 
 
-  function setVolume(v){
-    document.getElementById('volumeSlider').value = v;
-    updateVolume(v)
-  }
 //
 function setNumStep(v){
       document.getElementById('NumStepSlider').value = v;
@@ -351,16 +342,7 @@ function setNumStep(v){
     updateSpeed(v);
   }
 
-  function updatePitch(v){
-    const sign = v>0? '+':'';
-    document.getElementById('pitchVal').textContent = sign+v+' st';
-    document.getElementById('sumPitch').textContent = sign+v+' st';
-  }
 
-  function setPitch(v){
-    document.getElementById('pitchSlider').value = v;
-    updatePitch(v);
-  }
 
   let targetDurationValue = null;
 
@@ -514,7 +496,7 @@ async function runGenerate(){
     nameCloneSave:nameCloneSave.value,
     desCLoneSave:"",
     speed: parseFloat(document.getElementById('speedSlider').value),
-    pitch: parseFloat(document.getElementById('pitchSlider').value),
+    pitch: 0,
     count: 1,
     threads: 1,
     name_pattern: name_out,
