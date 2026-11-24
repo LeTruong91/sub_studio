@@ -3489,3 +3489,8 @@ input[type="range"] {
   flex: 1 1 auto;
   min-height: 112px;
 }
+
+/* Nut chon giong: 2 dong can trai thang hang (nut <button> mac dinh can giua chu) */
+#voiceDropdown .voice-select-current {
+  text-align: left;
+}
