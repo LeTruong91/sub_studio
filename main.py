@@ -21,7 +21,6 @@ import webview
 import shutil
 import audio_utils
 import vera_tts
-import paraphrase_srt
 import subtitle_utils
 import account 
 import whisper_utils
@@ -53,7 +52,6 @@ BASE_DIR = APP_DIR   # giữ tên BASE_DIR để các chỗ khác trong code kh�
 
 OUTPUT_DIR = APP_DIR / "outputs"
 TMP_DIR = APP_DIR / "_tmp"
-PARAPHRASE_DIR = OUTPUT_DIR / "paraphrased"
 FONT_DIR = os.path.join(RESOURCE_DIR, "web", "fonts") 
 ICON_PATH = RESOURCE_DIR  / "icon.ico"
 API_BASE_URL = "http://127.0.0.1:8282"
@@ -475,7 +473,6 @@ class Api:
         enable_clone = bool(config.get("enable_clone", False))
         clone_audio = config.get("clone_audio")
         ref_text = config.get("ref_text", "").strip()
-        enable_ai_rewrite = bool(config.get("enable_ai_rewrite", False))
         enable_clone_save = bool(config.get("enable_clone_save",False))
         nameCloneSave = config.get("nameCloneSave","NameVoice")
         desCLoneSave = config.get("desCLoneSave","Mô Tả Voice")
@@ -483,13 +480,7 @@ class Api:
         num_step = config.get("num_step",16)
         instruct = str(config.get("instruct") or "").strip()
         # ====== SỐ LUỒNG CHO FILE (không còn dùng cho count nữa) ======
-        if enable_ai_rewrite:
-            file_threads = 1
-            self._emit("status", {
-                "message": "Đã bật viết lại bằng AI — chạy tuần tự 1 luồng để tránh xung đột."
-            })
-        else:
-            file_threads = max(1, min(16, self._batch_thread_count(config, 1)))
+        file_threads = max(1, min(16, self._batch_thread_count(config, 1)))
         # =================================================================
 
         if enable_clone:
@@ -508,8 +499,6 @@ class Api:
         output_dir = Path(voice_subtitle) if voice_subtitle else OUTPUT_DIR
         output_dir.mkdir(parents=True, exist_ok=True)
         TMP_DIR.mkdir(parents=True, exist_ok=True)
-        if enable_ai_rewrite:
-            PARAPHRASE_DIR.mkdir(parents=True, exist_ok=True)
 
         total_files = len(files)
         total_versions_overall = total_files * count   # tổng số phiên bản trên TOÀN BỘ batch
@@ -532,14 +521,13 @@ class Api:
             })
 
             try:
-                # Nếu KHÔNG bật AI rewrite, cues/script gốc giống nhau cho mọi version -> load 1 lần
+                # cues/script gốc giống nhau cho mọi version -> load 1 lần
                 base_cues = None
                 base_script_text = None
                 original_ext = Path(original_path).suffix.lower()
-                if not enable_ai_rewrite:
-                    source_stem = unicodedata.normalize('NFC', Path(original_path).stem)
-                    base_cues = subtitle_utils.load_cues(original_path)
-                    base_script_text = subtitle_utils.full_script_text(base_cues)
+                source_stem = unicodedata.normalize('NFC', Path(original_path).stem)
+                base_cues = subtitle_utils.load_cues(original_path)
+                base_script_text = subtitle_utils.full_script_text(base_cues)
 
                 # ====== VÒNG LẶP TUẦN TỰ QUA TỪNG PHIÊN BẢN ======
                 for index in range(1, count + 1):
@@ -552,40 +540,16 @@ class Api:
 
                     idx_str = str(index).zfill(2)
 
-                    # ---- Mỗi phiên bản viết lại AI riêng (nếu bật) ----
-                    if enable_ai_rewrite:
-                        self._emit("status", {
-                            "message": f"[{file_index}/{total_files}] Đang viết lại nội dung bằng AI (phiên bản {index}/{count})…",
-                            "file_name": original_name,
-                        })
-                        result = paraphrase_srt.paraphrase_source_file(
-                            original_path,
-                            str(PARAPHRASE_DIR),
-                            model_name=paraphrase_srt.MODEL_NAME,
-                        )
-                        source_path = result["txt_path"]
-                        self._emit("status", {
-                            "message": f"[{file_index}/{total_files}] Viết lại AI hoàn tất (phiên bản {index}/{count}).",
-                            "file_name": original_name,
-                        })
-                        source_stem = unicodedata.normalize('NFC', Path(source_path).stem)
-                        cues = subtitle_utils.load_cues(source_path)
-                        script_text = subtitle_utils.full_script_text(cues)
-                        # AI rewrite luôn xuất phát từ text -> luôn cần build lại SRT
-                        need_build_srt = True
-                        # Nguồn để TTS đọc phải là bản ĐÃ viết lại, không phải file gốc
-                        synth_source_path = source_path
+                    cues = base_cues
+                    script_text = base_script_text
+                    # Chỉ build lại SRT nếu nguồn KHÔNG PHẢI là .srt (vd: .txt)
+                    if target_duration:
+                        need_build_srt= True
                     else:
-                        cues = base_cues
-                        script_text = base_script_text
-                        # Chỉ build lại SRT nếu nguồn KHÔNG PHẢI là .srt (vd: .txt)
-                        if target_duration:
-                            need_build_srt= True
-                        else:
-                            need_build_srt = original_ext != ".srt"
+                        need_build_srt = original_ext != ".srt"
 
-                        # Không AI rewrite -> TTS đọc từ file gốc
-                        synth_source_path = original_path
+                    # TTS đọc từ file gốc
+                    synth_source_path = original_path
 
                     stem = name_pattern.replace("{index}", idx_str) \
                                         .replace("{voice}", voice) \
@@ -720,8 +684,6 @@ class Api:
                 else:
                     files_error += 1
         # ====================================================================
-        if enable_ai_rewrite:
-            paraphrase_srt.unload_model(paraphrase_srt.MODEL_NAME)
         if self._gen_stop.is_set():
             self._emit("cancelled", {
                 "output_dir": str(output_dir),

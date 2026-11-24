@@ -452,7 +452,6 @@ async function runGenerate(){
     enable_clone: document.getElementById('enableClone').checked,
     clone_audio: cloneAudioPath,
     ref_text: document.getElementById('refText').value.trim(),
-    enable_ai_rewrite: document.getElementById('enableAiRewrite').checked, // xử lý luôn trong backend
   };
 
   console.log('Config for generation:', config);
