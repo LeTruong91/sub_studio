@@ -1241,6 +1241,14 @@ function showToast(message, kind) {
 //         panel.appendChild(div);
 //     });
 // }
+// Rut gon mo ta giong de hien trong danh sach:
+// "Nam - Bac - Phong cach tu nhien" -> "Nam - Mien Bac", "Nu - Bac" -> "Nu - Mien Bac".
+// Mo ta khong theo mau gioi tinh - vung thi giu nguyen.
+function shortVoiceDesc(desc){
+  const m = String(desc || '').match(/^\s*(Nam|N\u1eef)\s*[\u00b7\-]\s*(B\u1eafc|Trung|Nam)\b/);
+  return m ? m[1] + ' - Mi\u1ec1n ' + m[2] : (desc || '');
+}
+
 function renderCloneVoices(voices) {
     const panel = document.getElementById("voiceCloneSelectPanel");
 
@@ -1261,7 +1269,7 @@ function renderCloneVoices(voices) {
 
         div.dataset.voice = v.name;
         div.dataset.id = v.id;
-        div.dataset.tag = v.description;
+        div.dataset.tag = shortVoiceDesc(v.description);
 
         div.onclick = function () {
             pickVoice(this);
@@ -1269,7 +1277,7 @@ function renderCloneVoices(voices) {
 
         div.innerHTML = `
             <span class="voice-name">${v.name}</span>
-            <span class="voice-tag">${v.description}</span>
+            <span class="voice-tag">${shortVoiceDesc(v.description)}</span>
         `;
 
         panel.appendChild(div);

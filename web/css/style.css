@@ -2275,8 +2275,8 @@ a[href] {
   padding: 16px;
 }
 
-.vn-sidebar::-webkit-scrollbar { width: 4px; }
-.vn-sidebar::-webkit-scrollbar-thumb { background: #2a2a36; border-radius: 4px; }
+.vn-sidebar::-webkit-scrollbar { width: 6px; }
+.vn-sidebar::-webkit-scrollbar-thumb { background: rgba(74, 158, 255, 0.35); border-radius: 3px; }
 
 .vn-server {
   display: flex;
@@ -2396,7 +2396,7 @@ a[href] {
 }
 
 .vn-main::-webkit-scrollbar { width: 6px; }
-.vn-main::-webkit-scrollbar-thumb { background: #2a2a36; border-radius: 4px; }
+.vn-main::-webkit-scrollbar-thumb { background: rgba(74, 158, 255, 0.35); border-radius: 3px; }
 
 .vn-tabs {
   display: flex;
@@ -3572,8 +3572,30 @@ input[type="range"] {
 .vn-clone-full .clone-name-wrap #descSaveClone { flex: 2 1 0; min-width: 0; }
 .vn-clone-full .clone-name-wrap #genderSaveClone {
   flex: 0 0 118px; min-width: 0; box-sizing: border-box;
-  background: #1a1a24; border: 1px solid #26262f; color: #e8eaef;
-  border-radius: 8px; padding: 9px 12px; font-size: 12.5px; outline: none;
+  background-color: #1a1a24; border: 1px solid #26262f; color: #e8eaef;
+  border-radius: 8px; padding: 9px 30px 9px 12px; font-size: 12.5px; outline: none;
   color-scheme: dark; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8b9e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
 }
+.vn-clone-full .clone-name-wrap #genderSaveClone:hover { border-color: #3a4556; }
 .vn-clone-full .clone-name-wrap #genderSaveClone:focus { border-color: #4a9eff; }
+
+/* Thanh cuon thong nhat toan app: mong, xanh (giong danh sach file / ban ghi) */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(74, 158, 255, 0.35); border-radius: 3px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(74, 158, 255, 0.55); }
+* { scrollbar-width: thin; scrollbar-color: rgba(74, 158, 255, 0.35) transparent; }
+
+/* Danh sach giong: ten 1 hang, mo ta 1 hang, khong cuon ngang */
+.voice-select-panel { overflow-x: hidden; }
+.voice-option .voice-name {
+  flex: 1 1 auto; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.voice-option .voice-tag {
+  flex: 0 0 auto; min-width: 0; max-width: 55%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
