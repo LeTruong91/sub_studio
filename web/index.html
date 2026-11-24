@@ -299,22 +299,30 @@
       </section>
 
 <div class="card vn-clone-full">
-             <div class="card-head">
+            <div class="card-head vn-clone-head">
               <div class="step-num">4</div>
               <div class="card-head-text">
                 <div class="card-title">Nhân Bản Giọng Nói (Tùy chọn)</div>
                 <div class="card-desc">Dùng mẫu âm thanh để nhân bản đặc điểm giọng nói</div>
               </div>
-            </div>
-            <label class="clone-toggle">
+            
+              <div class="vn-clone-toggles">
+                <label class="clone-toggle">
               <input type="checkbox" id="enableClone" onchange="toggleClone()" />
               <span>Bật Nhân Bản Giọng Nói</span>
             </label>
-            <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; align-items: start;">
-
-            <div class="clone-box">
-              <label class="field-label">Mẫu Âm Thanh Tham Chiếu</label>
-              <div class="clone-dropzone" onclick="pickCloneAudio()">
+                <label class="clone-toggle" style="margin-bottom: 10px;">
+              <input type="checkbox" id="enableSaveClone" onchange="toggleSaveClone()" disabled />
+              <span>Lưu Mẫu clone giọng</span>
+            </label>
+              </div>
+            </div>
+              
+            
+            <div id="cloneForm">
+              <div class="clone-box">
+                <div class="clone-row">
+                  <div class="clone-dropzone" onclick="pickCloneAudio()">
                 <div id="cloneEmpty">
                   <div class="clone-file">
                     <div class="clone-icon">
@@ -345,30 +353,20 @@
                   </div>
                 </div>
               </div>
-              <div class="clone-ref">
-                <label class="field-label">Văn Bản Tham Chiếu</label>
-                <textarea id="refText" class="name-pattern"
+                  <textarea id="refText" class="name-pattern"
                   placeholder="Nhập nội dung được đọc trong mẫu âm thanh..."></textarea>
+                </div>
               </div>
-              
-            </div>
-              <div class="clone-box">
-             <label class="clone-toggle" style="margin-bottom: 10px;">
-              <input type="checkbox" id="enableSaveClone" />
-              <span>Lưu Mẫu clone giọng</span>
-            </label>
-              <div class="clone-dropzone">
-                <input type="text" class="rs-source-input" id="nameSaveClone"  placeholder="Nhập tên giọng nói"/>
-              </div>
-              <div class="clone-ref">
-                <label class="field-label">Mô tả giọng nói</label>
-                <textarea id="CloneSaveText" class="name-pattern"
+              <div class="clone-box" id="cloneSaveFields">
+                <div class="clone-row">
+                  <div class="clone-name-wrap">
+                    <input type="text" class="rs-source-input" id="nameSaveClone"  placeholder="Nhập tên giọng nói"/>
+                  </div>
+                  <textarea id="CloneSaveText" class="name-pattern"
                   placeholder="Nhập mô ta cho mẫu âm thanh..."></textarea>
+                </div>
               </div>
-              
             </div>
-            </div>
-
           </div>
 
       <section class="vn-recent card">

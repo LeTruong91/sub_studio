@@ -2922,3 +2922,141 @@ input[type="range"] {
 .vn-duration-mini::placeholder {
   color: #6b6b7a;
 }
+
+/* ===== Thẻ Nhân Bản gọn lại ===== */
+.vn-clone-full {
+  padding: 16px 18px;
+}
+
+.vn-clone-full .card-head {
+  margin-bottom: 10px;
+}
+
+.vn-clone-full .clone-toggle {
+  margin-bottom: 10px;
+}
+
+.vn-clone-full .clone-dropzone {
+  padding: 10px 12px;
+}
+
+.vn-clone-full .clone-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.vn-clone-full .clone-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.vn-clone-full .clone-file {
+  gap: 10px;
+}
+
+.vn-clone-full .clone-name {
+  display: inline;
+  font-size: 12.5px;
+}
+
+.vn-clone-full .clone-meta {
+  display: inline;
+  margin: 0 0 0 6px;
+}
+
+.vn-clone-full .clone-ref {
+  margin-top: 10px;
+}
+
+.vn-clone-full textarea.name-pattern {
+  min-height: 54px;
+  padding: 9px 12px;
+}
+
+/* Ô tên giọng: input thường, không còn khung dropzone to */
+.vn-clone-full .clone-name-wrap input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1a1a24;
+  border: 1px solid #26262f;
+  color: #e8eaef;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  outline: none;
+}
+
+.vn-clone-full .clone-name-wrap input:focus {
+  border-color: #4a9eff;
+}
+
+/* Mục lưu mẫu gập lại khi chưa bật */
+#cloneSaveFields {
+  display: none;
+}
+
+#cloneSaveFields.open {
+  display: block;
+}
+
+/* ===== Thẻ Nhân Bản: bố cục 1 hàng, 2 nút gạt nằm chung dòng tiêu đề ===== */
+.vn-clone-full {
+  padding: 14px 18px;
+}
+
+.vn-clone-full .card-head {
+  margin-bottom: 0;
+}
+
+.vn-clone-head {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.vn-clone-toggles {
+  margin-left: auto;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.vn-clone-toggles .clone-toggle {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.vn-clone-toggles .clone-toggle:has(input:disabled) {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#cloneForm {
+  display: none;
+}
+
+#cloneForm.open {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.vn-clone-full .clone-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.vn-clone-full .clone-row .clone-dropzone {
+  display: flex;
+  align-items: center;
+}
+
+.vn-clone-full .clone-row .clone-name-wrap {
+  display: flex;
+}
+
+.vn-clone-full .clone-row .clone-name-wrap input {
+  flex: 1;
+}

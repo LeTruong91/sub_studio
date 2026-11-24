@@ -245,6 +245,15 @@ function toggleClone() {
         box.classList.toggle('active', enable);
     });
 
+    document.getElementById('cloneForm').classList.toggle('open', enable);
+
+    const saveCb = document.getElementById('enableSaveClone');
+    saveCb.disabled = !enable;
+    if (!enable) {
+        saveCb.checked = false;
+        document.getElementById('cloneSaveFields').classList.remove('open');
+    }
+
     if (enable) {
         toggleVoiceDisabled(true);
         document.getElementById('sumVoice').textContent = "Giọng nhân bản";
@@ -260,6 +269,11 @@ function toggleClone() {
     }
 
     updateCloneSummary();
+}
+
+function toggleSaveClone(){
+    const on = document.getElementById('enableSaveClone').checked;
+    document.getElementById('cloneSaveFields').classList.toggle('open', on);
 }
   function toggleVoiceDisabled(disabled){
     const btn = document.getElementById('voiceSelectBtn');
