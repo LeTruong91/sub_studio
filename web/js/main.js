@@ -108,8 +108,6 @@ function updateCharCount(){
   const n = editor ? editor.value.length : 0;
   const cc = document.getElementById('charCount');
   if(cc) cc.textContent = n + ' ký tự';
-  const cn = document.getElementById('charCountNote');
-  if(cn) cn.textContent = n + ' ký tự';
 }
 
 async function loadContentEditor(){
