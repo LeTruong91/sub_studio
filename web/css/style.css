@@ -3133,3 +3133,137 @@ input[type="range"] {
 .vn-rec-row:hover {
   background: #16161f;
 }
+
+/* ===== Giao diện mới: navy + xanh điện, panel nổi, điểm nhấn rõ ===== */
+
+/* Nền chính: navy đen, quầng sáng xanh nhẹ phía trên */
+.vn-main {
+  background:
+    radial-gradient(1200px 320px at 50% -100px, rgba(74, 158, 255, 0.09), transparent 70%),
+    #0a0d13;
+}
+
+.vn-sidebar {
+  background: #0d1119;
+  border-right-color: #1f2735;
+}
+
+.vn-rail {
+  background: #0b0e14;
+  border-right-color: #1f2735;
+}
+
+/* Panel nổi: nền gradient navy, viền xanh-navy, bóng mềm */
+.vn-text-card,
+.vn-recent.card,
+.vn-clone-full {
+  background: linear-gradient(180deg, #151b28 0%, #11151f 100%);
+  border-color: #273244;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
+}
+
+/* Tab đang chọn: viên thuốc đầy màu, nối với nội dung */
+.vn-tab.active {
+  background: linear-gradient(135deg, rgba(74, 158, 255, 0.24) 0%, rgba(0, 194, 255, 0.12) 100%);
+  border: 1px solid rgba(74, 158, 255, 0.4);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  color: #fff;
+}
+
+/* Thanh tóm tắt: nền gradient xanh, giá trị trắng */
+.vn-summary {
+  background: linear-gradient(90deg, rgba(74, 158, 255, 0.16) 0%, rgba(0, 194, 255, 0.05) 100%);
+  border-color: rgba(74, 158, 255, 0.32);
+}
+
+.vn-summary .summary-row + .summary-row {
+  border-left-color: rgba(74, 158, 255, 0.28);
+}
+
+.vn-summary .summary-label {
+  color: #8fa3b8;
+}
+
+.vn-summary .summary-value {
+  color: #fff;
+}
+
+.vn-summary .summary-value.muted {
+  color: #7a8a9e;
+}
+
+/* Vạch xanh trước tiêu đề mục */
+.vn-text-head {
+  border-left: 3px solid #4a9eff;
+  padding-left: 10px;
+}
+
+.vn-recent-head {
+  border-left: 3px solid #4a9eff;
+  padding-left: 10px;
+}
+
+.vn-sec-title {
+  border-left: 3px solid #4a9eff;
+  padding-left: 8px;
+}
+
+/* Dropzone: viền xanh đứt nét, nền xanh nhạt */
+.vn-text-card .dropzone {
+  border: 1.5px dashed rgba(74, 158, 255, 0.5);
+  background: rgba(74, 158, 255, 0.07);
+}
+
+.vn-text-card .dropzone:hover {
+  border-color: #4a9eff;
+  background: rgba(74, 158, 255, 0.12);
+}
+
+/* Ô soạn: viền navy rõ hơn */
+.vn-text-card #contentEditor {
+  background: #0d1119;
+  border-color: #2a3444;
+}
+
+/* Nút chọn giọng: viền xanh nhạt */
+.vn-sidebar .voice-select-btn {
+  border-color: rgba(74, 158, 255, 0.4);
+  background: linear-gradient(135deg, rgba(74, 158, 255, 0.12) 0%, rgba(0, 194, 255, 0.04) 100%);
+}
+
+/* Nút Tạo Ngay: to và sáng hơn */
+.vn-generate {
+  padding: 14px 34px !important;
+  font-size: 14px !important;
+  box-shadow: 0 10px 30px rgba(74, 158, 255, 0.5) !important;
+}
+
+/* Nút phát tròn đầy màu xanh */
+.vn-rec-play {
+  background: linear-gradient(135deg, #4a9eff 0%, #00c2ff 100%);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(74, 158, 255, 0.4);
+}
+
+.vn-rec-play:hover {
+  filter: brightness(1.12);
+  color: #fff;
+  border-color: transparent;
+}
+
+.vn-rec-play.playing {
+  background: rgba(74, 158, 255, 0.14);
+  border-color: #4a9eff;
+  color: #4a9eff;
+  box-shadow: none;
+}
+
+/* Rail: nút đang chọn đầy màu */
+.vn-rail-btn.active {
+  background: linear-gradient(135deg, #4a9eff 0%, #00c2ff 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(74, 158, 255, 0.4);
+}
