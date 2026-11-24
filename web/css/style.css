@@ -411,7 +411,7 @@ a[href] {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: white;
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #4a9eff 0%, #00c2ff 100%);
     width: 28px;
     height: 28px;
     border-radius: 8px;
@@ -420,7 +420,7 @@ a[href] {
     justify-content: center;
     flex-shrink: 0;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
   }
 
   .card-title {
@@ -2227,8 +2227,8 @@ a[href] {
 }
 
 .vn-rail-logo {
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35) !important;
+  background: linear-gradient(135deg, #4a9eff 0%, #00c2ff 100%) !important;
+  box-shadow: 0 4px 16px rgba(74, 158, 255, 0.35) !important;
   animation: none !important;
   margin-bottom: 8px;
 }
@@ -2258,8 +2258,8 @@ a[href] {
 }
 
 .vn-rail-btn.active {
-  background: rgba(139, 92, 246, 0.18);
-  color: #a78bfa;
+  background: rgba(74, 158, 255, 0.18);
+  color: #00c2ff;
 }
 
 .vn-rail-spacer {
@@ -2286,9 +2286,9 @@ a[href] {
 }
 
 .vn-badge {
-  background: rgba(139, 92, 246, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: rgba(74, 158, 255, 0.15);
+  color: #7cc4ff;
+  border: 1px solid rgba(74, 158, 255, 0.4);
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 12px;
@@ -2370,18 +2370,18 @@ a[href] {
 }
 
 .vn-preset:hover {
-  border-color: #8b5cf6;
+  border-color: #4a9eff;
   color: #fff;
 }
 
 .vn-sidebar .emotion-chip {
-  border-color: rgba(139, 92, 246, 0.35);
-  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(74, 158, 255, 0.35);
+  background: rgba(74, 158, 255, 0.08);
 }
 
 .vn-sidebar .emotion-chip:hover:not(:disabled) {
-  background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+  background: linear-gradient(90deg, #4a9eff 0%, #00c2ff 100%);
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.35);
 }
 
 /* Cột chính */
@@ -2421,7 +2421,7 @@ a[href] {
 
 .vn-tab.active {
   color: #fff;
-  border-bottom-color: #8b5cf6;
+  border-bottom-color: #4a9eff;
 }
 
 .vn-tabs-right {
@@ -2452,7 +2452,7 @@ a[href] {
 }
 
 .vn-summary .summary-value {
-  color: #c4b5fd;
+  color: #7cc4ff;
 }
 
 /* Thẻ văn bản lớn */
@@ -2479,7 +2479,7 @@ a[href] {
 }
 
 .vn-import-link {
-  color: #a78bfa !important;
+  color: #00c2ff !important;
   text-transform: none;
   letter-spacing: 0;
   font-size: 12.5px;
@@ -2512,8 +2512,8 @@ a[href] {
 }
 
 .vn-text-card #contentEditor:focus {
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
 }
 
 .vn-save-row {
@@ -2569,7 +2569,7 @@ a[href] {
 
 .vn-filename:focus {
   outline: none;
-  border-color: #8b5cf6;
+  border-color: #4a9eff;
 }
 
 .vn-save-ext {
@@ -2597,13 +2597,13 @@ a[href] {
   width: auto !important;
   margin-top: 0 !important;
   padding: 13px 28px !important;
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35) !important;
+  background: linear-gradient(135deg, #4a9eff 0%, #00c2ff 100%) !important;
+  box-shadow: 0 8px 24px rgba(74, 158, 255, 0.35) !important;
 }
 
 .vn-generate:hover {
   filter: brightness(1.12);
-  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.45) !important;
+  box-shadow: 0 12px 32px rgba(74, 158, 255, 0.45) !important;
 }
 
 .vn-save-note {
@@ -2663,7 +2663,7 @@ a[href] {
 
 /* Slider tím kiểu VieNeu */
 input[type="range"] {
-  accent-color: #8b5cf6;
+  accent-color: #4a9eff;
 }
 
 /* Nút chọn giọng trong sidebar hẹp: tên không xuống dòng */
