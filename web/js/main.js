@@ -358,10 +358,6 @@ function setNumStep(v){
     updateDurationTarget(value);
   }
 
-  function toggleDurationCalc(){
-    document.getElementById('durationToggle').classList.toggle('open');
-    document.getElementById('durationBody').classList.toggle('open');
-  }
 
   function parseDurationToSeconds(str){
     str = (str || '').trim();
@@ -389,8 +385,10 @@ function setNumStep(v){
 
     if(seconds === null || seconds <= 0){
       targetDurationValue = null;
-      resultEl.textContent = 'Chưa đặt thời lượng — sẽ dùng tốc độ ở trên';
-      resultEl.classList.remove('ready');
+      if (resultEl) {
+        resultEl.textContent = 'Chưa đặt thời lượng — sẽ dùng tốc độ ở trên';
+        resultEl.classList.remove('ready');
+      }
 
       // Bật lại khối Tốc Độ Phát
       speedSlider.disabled = false;
@@ -404,8 +402,10 @@ function setNumStep(v){
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     const formatted = `${mins}:${secs.toString().padStart(2,'0')}`;
-    resultEl.textContent = `Mục tiêu: ${formatted} — tốc độ sẽ tự động điều chỉnh sau khi tạo audio gốc`;
-    resultEl.classList.add('ready');
+    if (resultEl) {
+      resultEl.textContent = `Mục tiêu: ${formatted} — tốc độ sẽ tự động điều chỉnh sau khi tạo audio gốc`;
+      resultEl.classList.add('ready');
+    }
 
     // Vô hiệu hoá (không ẩn) khối Tốc Độ Phát vì tốc độ giờ được tính tự động theo thời lượng
     speedSlider.disabled = true;

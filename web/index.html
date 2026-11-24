@@ -282,7 +282,7 @@
             <span class="vn-save-sep">/</span>
             <input type="text" class="vn-filename" id="namePattern" value="{file}_{index}" spellcheck="false">
             <span class="vn-save-ext">.wav</span>
-            <input type="text" class="vn-duration-mini" id="durationInputSave" placeholder="1:30" title="Thời lượng mong muốn — vd: 1:30 hoặc 90 (giây)" spellcheck="false" oninput="syncDurationFromSave(this.value)">
+            <input type="text" class="vn-duration-mini" id="durationInputSave" placeholder="Thời lượng mong muốn" title="Thời lượng mong muốn — vd: 1:30 hoặc 90 (giây)" spellcheck="false" oninput="syncDurationFromSave(this.value)">
           </div>
           <div class="vn-save-right">
             <span class="vn-charcount" id="charCount">0 ký tự</span>
@@ -390,31 +390,7 @@
             </div>
 
           </div>
-        <div class="card">
-          <div class="card-head">
-            <div class="step-num">5</div>
-            <div class="card-head-text">
-              <div class="card-title">Thời lượng mong muốn</div>
-              <div class="card-desc">Tự động tính tốc độ vừa khung thời gian</div>
-            </div>
-          </div>
-<div class="duration-calc">
-                <div class="duration-calc-toggle open" id="durationToggle" onclick="toggleDurationCalc()">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" />
-                  </svg>
-                  <span>Đặt thời lượng mong muốn (tự động tính tốc độ)</span>
-                </div>
-                <div class="duration-calc-body open" id="durationBody">
-                  <div class="duration-field" style="position:relative;">
-                    <input type="text" id="durationInput" placeholder="vd: 1:30 hoặc 90 (giây)"
-                      oninput="updateDurationTarget(this.value)">
-                  </div>
-                  <div class="duration-result" id="durationResult">Chưa đặt thời lượng — sẽ dùng tốc độ ở trên</div>
-                </div>
-              </div>
-        </div>
+        
 
       </section>
 
