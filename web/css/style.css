@@ -3393,3 +3393,33 @@ input[type="range"] {
   background: rgba(74, 158, 255, 0.12);
   box-shadow: inset 0 0 0 1px rgba(74, 158, 255, 0.45);
 }
+
+/* Nut tai lai giong: chi icon, nam mep phai cung hang tieu de Giong noi */
+.vn-sec-title:has(.voice-reload-btn) {
+  display: flex;
+  align-items: center;
+}
+
+.voice-reload-btn {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+  color: #8b8b9e;
+  padding: 0;
+}
+
+.voice-reload-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.voice-reload-btn:hover {
+  color: var(--accent-blue);
+  border-color: transparent;
+  box-shadow: none;
+  background: rgba(74, 158, 255, 0.12);
+}

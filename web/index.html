@@ -52,7 +52,12 @@
       <div class="vn-server-note">Giọng chạy trực tiếp trên máy của bạn, miễn phí. Mở Server Voice rồi bấm tải lại giọng nếu danh sách trống.</div>
 
       <section class="vn-sec">
-        <div class="vn-sec-title">Giọng nói <span id="voiceCount"></span></div>
+        <div class="vn-sec-title">Giọng nói <span id="voiceCount"></span><div class="voice-reload-btn" onclick="ReloadCloneVoice()" title="Tải lại danh sách giọng">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 11a8 8 0 1 0 1 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    <path d="M20 5v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div></div>
 <div class="voice-dropdown" id="voiceDropdown" style="display: flex; justify-content: center; align-items: center;">
                 <button type="button" class="voice-select-btn" id="voiceSelectBtn" onclick="toggleVoiceDropdown()">
                   <span class="voice-select-current">
@@ -66,12 +71,7 @@
                 </button>
                 <div class="voice-select-panel" id="voiceCloneSelectPanel">
                 </div>
-                <div class="voice-reload-btn" onclick="ReloadCloneVoice()" title="Tải lại danh sách giọng">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 11a8 8 0 1 0 1 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                    <path d="M20 5v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
-                </div>
+                
               </div>
         <div class="vn-sec-desc">Giọng đọc lấy từ Server Voice. Chip cảm xúc chỉ có tác dụng nếu server hỗ trợ tag — thử 1 câu ngắn trước.</div>
       </section>
