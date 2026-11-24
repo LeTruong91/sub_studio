@@ -3454,3 +3454,38 @@ input[type="range"] {
 .vn-recent-list::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* Khung chinh vua man hinh: the Van ban co dan theo chieu cao con lai, khong cuon ngoai */
+.vn-main > .vn-text-card {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.vn-main > .vn-text-card .content-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vn-text-card #contentEditor {
+  min-height: 80px;
+}
+
+.vn-main > .vn-summary,
+.vn-main > .vn-clone-full {
+  flex-shrink: 0;
+}
+
+/* Ban ghi gan day cung co dan khi thieu cho (toi thieu 2 hang) */
+.vn-main > .vn-recent.card {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vn-recent-list {
+  flex: 1 1 auto;
+  min-height: 112px;
+}
