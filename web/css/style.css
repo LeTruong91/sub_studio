@@ -3282,3 +3282,55 @@ input[type="range"] {
 .vn-clone-full .clone-name-wrap input {
   flex: 1;
 }
+
+/* ===== Hiệu ứng hiện nhẹ nhàng cho thẻ Nhân Bản ===== */
+
+/* Form nhân bản: mở rộng dần + mờ dần thay vì hiện ngay */
+#cloneForm {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  transition:
+    grid-template-rows 0.45s ease-out,
+    opacity 0.35s ease-out,
+    margin-top 0.45s ease-out;
+}
+
+#cloneForm.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.clone-form-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: 10px;
+}
+
+/* Bỏ hiệu ứng cũ (rơi 12px trong 0.3s) — chuyển động mở rộng ở trên lo hết */
+.vn-clone-full .clone-box {
+  animation: none;
+}
+
+/* Ô tên giọng: mở rộng dần + mờ dần khi bật Lưu mẫu */
+#cloneSaveFields {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s ease-out,
+    opacity 0.3s ease-out;
+}
+
+#cloneSaveFields.open {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.vn-clone-full #cloneSaveFields > .clone-name-wrap {
+  min-height: 0;
+  overflow: hidden;
+}
