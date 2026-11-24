@@ -7,11 +7,17 @@ Wraps ffmpeg for:
   - changing pitch (semitones) without affecting tempo
   - combined speed + pitch in one pass
 
-Requires ffmpeg + ffprobe to be installed and on PATH.
+Requires ffmpeg + ffprobe (thu muc ffmpeg/ canh file exe).
+Neu thieu ffmpeg/ffprobe: do thoi luong file wav doc truc tiep tu header
+(stdlib wave), va render_audio khong doi toc do/cao do thi copy thang file
+— duong tao mac dinh (toc do 1.0, cao do 0) chay duoc ke ca khi thieu ffmpeg.
+Chi khi can doi toc do/cao do that su moi bat buoc co ffmpeg.
 """
 import json
 import math
+import shutil
 import subprocess
+import wave
 from pathlib import Path
 import base64
 import sys
@@ -33,23 +39,37 @@ class FFmpegError(RuntimeError):
 
 
 def _run(cmd):
-    result = run_hidden(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        result = run_hidden(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except FileNotFoundError:
+        raise FFmpegError("Không tìm thấy ffmpeg/ffprobe — kiểm tra thư mục ffmpeg/ cạnh file exe.")
     if result.returncode != 0:
         raise FFmpegError(result.stderr.decode("utf-8", errors="ignore"))
     return result
 
 
 def probe_duration_seconds(path: str) -> float:
-    cmd = [
-        str(FFPROBE_EXE),
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "json",
-        str(path),
-    ]
-    out = _run(cmd).stdout
-    data = json.loads(out)
-    return float(data["format"]["duration"])
+    try:
+        cmd = [
+            str(FFPROBE_EXE),
+            "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "json",
+            str(path),
+        ]
+        out = _run(cmd).stdout
+        data = json.loads(out)
+        return float(data["format"]["duration"])
+    except Exception:
+        # ffprobe khong chay duoc (thieu file ffmpeg/ffprobe...) -> doc thang
+        # thoi luong tu header wav; khong phai wav thi giu nguyen loi goc.
+        if str(path).lower().endswith(".wav"):
+            try:
+                with wave.open(str(path), "rb") as w:
+                    return w.getnframes() / float(w.getframerate())
+            except Exception:
+                pass
+        raise
 
 
 def _atempo_chain(factor: float) -> str:
@@ -150,6 +170,16 @@ def render_audio(
     Apply pitch shift (semitones, tempo-compensated so duration is unaffected
     by the pitch shift itself) followed by the user's requested speed change.
     """
+    if abs(speed - 1.0) <= 1e-6 and abs(pitch_semitones) <= 1e-6:
+        # Khong doi toc do/cao do: ffmpeg chi copy + resample ve cung sample rate.
+        # Neu input da la wav dung sample rate thi copy thang, khoi can ffmpeg.
+        try:
+            with wave.open(str(input_path), "rb") as w:
+                if w.getframerate() == sample_rate:
+                    shutil.copyfile(str(input_path), str(output_path))
+                    return output_path
+        except Exception:
+            pass  # khong phai wav hoac doc loi -> roi xuong ffmpeg nhu cu
     filters = []
 
     if abs(pitch_semitones) > 1e-6:
