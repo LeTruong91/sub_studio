@@ -1036,10 +1036,47 @@ class Api:
                 data = data.get("data", [])
             if not isinstance(data, list):
                 return {}
+            # Server chỉ giữ giọng clone trong bộ nhớ: tắt server là mất.
+            # Đăng ký lại các giọng đã lưu trên máy để chúng hiện lại trong danh sách.
+            try:
+                if self._reenroll_saved_voices(data):
+                    resp = requests.get(f"{API_BASE_URL}/voices", timeout=TIMEOUT)
+                    resp.raise_for_status()
+                    data = resp.json()
+                    if isinstance(data, dict):
+                        data = data.get("data", [])
+                    if not isinstance(data, list):
+                        return {}
+            except Exception:
+                pass
             # ẩn giọng clone tạm thời (đăng ký nội bộ cho mỗi lần nhân bản)
             return [v for v in data if v.get("name") != vera_tts.TEMP_CLONE_NAME]
         except:
             return {}
+
+    def _reenroll_saved_voices(self, server_voices):
+        """Đăng ký lại các giọng clone đã lưu (thư mục voices/) mà server đã quên
+        (vd sau khi khởi động lại). Chỉ đăng ký những giọng chưa có trên server.
+        Trả về True nếu đã đăng ký lại ít nhất 1 giọng."""
+        voices_dir = APP_DIR / "voices"
+        if not voices_dir.is_dir():
+            return False
+        on_server = {v.get("name") for v in server_voices if isinstance(v, dict)}
+        reenrolled = False
+        for clip in sorted(voices_dir.iterdir()):
+            if clip.suffix.lower() not in (".wav", ".mp3", ".flac", ".ogg", ".m4a"):
+                continue
+            name = clip.stem
+            if not name or name == vera_tts.TEMP_CLONE_NAME or name in on_server:
+                continue
+            try:
+                meta = vera_tts._load_voice_meta(str(voices_dir), name)
+                vera_tts._enroll_voice(name, str(clip),
+                                      (meta or {}).get("description", "") or "")
+                reenrolled = True
+            except Exception:
+                continue
+        return reenrolled
 
 
 
