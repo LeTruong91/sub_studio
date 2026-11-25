@@ -1228,10 +1228,12 @@ a[href] {
   }
 
   .generate-btn.gen-running {
-    background: rgb(255 0 0 / 5%);
-    color: #ff1c1c;
-    border: 1px solid rgb(255 0 0 / 32%);
+    color: #fff;
+    border-color: transparent;
     cursor: pointer;
+  }
+  .generate-btn.gen-running svg {
+    color: #fff;
   }
   .generate-btn.gen-running:hover {
     transform: none;

@@ -482,14 +482,17 @@ function toggleSaveClone(){
   function setGenButtonRunning(running){
     const btn = document.getElementById('genBtn');
     const label = document.getElementById('genLabel');
+    const iconPath = document.getElementById('genIconPath');
     if (!btn) return;
     if (running) {
       btn.classList.add('gen-running');
       if (label) label.textContent = 'ĐANG XỬ LÝ — NHẤN ĐỂ DỪNG';
+      if (iconPath) iconPath.setAttribute('d', 'M6 6h12v12H6z');
     } else {
       btn.classList.remove('gen-running');
       btn.disabled = false;
       if (label) label.textContent = 'Tạo Ngay';
+      if (iconPath) iconPath.setAttribute('d', 'M5 3l14 9-14 9V3z');
     }
   }
 
